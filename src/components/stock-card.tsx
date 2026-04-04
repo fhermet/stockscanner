@@ -1,7 +1,10 @@
+"use client";
+
 import Link from "next/link";
 import { ScoredStock, StrategyId } from "@/lib/types";
 import ScoreBadge from "./ui/score-badge";
 import ScoreGauge from "./ui/score-gauge";
+import WatchlistButton from "./watchlist-button";
 
 interface StockCardProps {
   readonly item: ScoredStock;
@@ -36,7 +39,10 @@ export default function StockCard({ item, strategyId, rank }: StockCardProps) {
             <p className="text-sm text-slate-500">{item.stock.name}</p>
           </div>
         </div>
-        <ScoreBadge score={item.score.total} size="sm" />
+        <div className="flex items-center gap-1.5">
+          <WatchlistButton ticker={item.stock.ticker} size="sm" />
+          <ScoreBadge score={item.score.total} size="sm" />
+        </div>
       </div>
 
       <div className="mt-4 grid grid-cols-3 gap-2 text-center">

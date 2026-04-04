@@ -13,6 +13,7 @@ import MetricCard from "@/components/ui/metric-card";
 import ExplanationList from "@/components/ui/explanation-list";
 import ConfidenceBadge from "@/components/ui/confidence-badge";
 import DataSourceBadge from "@/components/ui/data-source-badge";
+import WatchlistButton from "@/components/watchlist-button";
 import { formatMarketCap } from "@/lib/format";
 
 interface PageProps {
@@ -75,6 +76,7 @@ export default async function StockDetailPage({
             <h1 className="text-3xl font-extrabold text-slate-900">
               {stock.ticker}
             </h1>
+            <WatchlistButton ticker={stock.ticker} size="md" />
             <span className="rounded-full bg-slate-100 px-3 py-1 text-sm text-slate-600">
               {stock.exchange}
             </span>

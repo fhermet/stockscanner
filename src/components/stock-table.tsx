@@ -1,6 +1,9 @@
+"use client";
+
 import Link from "next/link";
 import { ScoredStock, StrategyId } from "@/lib/types";
 import ScoreBadge from "./ui/score-badge";
+import WatchlistButton from "./watchlist-button";
 
 interface StockTableProps {
   readonly stocks: readonly ScoredStock[];
@@ -47,6 +50,7 @@ export default function StockTable({ stocks, strategyId }: StockTableProps) {
             <th className="px-4 py-3 text-center text-xs font-semibold text-slate-600 uppercase tracking-wider">
               Score
             </th>
+            <th className="w-10 px-2 py-3"></th>
           </tr>
         </thead>
         <tbody className="divide-y divide-slate-100">
@@ -90,6 +94,9 @@ export default function StockTable({ stocks, strategyId }: StockTableProps) {
                     <span className="h-2 w-2 rounded-full bg-amber-400" title="Confiance faible" />
                   )}
                 </div>
+              </td>
+              <td className="px-2 py-3 text-center">
+                <WatchlistButton ticker={item.stock.ticker} size="sm" />
               </td>
             </tr>
           ))}
