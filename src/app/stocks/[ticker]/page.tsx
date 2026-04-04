@@ -11,6 +11,7 @@ import ScoreBadge from "@/components/ui/score-badge";
 import ScoreGauge from "@/components/ui/score-gauge";
 import MetricCard from "@/components/ui/metric-card";
 import ExplanationList from "@/components/ui/explanation-list";
+import ConfidenceBadge from "@/components/ui/confidence-badge";
 
 interface PageProps {
   params: Promise<{ ticker: string }>;
@@ -94,6 +95,12 @@ export default async function StockDetailPage({
           <p className="mt-1 text-xs text-slate-400">
             Score strategie {strategy.name}
           </p>
+          <div className="mt-2">
+            <ConfidenceBadge
+              confidence={score.confidence}
+              completeness={score.dataCompleteness}
+            />
+          </div>
         </div>
       </div>
 
@@ -147,6 +154,16 @@ export default async function StockDetailPage({
                   Points d&apos;attention
                 </h3>
                 <ExplanationList explanations={negativeExplanations} />
+              </div>
+            )}
+
+            {score.dataCompleteness.missing.length > 0 && (
+              <div className="mt-5">
+                <ConfidenceBadge
+                  confidence={score.confidence}
+                  completeness={score.dataCompleteness}
+                  showDetail
+                />
               </div>
             )}
           </section>

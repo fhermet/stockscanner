@@ -84,7 +84,12 @@ export default function StockTable({ stocks, strategyId }: StockTableProps) {
                 {item.stock.per}
               </td>
               <td className="px-4 py-3 text-center">
-                <ScoreBadge score={item.score.total} size="sm" />
+                <div className="flex items-center justify-center gap-1.5">
+                  <ScoreBadge score={item.score.total} size="sm" />
+                  {item.score.confidence === "low" && (
+                    <span className="h-2 w-2 rounded-full bg-amber-400" title="Confiance faible" />
+                  )}
+                </div>
               </td>
             </tr>
           ))}
