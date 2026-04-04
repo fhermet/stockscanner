@@ -80,6 +80,34 @@ export default function HomePage() {
           </div>
         </div>
       </div>
+
+      {/* SEO content block */}
+      <section className="mt-24 max-w-3xl mx-auto">
+        <h2 className="text-2xl font-bold text-slate-900 mb-6 text-center">
+          Un stock screener orienté décision
+        </h2>
+        <div className="space-y-4 text-sm leading-relaxed text-slate-600">
+          <p>
+            StockScanner est un outil d&apos;analyse fondamentale qui classe les actions
+            selon des stratégies d&apos;investissement éprouvées. Au lieu de filtrer
+            manuellement des centaines de ratios financiers, choisissez une approche
+            — Buffett, Peter Lynch, Growth ou Dividende — et découvrez instantanément
+            quelles actions y correspondent le mieux.
+          </p>
+          <p>
+            L&apos;univers couvre plus de 340 actions issues des principaux indices
+            boursiers : S&amp;P 500, NASDAQ 100, Dow Jones, CAC 40, DAX 40, FTSE 100,
+            SMI et STOXX Europe 50. Chaque action reçoit un score sur 100, décomposé
+            en sous-scores (qualité, valorisation, croissance, solidité financière)
+            avec une explication en langage naturel.
+          </p>
+          <p>
+            Comparez plusieurs actions côte à côte, suivez vos favorites dans une
+            watchlist, et recevez des alertes quand un score évolue significativement.
+            Les données proviennent de Yahoo Finance et sont mises à jour en temps réel.
+          </p>
+        </div>
+      </section>
     </div>
   );
 }
