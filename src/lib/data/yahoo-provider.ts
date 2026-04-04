@@ -2,6 +2,7 @@ import YahooFinance from "yahoo-finance2";
 import { Stock, StockFilters } from "../types";
 import { DataProvider } from "./provider";
 import { createLogger } from "../logger";
+import { ALL_TICKERS } from "../tickers";
 
 const log = createLogger("yahoo-provider");
 
@@ -9,42 +10,18 @@ const log = createLogger("yahoo-provider");
  * Yahoo Finance data provider (gratuit, sans cle API).
  *
  * Utilise yahoo-finance2 v3 pour recuperer profil, ratios financiers,
- * et secteur reel. Gere les donnees manquantes avec safeNumber().
+ * et secteur reel. Gere les donnees manquantes avec safeNum().
  *
- * ~100 tickers couvrant US large/mid caps + quelques europeens.
+ * Ticker universe: ~340 actions (S&P 500 + NASDAQ 100 + CAC 40 +
+ * DAX 40 + FTSE 100) via le module tickers/.
+ *
+ * Parallel batching: 3 groupes de 20 en parallele pour ~15s cold load.
  */
 
 const yf = new YahooFinance({
   suppressNotices: ["yahooSurvey"],
   validation: { logErrors: false },
 });
-
-// ~100 tickers diversifies : tech, sante, finance, conso, industrie, energie, immo, telecom
-const DEFAULT_TICKERS = [
-  // Tech US
-  "AAPL", "MSFT", "GOOG", "AMZN", "NVDA", "META", "TSLA", "CRM",
-  "AMD", "INTC", "ORCL", "ADBE", "CSCO", "AVGO", "QCOM", "NOW",
-  "UBER", "SQ", "SHOP", "PLTR", "SNOW", "NET", "CRWD", "PANW",
-  // Sante
-  "JNJ", "UNH", "ABBV", "PFE", "LLY", "MRK", "TMO", "ABT", "AMGN",
-  // Finance
-  "JPM", "V", "MA", "BAC", "GS", "BLK", "SCHW", "AXP",
-  // Conso base
-  "PG", "KO", "PEP", "WMT", "COST", "CL", "MDLZ", "KHC",
-  // Conso cyclique
-  "HD", "MCD", "NKE", "SBUX", "TJX", "LOW", "BKNG",
-  // Industrie
-  "CAT", "HON", "UPS", "GE", "RTX", "DE", "LMT", "BA",
-  // Energie
-  "XOM", "CVX", "COP", "SLB", "EOG",
-  // Telecom
-  "T", "VZ", "TMUS",
-  // Immobilier
-  "O", "AMT", "PLD", "SPG",
-  // Europe
-  "ASML", "SAP", "NVO", "AZN", "SHEL", "TTE", "MC.PA", "OR.PA",
-  "SIE.DE", "ALV.DE",
-];
 
 function safeNum(value: unknown, fallback = 0): number {
   if (typeof value === "number" && isFinite(value)) return value;
@@ -75,6 +52,7 @@ const COUNTRY_MAP: Record<string, string> = {
   Switzerland: "Suisse",
   Ireland: "Irlande",
   Japan: "Japon",
+  Sweden: "Suede",
 };
 
 async function fetchStock(ticker: string): Promise<Stock | undefined> {
@@ -106,35 +84,25 @@ async function fetchStock(ticker: string): Promise<Stock | undefined> {
 
     const per = parseFloat(safeNum(detail?.trailingPE).toFixed(1));
     const peg = parseFloat(safeNum(stats?.pegRatio).toFixed(2));
-
-    // Yahoo retourne ROE en decimal (1.52 = 152%)
     const roe = parseFloat((safeNum(financial?.returnOnEquity) * 100).toFixed(1));
-
-    // Yahoo retourne debtToEquity deja en % (102.63 = ratio 1.03)
     const debtToEquity = parseFloat(
       (safeNum(financial?.debtToEquity) / 100).toFixed(2)
     );
-
     const operatingMargin = parseFloat(
       (safeNum(financial?.operatingMargins) * 100).toFixed(1)
     );
-
     const freeCashFlow = parseFloat(
       (safeNum(financial?.freeCashflow) / 1_000_000_000).toFixed(1)
     );
-
     const revenueGrowth = parseFloat(
       (safeNum(financial?.revenueGrowth) * 100).toFixed(1)
     );
-
     const epsGrowth = parseFloat(
       (safeNum(financial?.earningsGrowth) * 100).toFixed(1)
     );
-
     const dividendYield = parseFloat(
       (safeNum(detail?.dividendYield) * 100).toFixed(2)
     );
-
     const payoutRatio = Math.round(safeNum(detail?.payoutRatio) * 100);
 
     const rawSector: string = profile?.sector ?? "";
@@ -158,7 +126,7 @@ async function fetchStock(ticker: string): Promise<Stock | undefined> {
       epsGrowth,
       dividendYield,
       payoutRatio,
-      history: [], // Yahoo quoteSummary ne fournit pas l'historique EPS simplement
+      history: [],
     };
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : "unknown";
@@ -167,26 +135,38 @@ async function fetchStock(ticker: string): Promise<Stock | undefined> {
   }
 }
 
-export class YahooDataProvider implements DataProvider {
-  readonly name = "yahoo";
-  private readonly tickers: readonly string[];
+/**
+ * Fetch tickers in parallel waves for throughput.
+ * Each wave runs `parallelGroups` batches of `batchSize` concurrently.
+ *
+ * With 340 tickers, batchSize=20, parallelGroups=3:
+ *  → 60 per wave, ~6 waves, ~15-20s cold load
+ */
+async function fetchAll(tickers: readonly string[]): Promise<Stock[]> {
+  const batchSize = 20;
+  const parallelGroups = 3;
+  const waveSize = batchSize * parallelGroups;
+  const allStocks: Stock[] = [];
+  let failures = 0;
+  const start = Date.now();
 
-  constructor(tickers?: readonly string[]) {
-    this.tickers = tickers ?? DEFAULT_TICKERS;
-  }
+  for (let i = 0; i < tickers.length; i += waveSize) {
+    const wave = tickers.slice(i, i + waveSize);
 
-  async getStocks(filters?: StockFilters): Promise<readonly Stock[]> {
-    const start = Date.now();
-    const batchSize = 10;
-    const allStocks: Stock[] = [];
-    let failures = 0;
+    // Split wave into parallel batches
+    const batches: string[][] = [];
+    for (let j = 0; j < wave.length; j += batchSize) {
+      batches.push(wave.slice(j, j + batchSize));
+    }
 
-    for (let i = 0; i < this.tickers.length; i += batchSize) {
-      const batch = this.tickers.slice(i, i + batchSize);
-      const results = await Promise.allSettled(
-        batch.map((t) => fetchStock(t))
-      );
+    // Run batches in parallel
+    const batchResults = await Promise.all(
+      batches.map((batch) =>
+        Promise.allSettled(batch.map((t) => fetchStock(t)))
+      )
+    );
 
+    for (const results of batchResults) {
       for (const r of results) {
         if (r.status === "fulfilled" && r.value) {
           allStocks.push(r.value);
@@ -195,15 +175,28 @@ export class YahooDataProvider implements DataProvider {
         }
       }
     }
+  }
 
-    log.info("getStocks complete", {
-      total: this.tickers.length,
-      fetched: allStocks.length,
-      failures,
-      durationMs: Date.now() - start,
-    });
+  log.info("fetchAll complete", {
+    total: tickers.length,
+    fetched: allStocks.length,
+    failures,
+    durationMs: Date.now() - start,
+  });
 
-    let stocks = allStocks;
+  return allStocks;
+}
+
+export class YahooDataProvider implements DataProvider {
+  readonly name = "yahoo";
+  private readonly tickers: readonly string[];
+
+  constructor(tickers?: readonly string[]) {
+    this.tickers = tickers ?? ALL_TICKERS;
+  }
+
+  async getStocks(filters?: StockFilters): Promise<readonly Stock[]> {
+    let stocks = await fetchAll(this.tickers);
 
     if (filters?.sector) {
       stocks = stocks.filter((s) => s.sector === filters.sector);
