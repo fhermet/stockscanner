@@ -8,6 +8,7 @@ const COMPLETE_STOCK: Stock = {
   sector: "Technologie",
   country: "USA",
   exchange: "NASDAQ",
+  currency: "USD",
   marketCap: 100,
   price: 50,
   per: 20,

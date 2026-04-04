@@ -18,7 +18,7 @@ import { scoreStock } from "../engine";
 
 const MSFT: Stock = {
   ticker: "MSFT", name: "Microsoft", sector: "Technologie", country: "USA",
-  exchange: "NASDAQ", marketCap: 3100, price: 415, per: 35, peg: 2.0,
+  exchange: "NASDAQ", currency: "USD", marketCap: 3100, price: 415, per: 35, peg: 2.0,
   roe: 38, debtToEquity: 0.35, operatingMargin: 44.6, freeCashFlow: 70,
   revenueGrowth: 15.7, epsGrowth: 18.2, dividendYield: 0.72, payoutRatio: 25,
   history: [
@@ -30,7 +30,7 @@ const MSFT: Stock = {
 
 const JNJ: Stock = {
   ticker: "JNJ", name: "Johnson & Johnson", sector: "Sante", country: "USA",
-  exchange: "NYSE", marketCap: 380, price: 157, per: 15, peg: 2.8,
+  exchange: "NYSE", currency: "USD", marketCap: 380, price: 157, per: 15, peg: 2.8,
   roe: 20, debtToEquity: 0.45, operatingMargin: 24.8, freeCashFlow: 18,
   revenueGrowth: 3.5, epsGrowth: 5.2, dividendYield: 3.1, payoutRatio: 46,
   history: [
@@ -42,7 +42,7 @@ const JNJ: Stock = {
 
 const NVDA: Stock = {
   ticker: "NVDA", name: "NVIDIA", sector: "Technologie", country: "USA",
-  exchange: "NASDAQ", marketCap: 2800, price: 875, per: 55, peg: 0.9,
+  exchange: "NASDAQ", currency: "USD", marketCap: 2800, price: 875, per: 55, peg: 0.9,
   roe: 115, debtToEquity: 0.41, operatingMargin: 62, freeCashFlow: 30,
   revenueGrowth: 122, epsGrowth: 145, dividendYield: 0.02, payoutRatio: 1,
   history: [
@@ -54,7 +54,7 @@ const NVDA: Stock = {
 
 const T_STOCK: Stock = {
   ticker: "T", name: "AT&T", sector: "Telecom", country: "USA",
-  exchange: "NYSE", marketCap: 160, price: 22.5, per: 10, peg: 4.0,
+  exchange: "NYSE", currency: "USD", marketCap: 160, price: 22.5, per: 10, peg: 4.0,
   roe: 12, debtToEquity: 1.2, operatingMargin: 18.5, freeCashFlow: 16,
   revenueGrowth: 1.5, epsGrowth: 2.5, dividendYield: 4.9, payoutRatio: 49,
   history: [
@@ -66,7 +66,7 @@ const T_STOCK: Stock = {
 
 const KO: Stock = {
   ticker: "KO", name: "Coca-Cola", sector: "Consommation de base", country: "USA",
-  exchange: "NYSE", marketCap: 265, price: 61.5, per: 25, peg: 3.2,
+  exchange: "NYSE", currency: "USD", marketCap: 265, price: 61.5, per: 25, peg: 3.2,
   roe: 40, debtToEquity: 1.6, operatingMargin: 29.5, freeCashFlow: 10,
   revenueGrowth: 2.5, epsGrowth: 7.8, dividendYield: 3.05, payoutRatio: 74,
   history: [
@@ -78,7 +78,7 @@ const KO: Stock = {
 
 const PARTIAL: Stock = {
   ticker: "PARTIAL", name: "Partial Data Inc", sector: "Autre", country: "USA",
-  exchange: "N/A", marketCap: 5, price: 10, per: 0, peg: 0,
+  exchange: "N/A", currency: "USD", marketCap: 5, price: 10, per: 0, peg: 0,
   roe: 0, debtToEquity: 0, operatingMargin: 0, freeCashFlow: 0,
   revenueGrowth: 0, epsGrowth: 0, dividendYield: 0, payoutRatio: 0,
   history: [],

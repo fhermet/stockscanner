@@ -114,6 +114,7 @@ async function fetchStock(ticker: string): Promise<Stock | undefined> {
       sector: SECTOR_MAP[rawSector] ?? (rawSector || "Autre"),
       country: COUNTRY_MAP[rawCountry] ?? (rawCountry || "Inconnu"),
       exchange: price.exchangeName ?? "N/A",
+      currency: (price.currency as string) ?? "USD",
       marketCap,
       price: parseFloat(currentPrice.toFixed(2)),
       per,

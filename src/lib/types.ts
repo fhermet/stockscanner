@@ -13,8 +13,9 @@ export interface Stock {
   readonly sector: string;
   readonly country: string;
   readonly exchange: string;
-  readonly marketCap: number; // in billions
-  readonly price: number;
+  readonly currency: string; // ISO 4217: USD, EUR, GBP, CHF, etc.
+  readonly marketCap: number; // in billions (local currency)
+  readonly price: number; // local currency
   readonly per: number;
   readonly peg: number;
   readonly roe: number; // percentage
