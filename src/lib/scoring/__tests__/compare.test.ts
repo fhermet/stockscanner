@@ -124,3 +124,77 @@ describe("compareStocks", () => {
     expect(result.summary.length).toBeGreaterThan(0);
   });
 });
+
+describe("near-tie detection", () => {
+  it("detects tie when scores differ by < 3 points", () => {
+    const a = makeScoredStock("A", "Alpha", 78, [
+      { name: "quality", value: 80, label: "Q", weight: 1 },
+    ]);
+    const b = makeScoredStock("B", "Beta", 77, [
+      { name: "quality", value: 75, label: "Q", weight: 1 },
+    ]);
+    const result = compareStocks([a, b], "buffett");
+    expect(result.isTie).toBe(true);
+    expect(result.summary).toContain("proches");
+  });
+
+  it("does not flag tie when gap >= 3", () => {
+    const result = compareStocks([MSFT, AAPL], "buffett"); // 78 vs 72 = 6
+    expect(result.isTie).toBe(false);
+  });
+});
+
+describe("N/A and missing data handling", () => {
+  it("ignores N/A values in best/worst determination", () => {
+    const withNA = makeScoredStock("NA", "Missing", 50, [
+      { name: "quality", value: 60, label: "Q", weight: 0.4 },
+      { name: "strength", value: 50, label: "S", weight: 0.3 },
+      { name: "valuation", value: 40, label: "V", weight: 0.3 },
+    ], { per: 0, roe: 0 }); // PER=0, ROE=0 → treated as N/A
+
+    const result = compareStocks([MSFT, withNA], "buffett");
+
+    // PER: MSFT=25, NA=null → MSFT is best, NA ignored
+    const per = result.metricComparison.find((m) => m.key === "per");
+    expect(per!.isPartial).toBe(true);
+    expect(per!.bestTicker).not.toBe("NA");
+  });
+
+  it("marks partial metrics with isPartial flag", () => {
+    const partial = makeScoredStock("P", "Partial", 50, [
+      { name: "quality", value: 50, label: "Q", weight: 1 },
+    ], { per: 0 });
+
+    const result = compareStocks([MSFT, partial], "buffett");
+    const per = result.metricComparison.find((m) => m.key === "per");
+    expect(per!.isPartial).toBe(true);
+  });
+
+  it("generates warning when many metrics are partial", () => {
+    // per=0 and roe=0 are N/A (zeroIsNA), debtToEquity and fcf use NaN for truly missing
+    const incomplete = makeScoredStock("INC", "Incomplete", 40, [
+      { name: "quality", value: 40, label: "Q", weight: 1 },
+    ], { per: 0, roe: 0, debtToEquity: NaN, freeCashFlow: NaN });
+
+    const result = compareStocks([MSFT, incomplete], "buffett");
+    expect(result.warnings.length).toBeGreaterThan(0);
+    expect(result.warnings[0]).toContain("partielle");
+  });
+});
+
+describe("confidence in summary", () => {
+  it("mentions low confidence stocks in summary", () => {
+    const lowConf = makeScoredStock("LOW", "LowConf", 82, [
+      { name: "quality", value: 90, label: "Q", weight: 1 },
+    ]);
+    // Override confidence to low
+    const withLowConf: ScoredStock = {
+      ...lowConf,
+      score: { ...lowConf.score, confidence: "low", dataCompleteness: { score: 40, available: [], missing: ["PER", "ROE"] } },
+    };
+
+    const result = compareStocks([MSFT, withLowConf], "buffett");
+    expect(result.summary).toContain("incompletes");
+    expect(result.summary).toContain("LOW");
+  });
+});
