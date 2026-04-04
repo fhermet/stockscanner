@@ -20,6 +20,7 @@ import { useAlerts } from "@/hooks/use-alerts";
 import { usePreferences } from "@/hooks/use-preferences";
 import { useWatchlist } from "@/hooks/use-watchlist";
 import ScoreMovers from "@/components/score-movers";
+import IndexSelector from "@/components/index-selector";
 
 function parseMarketCapFilter(value: string): Partial<StockFiltersType> {
   switch (value) {
@@ -41,11 +42,13 @@ function buildParams(
   sector: string,
   country: string,
   marketCap: string,
+  indexId: string,
   quick?: boolean
 ): string {
   const params = new URLSearchParams({ strategy: strategyId });
   if (sector) params.set("sector", sector);
   if (country) params.set("country", country);
+  if (indexId) params.set("index", indexId);
   const capFilter = parseMarketCapFilter(marketCap);
   if (capFilter.marketCapMin !== undefined)
     params.set("marketCapMin", String(capFilter.marketCapMin));
@@ -75,6 +78,9 @@ function ScannerContent() {
   const [sector, setSector] = useState("");
   const [country, setCountry] = useState("");
   const [marketCap, setMarketCap] = useState("");
+  const [indexCountry, setIndexCountry] = useState(searchParams.get("country") ?? "");
+  const [indexId, setIndexId] = useState(searchParams.get("index") ?? "");
+  const [indexInfo, setIndexInfo] = useState<{ id: string; name: string; theoreticalCount: number } | null>(null);
   const [viewMode, setViewMode] = useState<"table" | "cards">("table");
   const [meta, setMeta] = useState<DataMeta | null>(null);
   const [universe, setUniverse] = useState<{
@@ -102,7 +108,7 @@ function ScannerContent() {
 
     try {
       // Phase 1: quick mock data (instant)
-      const quickParams = buildParams(strategyId, sector, country, marketCap, true);
+      const quickParams = buildParams(strategyId, sector, country, marketCap, indexId, true);
       const quickRes = await fetch(`/api/stocks?${quickParams}`, {
         signal: controller.signal,
       });
@@ -120,7 +126,7 @@ function ScannerContent() {
       }
 
       // Phase 2: full live data (may take 15-20s on cold)
-      const fullParams = buildParams(strategyId, sector, country, marketCap);
+      const fullParams = buildParams(strategyId, sector, country, marketCap, indexId);
       const fullRes = await fetch(`/api/stocks?${fullParams}`, {
         signal: controller.signal,
       });
@@ -133,6 +139,7 @@ function ScannerContent() {
         setCountries(fullData.filters.countries);
         if (fullData.meta) setMeta(fullData.meta);
         if (fullData.universe) setUniverse(fullData.universe);
+        if (fullData.index) setIndexInfo(fullData.index);
         setRefreshing(false);
 
         // Save live scores + evaluate alerts (skip mock phase)
@@ -164,7 +171,7 @@ function ScannerContent() {
       setLoading(false);
       setRefreshing(false);
     }
-  }, [strategyId, sector, country, marketCap]);
+  }, [strategyId, sector, country, marketCap, indexId]);
 
   useEffect(() => {
     fetchStocks();
@@ -173,14 +180,21 @@ function ScannerContent() {
 
   const handleStrategyChange = (id: StrategyId) => {
     setStrategyId(id);
-    router.push(`/scanner?strategy=${id}`, { scroll: false });
+    const params = new URLSearchParams({ strategy: id });
+    if (indexCountry) params.set("country", indexCountry);
+    if (indexId) params.set("index", indexId);
+    router.push(`/scanner?${params.toString()}`, { scroll: false });
   };
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-8">
       {/* Header */}
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-slate-900">Scanner</h1>
+        <h1 className="text-2xl font-bold text-slate-900">
+          {indexInfo
+            ? `Top ${strategy?.name ?? "Buffett"} — ${indexInfo.name}`
+            : "Scanner"}
+        </h1>
         {strategy && (
           <p className="mt-1 text-sm text-slate-500">
             Strategie <strong>{strategy.name}</strong> &middot;{" "}
@@ -192,6 +206,20 @@ function ScannerContent() {
             <DataSourceBadge meta={meta} />
           </div>
         )}
+      </div>
+
+      {/* Index navigation */}
+      <div className="mb-6">
+        <IndexSelector
+          selectedCountry={indexCountry}
+          selectedIndex={indexId}
+          onCountryChange={(code) => {
+            setIndexCountry(code);
+            setIndexId("");
+            setIndexInfo(null);
+          }}
+          onIndexChange={setIndexId}
+        />
       </div>
 
       {/* Search */}
