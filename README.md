@@ -9,7 +9,7 @@ Application web de **stock screener oriente strategies d'investissement**.
 ```bash
 npm install
 npm run dev          # http://localhost:3000
-npm test             # 106 tests
+npm test             # 112 tests
 ```
 
 Pour activer les donnees Yahoo Finance (gratuites, temps reel) :
@@ -187,7 +187,7 @@ src/
 ## Tests
 
 ```bash
-npm test             # 106 tests
+npm test             # 112 tests
 npm run test:watch   # watch mode
 ```
 
@@ -201,7 +201,7 @@ npm run test:watch   # watch mode
 | **alerts** | **14** | **Evaluation, seuils, dedup, watchlist filter, modes** |
 | **indices** | **17** | **Registry, lookups, couverture, dedup tickers** |
 | **change-explanation** | **10** | **SubScore diffs, explication, pipeline, edge cases** |
-| **compare** | **7** | **Winner, sous-scores, metriques, summary, edge cases** |
+| **compare** | **13** | **Winner, ties, N/A handling, confidence, partial warnings** |
 
 ## Limites connues
 
@@ -213,7 +213,16 @@ npm run test:watch   # watch mode
 
 ## Historique des versions
 
-### V2.9 (actuelle) — Comparateur d'actions
+### V2.9.1 (actuelle) — Polish comparateur
+- Confiance et completude affichees par action (Elevee/Moyenne/Faible + %)
+- Gestion N/A : cellules grises "N/A", pas de highlight best/worst sur donnees manquantes
+- Quasi-egalites : seuil 3 pts, "Match serre" + "Ex aequo" au lieu de "domine"
+- Resume nuance : mentionne confiance basse, donnees partielles
+- Warnings explicites : "Comparaison partielle" quand >= 3 metriques manquent
+- Responsive : scroll horizontal sur les tableaux, bouton "Retirer" par carte
+- 112 tests (6 nouveaux : ties, N/A, confidence, partial warnings)
+
+### V2.9 — Comparateur d'actions
 - Page /compare : comparaison de 2 a 4 actions cote a cote
 - URL-driven : /compare?tickers=MSFT,AAPL,NVDA&strategy=buffett
 - "Qui gagne?" : resume intelligent identifiant winner, forces, faiblesses
