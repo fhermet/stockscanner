@@ -74,7 +74,11 @@ function CompareContent() {
   const tickersParam = searchParams.get("tickers") ?? "";
   const strategyParam = searchParams.get("strategy") ?? "buffett";
 
-  const [tickers, setTickers] = useState<string[]>(tickersParam ? tickersParam.split(",").slice(0, MAX_TICKERS) : []);
+  const [tickers, setTickers] = useState<string[]>(
+    tickersParam
+      ? tickersParam.split(",").map((t) => t.trim().toUpperCase()).filter(Boolean).slice(0, MAX_TICKERS)
+      : []
+  );
   const [strategyId, setStrategyId] = useState<StrategyId>(isValidStrategyId(strategyParam) ? strategyParam : "buffett");
   const [input, setInput] = useState("");
   const [stocks, setStocks] = useState<ScoredStock[]>([]);

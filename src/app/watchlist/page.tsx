@@ -77,7 +77,8 @@ export default function WatchlistPage() {
       case "score":
         return b.score - a.score;
       case "delta":
-        return (b.delta.delta ?? 0) - (a.delta.delta ?? 0);
+        // null deltas (no history) sort last
+        return (b.delta.delta ?? -Infinity) - (a.delta.delta ?? -Infinity);
       case "ticker":
         return a.ticker.localeCompare(b.ticker);
       default:

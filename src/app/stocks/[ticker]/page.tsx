@@ -220,13 +220,13 @@ export default async function StockDetailPage({
                           {h.year}
                         </td>
                         <td className="py-2 text-right text-slate-600">
-                          {h.revenue.toLocaleString("fr-FR")}
+                          {typeof h.revenue === "number" ? h.revenue.toLocaleString("fr-FR") : "N/A"}
                         </td>
                         <td className="py-2 text-right text-slate-600">
-                          ${h.eps.toFixed(2)}
+                          {typeof h.eps === "number" ? `$${h.eps.toFixed(2)}` : "N/A"}
                         </td>
                         <td className="py-2 text-right text-slate-600">
-                          {h.dividendPerShare > 0
+                          {typeof h.dividendPerShare === "number" && h.dividendPerShare > 0
                             ? `$${h.dividendPerShare.toFixed(2)}`
                             : "-"}
                         </td>

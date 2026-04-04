@@ -111,7 +111,7 @@ describe("compareStocks", () => {
     const result = compareStocks([MSFT, AAPL], "buffett");
     expect(result.winner.ticker).toBe("MSFT");
     expect(result.subScoreComparison.length).toBe(3);
-    expect(result.metricComparison.length).toBe(8);
+    expect(result.metricComparison.length).toBe(9);
   });
 
   it("handles edge case: stocks with identical scores", () => {

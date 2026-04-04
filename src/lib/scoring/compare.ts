@@ -119,6 +119,7 @@ function compareMetrics(stocks: readonly ScoredStock[]): ComparedMetric[] {
     { label: "ROE", key: "roe", get: (s) => metricOrNull(s.stock.roe, true), format: (v) => v !== null ? `${v}%` : "N/A" },
     { label: "Marge op.", key: "margin", get: (s) => metricOrNull(s.stock.operatingMargin), format: (v) => v !== null ? `${v}%` : "N/A" },
     { label: "D/E", key: "debt", get: (s) => metricOrNull(s.stock.debtToEquity), format: (v) => v !== null ? `${v}` : "N/A", inverse: true },
+    { label: "PEG", key: "peg", get: (s) => metricOrNull(s.stock.peg, true), format: (v) => v !== null ? `${v}` : "N/A", inverse: true },
     { label: "FCF (Mds)", key: "fcf", get: (s) => metricOrNull(s.stock.freeCashFlow), format: (v) => v !== null ? `${v}` : "N/A" },
     { label: "Croiss. CA", key: "revGrowth", get: (s) => metricOrNull(s.stock.revenueGrowth), format: (v) => v !== null ? `${v}%` : "N/A" },
     { label: "Croiss. BPA", key: "epsGrowth", get: (s) => metricOrNull(s.stock.epsGrowth), format: (v) => v !== null ? `${v}%` : "N/A" },
