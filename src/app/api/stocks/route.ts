@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getDataProvider, getMeta } from "@/lib/data";
 import { YahooDataProvider, MockDataProvider, CachedDataProvider } from "@/lib/data";
+import { DataProvider } from "@/lib/data";
 import { isValidStrategyId, getStrategy } from "@/lib/strategies";
 import { StockFilters } from "@/lib/types";
 
@@ -11,6 +12,22 @@ import "@/lib/scoring/strategies/dividend";
 import { scoreAndRankStocks } from "@/lib/scoring/engine";
 import { UNIVERSE_SIZE } from "@/lib/tickers";
 import { getIndexById, isValidIndexId } from "@/lib/indices";
+
+// Singleton cache: one provider per index, persists across requests
+const indexProviders = new Map<string, DataProvider>();
+
+function getIndexProvider(indexId: string, tickers: readonly string[]): DataProvider {
+  const existing = indexProviders.get(indexId);
+  if (existing) return existing;
+
+  const inner = process.env.YAHOO_ENABLED === "true"
+    ? new YahooDataProvider([...tickers])
+    : new MockDataProvider();
+
+  const provider = new CachedDataProvider(inner);
+  indexProviders.set(indexId, provider);
+  return provider;
+}
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
@@ -26,28 +43,19 @@ export async function GET(request: NextRequest) {
   const isQuick = searchParams.get("quick") === "true";
   const indexParam = searchParams.get("index");
 
-  // Determine provider and ticker scope
-  let provider;
+  let provider: DataProvider;
   let indexMeta: { id: string; name: string; theoreticalCount: number } | null = null;
 
   if (isQuick) {
     provider = new MockDataProvider();
   } else if (indexParam && isValidIndexId(indexParam)) {
-    // Index-scoped: create a Yahoo provider with only the index tickers
     const indexDef = getIndexById(indexParam)!;
     indexMeta = {
       id: indexDef.id,
       name: indexDef.name,
       theoreticalCount: indexDef.theoreticalCount,
     };
-
-    if (process.env.YAHOO_ENABLED === "true") {
-      provider = new CachedDataProvider(
-        new YahooDataProvider([...indexDef.tickers])
-      );
-    } else {
-      provider = new MockDataProvider();
-    }
+    provider = getIndexProvider(indexParam, indexDef.tickers);
   } else {
     provider = getDataProvider();
   }
