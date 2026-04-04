@@ -1,13 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
-import { STOCKS, getAvailableSectors, getAvailableCountries } from "@/lib/mock-data";
-import { isValidStrategyId } from "@/lib/strategies";
-import { getStrategy } from "@/lib/strategies";
-import { scoreAndRankStocks } from "@/lib/scoring";
-import { StockFilters, StocksResponse } from "@/lib/types";
+import { getDataProvider } from "@/lib/data";
+import { isValidStrategyId, getStrategy } from "@/lib/strategies";
+import { StockFilters } from "@/lib/types";
 
-export async function GET(
-  request: NextRequest
-): Promise<NextResponse<StocksResponse | { error: string }>> {
+import "@/lib/scoring/strategies/buffett";
+import "@/lib/scoring/strategies/lynch";
+import "@/lib/scoring/strategies/growth";
+import "@/lib/scoring/strategies/dividend";
+import { scoreAndRankStocks } from "@/lib/scoring/engine";
+
+export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   const strategyParam = searchParams.get("strategy") ?? "buffett";
 
@@ -17,6 +19,8 @@ export async function GET(
       { status: 400 }
     );
   }
+
+  const provider = getDataProvider();
 
   const filters: StockFilters = {
     sector: searchParams.get("sector") ?? undefined,
@@ -29,15 +33,18 @@ export async function GET(
       : undefined,
   };
 
-  const stocks = scoreAndRankStocks(STOCKS, strategyParam, filters);
+  const [stocks, sectors, countries] = await Promise.all([
+    provider.getStocks(filters),
+    provider.getSectors(),
+    provider.getCountries(),
+  ]);
+
+  const scored = await scoreAndRankStocks(stocks, strategyParam);
   const strategy = getStrategy(strategyParam);
 
   return NextResponse.json({
-    stocks,
+    stocks: scored,
     strategy,
-    filters: {
-      sectors: getAvailableSectors(),
-      countries: getAvailableCountries(),
-    },
+    filters: { sectors, countries },
   });
 }

@@ -1,13 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getStockByTicker } from "@/lib/mock-data";
+import { getDataProvider } from "@/lib/data";
 import { isValidStrategyId, getStrategy } from "@/lib/strategies";
-import { scoreStock } from "@/lib/scoring";
-import { StockDetailResponse } from "@/lib/types";
+
+import "@/lib/scoring/strategies/buffett";
+import "@/lib/scoring/strategies/lynch";
+import "@/lib/scoring/strategies/growth";
+import "@/lib/scoring/strategies/dividend";
+import { scoreStock } from "@/lib/scoring/engine";
 
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ ticker: string }> }
-): Promise<NextResponse<StockDetailResponse | { error: string }>> {
+) {
   const { ticker } = await params;
   const searchParams = request.nextUrl.searchParams;
   const strategyParam = searchParams.get("strategy") ?? "buffett";
@@ -19,7 +23,8 @@ export async function GET(
     );
   }
 
-  const stock = getStockByTicker(ticker);
+  const provider = getDataProvider();
+  const stock = await provider.getStock(ticker);
 
   if (!stock) {
     return NextResponse.json(
