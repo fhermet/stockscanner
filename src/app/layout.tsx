@@ -55,6 +55,27 @@ export default function RootLayout({
 }) {
   return (
     <html lang="fr">
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "WebApplication",
+              name: SITE_NAME,
+              description: SITE_DESCRIPTION,
+              applicationCategory: "FinanceApplication",
+              operatingSystem: "Web",
+              offers: {
+                "@type": "Offer",
+                price: "0",
+                priceCurrency: "EUR",
+              },
+              inLanguage: "fr",
+            }),
+          }}
+        />
+      </head>
       <body className={`${inter.className} flex min-h-screen flex-col`}>
         <Header />
         <main className="flex-1">{children}</main>
