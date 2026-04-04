@@ -6,12 +6,14 @@ import {
   StrategyId,
   ScoredStock,
   Strategy,
+  DataMeta,
   StockFilters as StockFiltersType,
 } from "@/lib/types";
 import { isValidStrategyId } from "@/lib/strategies";
 import StockFiltersComponent from "@/components/stock-filters";
 import StockTable from "@/components/stock-table";
 import StockCard from "@/components/stock-card";
+import DataSourceBadge from "@/components/ui/data-source-badge";
 
 function parseMarketCapFilter(value: string): Partial<StockFiltersType> {
   switch (value) {
@@ -48,6 +50,7 @@ function ScannerContent() {
   const [country, setCountry] = useState("");
   const [marketCap, setMarketCap] = useState("");
   const [viewMode, setViewMode] = useState<"table" | "cards">("table");
+  const [meta, setMeta] = useState<DataMeta | null>(null);
 
   const fetchStocks = useCallback(async () => {
     setLoading(true);
@@ -66,6 +69,7 @@ function ScannerContent() {
     setStrategy(data.strategy);
     setSectors(data.filters.sectors);
     setCountries(data.filters.countries);
+    if (data.meta) setMeta(data.meta);
     setLoading(false);
   }, [strategyId, sector, country, marketCap]);
 
@@ -88,6 +92,11 @@ function ScannerContent() {
             Strategie <strong>{strategy.name}</strong> &middot;{" "}
             {strategy.philosophy}
           </p>
+        )}
+        {meta && (
+          <div className="mt-2">
+            <DataSourceBadge meta={meta} />
+          </div>
         )}
       </div>
 

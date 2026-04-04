@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { getDataProvider } from "@/lib/data";
+import { getDataProvider, getMeta } from "@/lib/data";
 import { isValidStrategyId, getStrategy } from "@/lib/strategies";
 import "@/lib/scoring/strategies/buffett";
 import "@/lib/scoring/strategies/lynch";
@@ -12,6 +12,7 @@ import ScoreGauge from "@/components/ui/score-gauge";
 import MetricCard from "@/components/ui/metric-card";
 import ExplanationList from "@/components/ui/explanation-list";
 import ConfidenceBadge from "@/components/ui/confidence-badge";
+import DataSourceBadge from "@/components/ui/data-source-badge";
 import { formatMarketCap } from "@/lib/format";
 
 interface PageProps {
@@ -37,6 +38,7 @@ export default async function StockDetailPage({
 
   const score = scoreStock(stock, strategyId);
   const strategy = getStrategy(strategyId);
+  const meta = getMeta();
 
   const positiveExplanations = score.explanations.filter(
     (e) => e.type === "positive"
@@ -81,6 +83,9 @@ export default async function StockDetailPage({
           <p className="text-sm text-slate-400">
             {stock.sector} &middot; {stock.country}
           </p>
+          <div className="mt-2">
+            <DataSourceBadge meta={meta} />
+          </div>
         </div>
         <div className="text-right">
           <p className="text-3xl font-bold text-slate-900">
