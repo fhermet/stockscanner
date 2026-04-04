@@ -26,6 +26,7 @@ export default function WatchlistPage() {
   const { getDelta, saveScore } = useScoreHistory();
   const [strategyId, setStrategyId] = useState<StrategyId>("buffett");
   const [items, setItems] = useState<WatchlistItem[]>([]);
+  const [failedTickers, setFailedTickers] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [sortKey, setSortKey] = useState<SortKey>("score");
 
@@ -34,13 +35,14 @@ export default function WatchlistPage() {
     setLoading(true);
 
     const results: WatchlistItem[] = [];
+    const failed: string[] = [];
 
     for (const ticker of tickers) {
       try {
         const res = await fetch(
           `/api/stocks/${encodeURIComponent(ticker)}?strategy=${strategyId}`
         );
-        if (!res.ok) continue;
+        if (!res.ok) { failed.push(ticker); continue; }
         const data = await res.json();
         const scored: ScoredStock = { stock: data.stock, score: data.score };
         const delta = getDelta(ticker, strategyId, scored.score.total);
@@ -57,11 +59,12 @@ export default function WatchlistPage() {
           currency: scored.stock.currency,
         });
       } catch {
-        // Skip failed fetches
+        failed.push(ticker);
       }
     }
 
     setItems(results);
+    setFailedTickers(failed);
     setLoading(false);
   }, [tickers, strategyId, getDelta, saveScore]);
 
@@ -108,6 +111,14 @@ export default function WatchlistPage() {
         </div>
       ) : (
         <>
+          {failedTickers.length > 0 && (
+            <div className="mb-4 rounded-lg border border-amber-200 bg-amber-50 px-4 py-2.5">
+              <p className="text-sm text-amber-700">
+                Donnees indisponibles pour : {failedTickers.join(", ")}
+              </p>
+            </div>
+          )}
+
           {/* Strategy + Sort controls */}
           <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
             <div className="flex gap-2">
