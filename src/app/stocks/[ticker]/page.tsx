@@ -14,6 +14,7 @@ import ExplanationList from "@/components/ui/explanation-list";
 import ConfidenceBadge from "@/components/ui/confidence-badge";
 import DataSourceBadge from "@/components/ui/data-source-badge";
 import WatchlistButton from "@/components/watchlist-button";
+import ScoreHistoryPanel from "@/components/score-history-panel";
 import { formatMarketCap, formatPrice } from "@/lib/format";
 
 interface PageProps {
@@ -127,6 +128,14 @@ export default async function StockDetailPage({
               ))}
             </div>
           </section>
+
+          {/* Score history */}
+          <ScoreHistoryPanel
+            ticker={stock.ticker}
+            strategyId={strategyId}
+            currentScore={score.total}
+            currentSubScores={score.subScores}
+          />
 
           {/* Explanation */}
           <section className="rounded-xl border border-slate-200 bg-white p-6">
