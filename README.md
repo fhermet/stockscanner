@@ -15,159 +15,129 @@ Application web de **stock screener oriente strategies d'investissement**.
 
 ## Stack technique
 
-- **Next.js 15** (App Router)
-- **TypeScript** (strict)
+- **Next.js 15** (App Router) + **TypeScript** strict + **React 19**
 - **Tailwind CSS** (dark mode support)
-- **React 19**
+- **Vitest** (47 tests unitaires)
+- **yahoo-finance2** (donnees reelles gratuites, optionnel)
 
 ## Installation
 
 ```bash
 npm install
-
-# Copier et configurer l'environnement (optionnel)
-cp .env.example .env
-# Editer .env pour ajouter FMP_API_KEY si donnees reelles souhaitees
-
-# Dev
-npm run dev
-
-# Production
-npm run build && npm start
+npm run dev          # http://localhost:3000
+npm test             # 47 tests
+npm run build        # production
 ```
-
-Application accessible sur [http://localhost:3000](http://localhost:3000).
 
 ## Sources de donnees
 
-| Mode | Configuration | Description |
-|------|--------------|-------------|
-| **Mock** (defaut) | Aucune | 25 actions avec donnees realistes |
-| **FMP** | `FMP_API_KEY` dans `.env` | Financial Modeling Prep, 500+ actions |
+| Mode | Activation | Description |
+|------|-----------|-------------|
+| **Mock** (defaut) | Aucune config | 25 actions, donnees statiques |
+| **Yahoo** | `YAHOO_ENABLED=true` dans `.env` | Donnees reelles, gratuit, sans cle API |
 
-Le passage d'un mode a l'autre est transparent grace au **Data Provider Pattern** : l'interface `DataProvider` est implementee par `MockDataProvider` et `FMPDataProvider`, avec un cache automatique.
+```bash
+cp .env.example .env
+# Editer .env → YAHOO_ENABLED=true
+```
+
+Le systeme utilise un **CompositeProvider avec fallback automatique** :
+Cache → Yahoo → Mock. Si Yahoo echoue, les donnees locales prennent le relais.
 
 ## Architecture
 
 ```
 src/
-├── app/
-│   ├── page.tsx                    # Accueil — choix de strategie
-│   ├── scanner/page.tsx            # Liste des actions scorees
-│   ├── stocks/[ticker]/page.tsx    # Detail + explications
-│   └── api/
-│       ├── strategies/route.ts     # GET /api/strategies
-│       ├── stocks/                 # API V1 (retro-compatible)
-│       └── v2/stocks/              # API V2 (envelope standard)
+├── app/                               # Pages + API routes
+│   ├── api/stocks/                    # API V1
+│   ├── api/v2/stocks/                 # API V2 (envelope standard)
+│   ├── scanner/page.tsx               # Scanner avec filtres
+│   └── stocks/[ticker]/page.tsx       # Detail + explications
 │
 ├── lib/
-│   ├── types.ts                    # Types TypeScript
-│   ├── strategies.ts               # Metadata des 4 strategies
-│   ├── format.ts                   # Utilitaires de formatage partages
-│   ├── mock-data.ts                # 25 actions mockees
-│   ├── data/                       # Data Provider Pattern
-│   │   ├── provider.ts             #   Interface DataProvider
-│   │   ├── mock-provider.ts        #   Implementation mock
-│   │   ├── fmp-provider.ts         #   Implementation FMP
-│   │   ├── cache.ts                #   Cache in-memory avec TTL
-│   │   └── index.ts                #   Factory singleton
-│   └── scoring/                    # Moteur de scoring
-│       ├── engine.ts               #   Strategy registry + scoring
-│       ├── normalize.ts            #   Normalisation lineaire
-│       ├── utils.ts                #   Weighted average, redistribution
-│       ├── explain.ts              #   Generateur d'explications + resume
-│       ├── index.ts                #   V1 scoring (retro-compatible)
-│       └── strategies/             #   Strategies auto-enregistrees
-│           ├── buffett.ts
-│           ├── lynch.ts
-│           ├── growth.ts
-│           └── dividend.ts
+│   ├── data/                          # Data Provider Pattern
+│   │   ├── provider.ts                #   Interface DataProvider
+│   │   ├── yahoo-provider.ts          #   Yahoo Finance (gratuit)
+│   │   ├── mock-provider.ts           #   Dataset local
+│   │   ├── composite-provider.ts      #   Fallback chain
+│   │   ├── cache.ts                   #   Cache in-memory TTL
+│   │   └── index.ts                   #   Factory singleton
+│   │
+│   ├── scoring/                       # Moteur de scoring
+│   │   ├── engine.ts                  #   Registry + scoring + confidence
+│   │   ├── normalize.ts               #   Normalisation lineaire
+│   │   ├── sector-benchmarks.ts       #   Medianes sectorielles
+│   │   ├── completeness.ts            #   Data completeness + confidence
+│   │   ├── utils.ts                   #   Weighted average, sector adjust
+│   │   ├── explain.ts                 #   Explications + resume naturel
+│   │   ├── strategies/buffett.ts      #   Auto-enregistrees
+│   │   ├── strategies/lynch.ts
+│   │   ├── strategies/growth.ts
+│   │   ├── strategies/dividend.ts
+│   │   └── __tests__/                 #   47 tests unitaires
+│   │
+│   ├── types.ts                       # Stock, StrategyScore, Confidence...
+│   ├── strategies.ts                  # Metadata des 4 strategies
+│   ├── format.ts                      # Utilitaires de formatage
+│   └── mock-data.ts                   # 25 actions mockees
 │
-├── hooks/                          # React hooks metier
-│   ├── use-watchlist.ts            # Watchlist localStorage
-│   ├── use-theme.ts                # Dark mode
-│   └── use-stocks.ts              # Fetch + error handling
-│
-├── components/
-│   ├── ui/                         # score-badge, score-gauge, metric-card, explanation-list
-│   ├── strategy-card.tsx
-│   ├── stock-table.tsx
-│   ├── stock-card.tsx
-│   ├── stock-filters.tsx
-│   ├── watchlist-button.tsx        # Bouton ajout/retrait watchlist
-│   ├── theme-toggle.tsx            # Toggle dark/light
-│   ├── multi-strategy-scores.tsx   # Comparaison multi-strategies
-│   ├── stock-summary.tsx           # Resume naturel en 1-2 phrases
-│   └── layout/ (header, footer)
-│
-└── docs/
-    └── V2-PLAN.md                  # Plan complet V2 + V3
+├── hooks/                             # useWatchlist, useTheme, useStocks
+└── components/                        # UI modulaire
+    └── ui/confidence-badge.tsx        # Badge confiance + missing data
 ```
-
-## API
-
-### V1 (retro-compatible)
-
-| Endpoint | Description |
-|----------|-------------|
-| `GET /api/strategies` | Liste des strategies |
-| `GET /api/stocks?strategy=buffett` | Actions scorees |
-| `GET /api/stocks/AAPL?strategy=buffett` | Detail action |
-
-### V2 (envelope standard)
-
-| Endpoint | Description |
-|----------|-------------|
-| `GET /api/v2/stocks?strategy=buffett` | Actions scorees, format `{ success, data, error }` |
-| `GET /api/v2/stocks/AAPL?strategy=buffett` | Detail avec resume |
-| `GET /api/v2/stocks/AAPL?strategy=buffett&all=true` | Detail + scores de toutes les strategies |
 
 ## Scoring
 
-### V1 (original)
+Chaque action recoit un **score /100** par strategie, decompose en sous-scores ponderes.
 
-Seuils absolus par paliers (ROE >= 20 → 100, >= 15 → 80...).
+### Normalisation
 
-### V2 (normalise)
+Interpolation lineaire entre min/max configurables. Plus granulaire que des seuils absolus.
 
-Interpolation lineaire entre min et max configurables, avec clamp. Plus granulaire, gere les edge cases (ROE aberrant, equity negative).
+### Ajustement sectoriel
 
-Chaque strategie est **auto-enregistree** via `registerStrategy()`. Ajouter une strategie = creer un fichier dans `scoring/strategies/`, zero modification ailleurs.
+Les metriques sont comparees aux **medianes du secteur** (8 secteurs definis).
+Un ROE de 15% est bon pour une banque mais mediocre pour du tech.
+Facteur d'ajustement borne entre 0.7x et 1.3x.
 
-## Fonctionnalites V2
+### Confiance du score
 
-| Feature | Statut | Description |
-|---------|--------|-------------|
-| Data Provider Pattern | Fait | Mock → FMP sans toucher au scoring/UI |
-| Cache in-memory | Fait | TTL configurable, decorator pattern |
-| Strategy Engine extensible | Fait | Auto-registration, ajout sans modification |
-| Normalisation lineaire | Fait | Scores granulaires, clamp, edge cases |
-| Explications decoupees | Fait | Module separe, regles configurables |
-| Resume naturel | Fait | 1-2 phrases synthetiques par action |
-| Multi-strategy comparison | Fait | Scores de toutes les strategies |
-| Watchlist | Fait | localStorage, 5 actions free |
-| Dark mode | Fait | Tailwind class strategy + hook |
-| Format partage | Fait | `formatMarketCap` etc. centralises |
-| API V2 envelope | Fait | `{ success, data, error }` standard |
-| Error handling | Fait | try/catch, etats erreur, retry |
-| Hooks metier | Fait | useWatchlist, useTheme, useStocks |
+Chaque score inclut :
+- **dataCompleteness** : % de metriques disponibles, liste des manquantes
+- **confidence** : high (>=85%), medium (>=60%), low (<60%)
 
-## Documentation
+Affiche dans l'UI : badge colore, indicateur dans le tableau, detail des donnees manquantes.
 
-Le plan complet (analyse critique, architecture, choix techniques, V3) est dans [`docs/V2-PLAN.md`](docs/V2-PLAN.md).
+## Tests
 
-## V3 — Idees priorisees
+```bash
+npm test                 # Run all 47 tests
+npm run test:watch       # Watch mode
+```
 
-| Priorite | Idee | Impact |
-|----------|------|--------|
-| P1 | Assistant IA (chat contextuel sur les actions) | Differenciateur majeur |
-| P1 | Portefeuille virtuel (simulation) | Engagement quotidien |
-| P1 | Insights automatiques (deltas, alertes) | Retention |
-| P2 | Backtesting de strategies | Conviction + conversion |
-| P2 | Scoring adaptatif (profil utilisateur) | Personnalisation |
-| P3 | Strategies custom | Feature premium |
-| P3 | Social / partage de watchlists | Viralite |
-| P3 | API publique | B2B |
+| Suite | Tests | Couvre |
+|-------|-------|-------|
+| normalize | 12 | Normalisation lineaire, inverse, range, scoreMetric |
+| utils | 8 | Weighted total/average, weight redistribution |
+| completeness | 7 | Completeness par strategie, niveaux de confiance |
+| strategies | 20 | Registry, shape output, differentiation, donnees partielles |
+
+## Historique des versions
+
+### V2.1 (actuelle)
+- Yahoo Finance provider gratuit
+- Composite provider avec fallback automatique
+- Data completeness + score confidence
+- Benchmarks sectoriels (8 secteurs)
+- 47 tests unitaires
+- Suppression de toute dependance payante (FMP)
+- Nettoyage des fichiers scoring V1 legacy
+
+### V2.0
+- Data provider pattern, scoring engine extensible, normalisation, explications, watchlist, dark mode
+
+### V1.0 (MVP)
+- Scoring simple avec seuils absolus, donnees mockees, 3 pages
 
 ---
 
