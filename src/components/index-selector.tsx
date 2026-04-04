@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 interface CountryInfo {
   code: string;
@@ -34,31 +34,49 @@ export default function IndexSelector({
   const [countries, setCountries] = useState<CountryInfo[]>([]);
   const [indices, setIndices] = useState<IndexInfo[]>([]);
 
-  // Fetch countries on mount
+  // Track the country that triggered the current indices fetch
+  // to avoid stale auto-select overwriting user choice
+  const fetchingCountryRef = useRef("");
+
+  // Fetch countries on mount (with cleanup)
   useEffect(() => {
-    fetch("/api/countries")
+    const ctrl = new AbortController();
+    fetch("/api/countries", { signal: ctrl.signal })
       .then((r) => r.json())
       .then((data) => setCountries(data.countries ?? []))
       .catch(() => {});
+    return () => ctrl.abort();
   }, []);
 
-  // Fetch indices when country changes
+  // Fetch indices when country changes (with cleanup)
   useEffect(() => {
     if (!selectedCountry) {
       setIndices([]);
       return;
     }
-    fetch(`/api/indices?country=${selectedCountry}`)
+
+    fetchingCountryRef.current = selectedCountry;
+    const ctrl = new AbortController();
+
+    fetch(`/api/indices?country=${selectedCountry}`, { signal: ctrl.signal })
       .then((r) => r.json())
       .then((data) => {
-        setIndices(data.indices ?? []);
-        // Auto-select first index if none selected
-        if (!selectedIndex && data.indices?.length > 0) {
-          onIndexChange(data.indices[0].id);
+        // Only apply if the country hasn't changed while we were fetching
+        if (fetchingCountryRef.current !== selectedCountry) return;
+
+        const newIndices = data.indices ?? [];
+        setIndices(newIndices);
+
+        // Auto-select first index ONLY if no index is currently selected
+        // and user hasn't picked one while we were loading
+        if (!selectedIndex && newIndices.length > 0) {
+          onIndexChange(newIndices[0].id);
         }
       })
       .catch(() => {});
-  }, [selectedCountry, selectedIndex, onIndexChange]);
+
+    return () => ctrl.abort();
+  }, [selectedCountry]); // Intentionally excludes selectedIndex and onIndexChange
 
   const activeIndex = indices.find((i) => i.id === selectedIndex);
 
@@ -105,7 +123,7 @@ export default function IndexSelector({
         </div>
       </div>
 
-      {/* Index pills (only when country selected) */}
+      {/* Index pills */}
       {selectedCountry && indices.length > 0 && (
         <div>
           <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
