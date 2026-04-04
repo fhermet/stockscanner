@@ -9,7 +9,7 @@ Application web de **stock screener oriente strategies d'investissement**.
 ```bash
 npm install
 npm run dev          # http://localhost:3000
-npm test             # 99 tests
+npm test             # 106 tests
 ```
 
 Pour activer les donnees Yahoo Finance (gratuites, temps reel) :
@@ -187,7 +187,7 @@ src/
 ## Tests
 
 ```bash
-npm test             # 99 tests
+npm test             # 106 tests
 npm run test:watch   # watch mode
 ```
 
@@ -201,6 +201,7 @@ npm run test:watch   # watch mode
 | **alerts** | **14** | **Evaluation, seuils, dedup, watchlist filter, modes** |
 | **indices** | **17** | **Registry, lookups, couverture, dedup tickers** |
 | **change-explanation** | **10** | **SubScore diffs, explication, pipeline, edge cases** |
+| **compare** | **7** | **Winner, sous-scores, metriques, summary, edge cases** |
 
 ## Limites connues
 
@@ -212,7 +213,19 @@ npm run test:watch   # watch mode
 
 ## Historique des versions
 
-### V2.8 (actuelle) — Historique et explications des variations
+### V2.9 (actuelle) — Comparateur d'actions
+- Page /compare : comparaison de 2 a 4 actions cote a cote
+- URL-driven : /compare?tickers=MSFT,AAPL,NVDA&strategy=buffett
+- "Qui gagne?" : resume intelligent identifiant winner, forces, faiblesses
+- Tableau sous-scores : highlights vert (meilleur) / rouge (moins bon)
+- Tableau metriques cles : 8 metriques avec gestion inverse (PER, D/E)
+- CompareBar : barre flottante pour selection multi-ticker dans le scanner
+- Checkboxes dans table et cards du scanner
+- Bouton "Comparer avec..." sur page detail
+- Lien "Comparer" dans le header
+- 106 tests (7 nouveaux pour le moteur de comparaison)
+
+### V2.8 — Historique et explications des variations
 - Historique des scores enrichi: sous-scores stockes avec chaque snapshot,
   retention 30 jours, purge automatique
 - Sparkline SVG (0 dependance): graphique d'evolution 7j/30j sur page detail
