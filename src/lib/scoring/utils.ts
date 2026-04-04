@@ -1,4 +1,5 @@
-import { SubScore } from "../types";
+import { Stock, SubScore } from "../types";
+import { getSectorBenchmark, sectorAdjustmentFactor } from "./sector-benchmarks";
 
 /**
  * Calcule le score total a partir de sous-scores ponderes.
@@ -20,6 +21,24 @@ export function weightedAverage(
   if (totalWeight === 0) return 0;
   const raw = items.reduce((acc, i) => acc + i.score * i.weight, 0);
   return Math.round(raw / totalWeight);
+}
+
+/**
+ * Applique un ajustement sectoriel a un score brut.
+ * Le score est multiplie par un facteur qui reflete la position
+ * relative de la metrique dans le secteur de l'action.
+ */
+export function adjustForSector(
+  rawScore: number,
+  stock: Stock,
+  metricKey: keyof ReturnType<typeof getSectorBenchmark>,
+  metricValue: number,
+  isInverse = false
+): number {
+  const benchmark = getSectorBenchmark(stock.sector);
+  const median = benchmark[metricKey];
+  const factor = sectorAdjustmentFactor(metricValue, median, isInverse);
+  return Math.round(Math.max(0, Math.min(100, rawScore * factor)));
 }
 
 /**

@@ -1,7 +1,7 @@
 import { Stock, SubScore } from "../../types";
 import { StrategyScorer, registerStrategy } from "../engine";
 import { scoreMetric } from "../normalize";
-import { weightedAverage } from "../utils";
+import { weightedAverage, adjustForSector } from "../utils";
 
 /**
  * Strategie Buffett : Qualite + Solidite + Valorisation
@@ -10,15 +10,27 @@ import { weightedAverage } from "../utils";
  *   - Qualite (40%) : ROE, marge operationnelle, FCF yield
  *   - Solidite financiere (30%) : dette/equity, FCF positif
  *   - Valorisation (30%) : PER
+ *
+ * Ajustement sectoriel : ROE, marge et PER sont compares aux
+ * medianes du secteur pour eviter de penaliser des secteurs
+ * structurellement differents (ex: banque vs tech).
  */
 const buffettScorer: StrategyScorer = {
   id: "buffett",
 
   score(stock: Stock): SubScore[] {
     // Qualite
-    const roeScore = scoreMetric("roe", stock.roe);
-    const marginScore = scoreMetric("operatingMargin", stock.operatingMargin);
-    const fcfYield = (stock.freeCashFlow / stock.marketCap) * 100;
+    const roeRaw = scoreMetric("roe", stock.roe);
+    const roeScore = adjustForSector(roeRaw, stock, "roe", stock.roe);
+
+    const marginRaw = scoreMetric("operatingMargin", stock.operatingMargin);
+    const marginScore = adjustForSector(
+      marginRaw, stock, "operatingMargin", stock.operatingMargin
+    );
+
+    const fcfYield = stock.marketCap > 0
+      ? (stock.freeCashFlow / stock.marketCap) * 100
+      : 0;
     const fcfYieldScore = scoreMetric("fcfYield", fcfYield);
 
     const qualityValue = weightedAverage([
@@ -37,7 +49,10 @@ const buffettScorer: StrategyScorer = {
     ]);
 
     // Valorisation
-    const valuationValue = scoreMetric("per", stock.per);
+    const perRaw = scoreMetric("per", stock.per);
+    const valuationValue = adjustForSector(
+      perRaw, stock, "per", stock.per, true
+    );
 
     return [
       { name: "quality", value: qualityValue, weight: 0.4, label: "Qualite" },
