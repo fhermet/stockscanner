@@ -64,8 +64,8 @@ const NVDA = makeScoredStock("NVDA", "NVIDIA", 65, [
 describe("compareStocks", () => {
   it("identifies the winner correctly", () => {
     const result = compareStocks([MSFT, AAPL, NVDA], "buffett");
-    expect(result.winner.ticker).toBe("MSFT");
-    expect(result.winner.score).toBe(78);
+    expect(result.winner?.ticker).toBe("MSFT");
+    expect(result.winner?.score).toBe(78);
   });
 
   it("compares sub-scores with correct best/worst", () => {
@@ -109,7 +109,7 @@ describe("compareStocks", () => {
 
   it("works with exactly 2 stocks", () => {
     const result = compareStocks([MSFT, AAPL], "buffett");
-    expect(result.winner.ticker).toBe("MSFT");
+    expect(result.winner?.ticker).toBe("MSFT");
     expect(result.subScoreComparison.length).toBe(3);
     expect(result.metricComparison.length).toBe(9);
   });

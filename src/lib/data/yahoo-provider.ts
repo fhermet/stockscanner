@@ -57,7 +57,6 @@ const COUNTRY_MAP: Record<string, string> = {
 
 async function fetchStock(ticker: string): Promise<Stock | undefined> {
   try {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const result: any = await (yf as any).quoteSummary(ticker, {
       modules: [
         "price",
