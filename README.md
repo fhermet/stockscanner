@@ -9,7 +9,7 @@ Application web de **stock screener oriente strategies d'investissement**.
 ```bash
 npm install
 npm run dev          # http://localhost:3000
-npm test             # 72 tests
+npm test             # 89 tests
 ```
 
 Pour activer les donnees Yahoo Finance (gratuites, temps reel) :
@@ -28,6 +28,24 @@ npm run dev
 | **Peter Lynch** | Croissance a prix raisonnable | PEG, EPS growth, CA growth |
 | **Growth** | Croissance agressive | CA growth, EPS growth, marges, potentiel |
 | **Dividende** | Rendement & stabilite | Yield, payout ratio, FCF coverage, dette |
+
+## Navigation par indice
+
+Flow: **Pays → Indice → Strategie → Classement**
+
+| Pays | Indices | Tickers |
+|------|---------|---------|
+| USA | S&P 500, NASDAQ 100, Dow Jones 30 | ~200 / ~85 / 30 |
+| France | CAC 40 | 30 |
+| Allemagne | DAX 40 | 20 |
+| Royaume-Uni | FTSE 100 | 30 |
+| Suisse | SMI | 6 |
+| Europe | STOXX Europe 50 | 28 |
+
+L'indice scope le fetch Yahoo aux seuls tickers de l'indice (pas de fetch inutile).
+Couverture partielle affichee clairement : "30 / 40 couverts (couverture partielle)".
+
+Lien direct : `/scanner?country=fr&index=cac40&strategy=buffett`
 
 ## Architecture data
 
@@ -169,7 +187,7 @@ src/
 ## Tests
 
 ```bash
-npm test             # 72 tests
+npm test             # 89 tests
 npm run test:watch   # watch mode
 ```
 
@@ -181,6 +199,7 @@ npm run test:watch   # watch mode
 | strategies | 20 | Registry, output shape, donnees partielles |
 | **coherence** | **11** | **Panel de reference, coherence metier** |
 | **alerts** | **14** | **Evaluation, seuils, dedup, watchlist filter, modes** |
+| **indices** | **17** | **Registry, lookups, couverture, dedup tickers** |
 
 ## Limites connues
 
@@ -192,7 +211,17 @@ npm run test:watch   # watch mode
 
 ## Historique des versions
 
-### V2.6 (actuelle) — Personnalisation et alertes intelligentes
+### V2.7 (actuelle) — Navigation par indices
+- Module indices/ avec 8 indices (S&P 500, NASDAQ 100, Dow 30, CAC 40,
+  DAX 40, FTSE 100, SMI, STOXX 50) et 6 pays
+- API: GET /api/countries, GET /api/indices, ?index= sur /api/stocks
+- Scanner: flow Pays → Indice → Strategie avec IndexSelector
+- Titre dynamique "Top Buffett — CAC 40"
+- Transparence couverture: "30 / 40 couverts (couverture partielle)"
+- Index-scoped fetch: ne charge que les tickers de l'indice selectionne
+- 89 tests (17 nouveaux pour les indices)
+
+### V2.6 — Personnalisation et alertes intelligentes
 - Preferences utilisateur (localStorage): strategie favorite, mode alerte, seuils
 - 3 modes d'alerte: strict (score>85/delta>8), normal (80/5), sensitive (70/3)
 - Page /settings: mode selector, toggles on/off par regle, seuils editables,
