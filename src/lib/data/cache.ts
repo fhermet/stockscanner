@@ -15,12 +15,14 @@ export interface CacheConfig {
   readonly stocksTTL: number;
   readonly stockTTL: number;
   readonly staleTolerance: number; // serve stale data up to this age (ms)
+  readonly maxEntries: number; // evict oldest when exceeded
 }
 
 const DEFAULT_CONFIG: CacheConfig = {
   stocksTTL: 60 * 60 * 1000, // 1 hour
   stockTTL: 15 * 60 * 1000, // 15 minutes
   staleTolerance: 4 * 60 * 60 * 1000, // serve stale up to 4 hours
+  maxEntries: 200,
 };
 
 /**
@@ -92,6 +94,19 @@ export class CachedDataProvider implements DataProvider {
   }
 
   private set<T>(key: string, data: T): void {
+    // Evict oldest entries if cache is full (FIFO via Map insertion order)
+    while (this.cache.size >= this.config.maxEntries) {
+      const oldest = this.cache.keys().next().value;
+      if (oldest !== undefined) {
+        this.cache.delete(oldest);
+        log.info("cache evicted", { key: oldest, size: this.cache.size });
+      } else {
+        break;
+      }
+    }
+
+    // Delete and re-insert to move to end (most recent position)
+    this.cache.delete(key);
     this.cache.set(key, {
       data,
       cachedAt: Date.now(),
