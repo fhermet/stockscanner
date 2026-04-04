@@ -61,7 +61,7 @@ export default function SettingsPage() {
         <h2 className="text-sm font-semibold text-slate-700 uppercase tracking-wider mb-3">
           Mode d&apos;alerte
         </h2>
-        <div className="grid gap-3 sm:grid-cols-3">
+        <div className="grid gap-3 grid-cols-1 sm:grid-cols-3">
           {MODES.map((mode) => (
             <button
               key={mode.id}

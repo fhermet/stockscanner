@@ -62,7 +62,7 @@ export default function TopOpportunities() {
       ) : stocks.length === 0 ? (
         <p className="text-sm text-slate-400 py-6">Aucune donnee disponible</p>
       ) : (
-        <div className="grid gap-3 sm:grid-cols-5">
+        <div className="grid gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-5">
           {stocks.map((item, i) => (
             <Link
               key={item.stock.ticker}
