@@ -4,12 +4,9 @@ import { StrategyId } from "@/lib/types";
 
 interface StockFiltersProps {
   readonly sectors: readonly string[];
-  readonly countries: readonly string[];
   readonly selectedSector: string;
-  readonly selectedCountry: string;
   readonly selectedMarketCap: string;
   readonly onSectorChange: (sector: string) => void;
-  readonly onCountryChange: (country: string) => void;
   readonly onMarketCapChange: (cap: string) => void;
   readonly strategyId: StrategyId;
   readonly onStrategyChange: (id: StrategyId) => void;
@@ -32,12 +29,9 @@ const STRATEGY_OPTIONS: { id: StrategyId; label: string; color: string }[] = [
 
 export default function StockFilters({
   sectors,
-  countries,
   selectedSector,
-  selectedCountry,
   selectedMarketCap,
   onSectorChange,
-  onCountryChange,
   onMarketCapChange,
   strategyId,
   onStrategyChange,
@@ -66,7 +60,7 @@ export default function StockFilters({
         </div>
       </div>
 
-      {/* Filters row */}
+      {/* Secondary filters */}
       <div className="flex flex-wrap gap-3">
         <select
           value={selectedSector}
@@ -77,19 +71,6 @@ export default function StockFilters({
           {sectors.map((s) => (
             <option key={s} value={s}>
               {s}
-            </option>
-          ))}
-        </select>
-
-        <select
-          value={selectedCountry}
-          onChange={(e) => onCountryChange(e.target.value)}
-          className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 focus:border-brand-500 focus:ring-1 focus:ring-brand-500 focus:outline-none"
-        >
-          <option value="">Tous les pays</option>
-          {countries.map((c) => (
-            <option key={c} value={c}>
-              {c}
             </option>
           ))}
         </select>
