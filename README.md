@@ -150,12 +150,14 @@ src/
 ├── hooks/
 │   ├── use-watchlist.ts               # Watchlist localStorage
 │   ├── use-score-history.ts           # Score snapshots + deltas
+│   ├── use-alerts.ts                  # Regles d'alertes + evaluation
 │   ├── use-theme.ts                   # Dark mode
 │   └── use-stocks.ts                  # Fetch + error handling
 │
 └── components/
     ├── ticker-search.tsx              # Recherche libre
     ├── top-opportunities.tsx          # Top 5 par strategie (home)
+    ├── daily-digest.tsx               # Alertes du jour (home)
     ├── score-movers.tsx               # Mouvements notables
     └── ui/
         ├── score-delta.tsx            # Badge +N / -N
@@ -189,7 +191,17 @@ npm run test:watch   # watch mode
 
 ## Historique des versions
 
-### V2.4 (actuelle) — Performance percue et engagement
+### V2.5 (actuelle) — Engagement et retour quotidien
+- Systeme d'alertes: 4 types de regles (score_above/below, delta_above/below),
+  evaluation automatique, persistence localStorage, deduplication par jour
+- Page /watchlist dediee: scores live, deltas, tri par score/variation/nom,
+  bordures colorees pour gainers/losers, bouton retrait
+- Daily digest sur la home: alertes declenchees aujourd'hui, icones colorees,
+  liens vers detail, bouton effacer
+- Header enrichi: compteur watchlist, cloche d'alertes avec badge ambre
+- 4 regles par defaut actives sans configuration
+
+### V2.4 — Performance percue et engagement
 - Progressive loading: mock instantane (phase 1) + Yahoo en arriere-plan (phase 2)
 - Cold load percu: ~0ms au lieu de 15-20s (donnees indicatives puis live)
 - Score history: snapshots localStorage, deltas entre visites (+3, -2)
