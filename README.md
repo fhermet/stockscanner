@@ -9,7 +9,7 @@ Application web de **stock screener oriente strategies d'investissement**.
 ```bash
 npm install
 npm run dev          # http://localhost:3000
-npm test             # 89 tests
+npm test             # 99 tests
 ```
 
 Pour activer les donnees Yahoo Finance (gratuites, temps reel) :
@@ -187,7 +187,7 @@ src/
 ## Tests
 
 ```bash
-npm test             # 89 tests
+npm test             # 99 tests
 npm run test:watch   # watch mode
 ```
 
@@ -200,6 +200,7 @@ npm run test:watch   # watch mode
 | **coherence** | **11** | **Panel de reference, coherence metier** |
 | **alerts** | **14** | **Evaluation, seuils, dedup, watchlist filter, modes** |
 | **indices** | **17** | **Registry, lookups, couverture, dedup tickers** |
+| **change-explanation** | **10** | **SubScore diffs, explication, pipeline, edge cases** |
 
 ## Limites connues
 
@@ -211,7 +212,19 @@ npm run test:watch   # watch mode
 
 ## Historique des versions
 
-### V2.7 (actuelle) — Navigation par indices
+### V2.8 (actuelle) — Historique et explications des variations
+- Historique des scores enrichi: sous-scores stockes avec chaque snapshot,
+  retention 30 jours, purge automatique
+- Sparkline SVG (0 dependance): graphique d'evolution 7j/30j sur page detail
+- Generateur d'explication: compare sous-scores prev/current, identifie
+  top 1-2 contributeurs, genere 1 phrase ("Amelioration : qualite en hausse
+  (+8 pts) et valorisation en baisse.")
+- Alertes enrichies: changeExplanation basee sur les sous-scores
+  ("MSFT +6 — qualite en hausse")
+- Daily digest: priorite changeExplanation sur explication generique
+- 99 tests (10 nouveaux pour change-explanation)
+
+### V2.7 — Navigation par indices
 - Module indices/ avec 8 indices (S&P 500, NASDAQ 100, Dow 30, CAC 40,
   DAX 40, FTSE 100, SMI, STOXX 50) et 6 pays
 - API: GET /api/countries, GET /api/indices, ?index= sur /api/stocks
