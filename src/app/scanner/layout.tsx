@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Scanner",
-  description: "Classement des actions par stratégie d'investissement. Filtrez par pays, indice et secteur.",
+  title: "Scanner d'actions",
+  description: "Classez 340+ actions US et européennes par stratégie : Buffett, Lynch, Growth, Dividende. Filtrez par pays, indice, secteur et capitalisation.",
+  alternates: { canonical: "/scanner" },
 };
 
 export default function ScannerLayout({ children }: { children: React.ReactNode }) {

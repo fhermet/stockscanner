@@ -11,6 +11,7 @@ const SITE_DESCRIPTION =
   "Choisissez une stratégie d'investissement (Buffett, Lynch, Growth, Dividende) et découvrez les actions les mieux classées parmi 340+ titres US et européens.";
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "https://stockscanner.app"),
   title: {
     default: `${SITE_NAME} — Trouvez les actions qui correspondent à votre stratégie`,
     template: `%s | ${SITE_NAME}`,
@@ -37,6 +38,9 @@ export const metadata: Metadata = {
     card: "summary",
     title: `${SITE_NAME} — Scanner d'actions par stratégie`,
     description: SITE_DESCRIPTION,
+  },
+  alternates: {
+    canonical: "/",
   },
   robots: {
     index: true,
