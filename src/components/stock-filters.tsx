@@ -61,7 +61,7 @@ export default function StockFilters({
       </div>
 
       {/* Secondary filters */}
-      <div className="flex flex-wrap gap-3">
+      <div className="flex flex-col sm:flex-row flex-wrap gap-2 sm:gap-3">
         <select
           value={selectedSector}
           onChange={(e) => onSectorChange(e.target.value)}

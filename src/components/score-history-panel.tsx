@@ -87,7 +87,7 @@ export default function ScoreHistoryPanel({
 
       {/* Sparkline */}
       <div className="mb-4">
-        <Sparkline data={filtered} width={400} height={64} />
+        <Sparkline data={filtered} height={64} />
       </div>
 
       {/* Explanation */}

@@ -154,7 +154,7 @@ export default function IndexSelector({
 
       {/* Index info banner */}
       {activeIndex && (
-        <div className="rounded-lg border border-brand-100 bg-brand-50/50 px-4 py-2.5 flex items-center justify-between">
+        <div className="rounded-lg border border-brand-100 bg-brand-50/50 px-4 py-2.5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
           <div>
             <span className="text-sm font-medium text-slate-900">
               {activeIndex.name}

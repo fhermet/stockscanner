@@ -53,8 +53,7 @@ export default function Sparkline({
   return (
     <svg
       viewBox={`0 0 ${width} ${height}`}
-      className="w-full"
-      style={{ maxWidth: width }}
+      className="w-full max-w-md"
     >
       {/* Area fill */}
       <path d={areaPath} fill={color} fillOpacity={0.1} />

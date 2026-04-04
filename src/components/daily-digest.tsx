@@ -109,13 +109,13 @@ export default function DailyDigest() {
       </div>
 
       {/* Filters + Sort */}
-      <div className="flex flex-wrap items-center gap-4 mb-4">
-        <div className="flex gap-1">
+      <div className="flex flex-col sm:flex-row flex-wrap items-start sm:items-center gap-2 sm:gap-4 mb-4">
+        <div className="flex flex-wrap gap-1.5">
           {FILTERS.map((f) => (
             <button
               key={f.id}
               onClick={() => setFilter(f.id)}
-              className={`rounded-full px-2.5 py-1 text-xs font-medium transition-colors ${
+              className={`rounded-full px-3 py-1.5 text-xs font-medium transition-colors ${
                 filter === f.id
                   ? "bg-slate-900 text-white"
                   : "bg-slate-100 text-slate-500 hover:bg-slate-200"
