@@ -1,17 +1,35 @@
 "use client";
 
 import { useCallback } from "react";
-import { StrategyId } from "@/lib/types";
+import { StrategyId, SubScore } from "@/lib/types";
 
 const STORAGE_KEY = "stockscanner:score-history";
-const MAX_ENTRIES_PER_STOCK = 7;
+const MAX_DAYS = 30;
 
-interface ScoreSnapshot {
+export interface ScoreSnapshot {
   readonly score: number;
-  readonly date: string; // ISO date (YYYY-MM-DD)
+  readonly date: string; // YYYY-MM-DD
+  readonly subScores?: Record<string, number>; // { quality: 72, valuation: 65, ... }
 }
 
 type ScoreHistory = Record<string, Record<StrategyId, ScoreSnapshot[]>>;
+
+export interface ScoreDelta {
+  readonly current: number;
+  readonly previous: number | null;
+  readonly delta: number | null;
+  readonly daysAgo: number | null;
+}
+
+function today(): string {
+  return new Date().toISOString().split("T")[0];
+}
+
+function daysBetween(dateStr: string): number {
+  return Math.round(
+    (Date.now() - new Date(dateStr).getTime()) / (1000 * 60 * 60 * 24)
+  );
+}
 
 function loadHistory(): ScoreHistory {
   if (typeof window === "undefined") return {};
@@ -28,23 +46,28 @@ function saveHistory(history: ScoreHistory): void {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(history));
 }
 
-function today(): string {
-  return new Date().toISOString().split("T")[0];
+/** Remove entries older than MAX_DAYS */
+function purgeOld(entries: ScoreSnapshot[]): ScoreSnapshot[] {
+  return entries.filter((e) => daysBetween(e.date) <= MAX_DAYS);
 }
 
-export interface ScoreDelta {
-  readonly current: number;
-  readonly previous: number | null;
-  readonly delta: number | null; // null if no previous
-  readonly daysAgo: number | null;
+function subScoresMap(subScores?: readonly SubScore[]): Record<string, number> | undefined {
+  if (!subScores || subScores.length === 0) return undefined;
+  const map: Record<string, number> = {};
+  for (const s of subScores) {
+    map[s.name] = s.value;
+  }
+  return map;
 }
 
 export function useScoreHistory() {
-  /**
-   * Save a score snapshot. Deduplicates by date (one entry per day).
-   */
   const saveScore = useCallback(
-    (ticker: string, strategyId: StrategyId, score: number) => {
+    (
+      ticker: string,
+      strategyId: StrategyId,
+      score: number,
+      subScores?: readonly SubScore[]
+    ) => {
       const history = loadHistory();
       const key = ticker.toUpperCase();
       const todayStr = today();
@@ -52,50 +75,58 @@ export function useScoreHistory() {
       if (!history[key]) history[key] = {} as Record<StrategyId, ScoreSnapshot[]>;
       if (!history[key][strategyId]) history[key][strategyId] = [];
 
-      const entries = history[key][strategyId];
+      let entries = purgeOld(history[key][strategyId]);
 
-      // Skip if already saved today
+      const snapshot: ScoreSnapshot = {
+        score,
+        date: todayStr,
+        subScores: subScoresMap(subScores),
+      };
+
       if (entries.length > 0 && entries[entries.length - 1].date === todayStr) {
-        // Update today's score if different
-        entries[entries.length - 1] = { score, date: todayStr };
+        entries[entries.length - 1] = snapshot;
       } else {
-        entries.push({ score, date: todayStr });
+        entries.push(snapshot);
       }
 
-      // Keep only last N entries
-      if (entries.length > MAX_ENTRIES_PER_STOCK) {
-        history[key][strategyId] = entries.slice(-MAX_ENTRIES_PER_STOCK);
-      }
-
+      history[key][strategyId] = entries;
       saveHistory(history);
     },
     []
   );
 
-  /**
-   * Save scores for multiple stocks at once.
-   */
   const saveScores = useCallback(
-    (items: { ticker: string; strategyId: StrategyId; score: number }[]) => {
+    (
+      items: {
+        ticker: string;
+        strategyId: StrategyId;
+        score: number;
+        subScores?: readonly SubScore[];
+      }[]
+    ) => {
       const history = loadHistory();
       const todayStr = today();
 
-      for (const { ticker, strategyId, score } of items) {
+      for (const { ticker, strategyId, score, subScores: subs } of items) {
         const key = ticker.toUpperCase();
         if (!history[key]) history[key] = {} as Record<StrategyId, ScoreSnapshot[]>;
         if (!history[key][strategyId]) history[key][strategyId] = [];
 
-        const entries = history[key][strategyId];
+        let entries = purgeOld(history[key][strategyId]);
+
+        const snapshot: ScoreSnapshot = {
+          score,
+          date: todayStr,
+          subScores: subScoresMap(subs),
+        };
 
         if (entries.length > 0 && entries[entries.length - 1].date === todayStr) {
-          entries[entries.length - 1] = { score, date: todayStr };
+          entries[entries.length - 1] = snapshot;
         } else {
-          entries.push({ score, date: todayStr });
+          entries.push(snapshot);
         }
 
-        if (entries.length > MAX_ENTRIES_PER_STOCK) {
-          history[key][strategyId] = entries.slice(-MAX_ENTRIES_PER_STOCK);
-        }
+        history[key][strategyId] = entries;
       }
 
       saveHistory(history);
@@ -103,9 +134,6 @@ export function useScoreHistory() {
     []
   );
 
-  /**
-   * Get the score delta for a stock.
-   */
   const getDelta = useCallback(
     (ticker: string, strategyId: StrategyId, currentScore: number): ScoreDelta => {
       const history = loadHistory();
@@ -116,29 +144,46 @@ export function useScoreHistory() {
         return { current: currentScore, previous: null, delta: null, daysAgo: null };
       }
 
-      // Find the most recent entry that isn't today
       const todayStr = today();
-      const previous = [...entries]
-        .reverse()
-        .find((e) => e.date !== todayStr);
+      const previous = [...entries].reverse().find((e) => e.date !== todayStr);
 
       if (!previous) {
         return { current: currentScore, previous: null, delta: null, daysAgo: null };
       }
 
-      const daysAgo = Math.round(
-        (Date.now() - new Date(previous.date).getTime()) / (1000 * 60 * 60 * 24)
-      );
-
       return {
         current: currentScore,
         previous: previous.score,
         delta: currentScore - previous.score,
-        daysAgo,
+        daysAgo: daysBetween(previous.date),
       };
     },
     []
   );
 
-  return { saveScore, saveScores, getDelta };
+  /** Get full history for a ticker/strategy (for charts) */
+  const getHistory = useCallback(
+    (ticker: string, strategyId: StrategyId): ScoreSnapshot[] => {
+      const history = loadHistory();
+      const key = ticker.toUpperCase();
+      return purgeOld(history[key]?.[strategyId] ?? []);
+    },
+    []
+  );
+
+  /** Get the previous snapshot (with sub-scores) for comparison */
+  const getPreviousSnapshot = useCallback(
+    (ticker: string, strategyId: StrategyId): ScoreSnapshot | null => {
+      const history = loadHistory();
+      const key = ticker.toUpperCase();
+      const entries = history[key]?.[strategyId];
+      if (!entries || entries.length < 2) return null;
+
+      const todayStr = today();
+      return [...entries].reverse().find((e) => e.date !== todayStr) ?? null;
+    },
+    []
+  );
+
+  return { saveScore, saveScores, getDelta, getHistory, getPreviousSnapshot };
 }

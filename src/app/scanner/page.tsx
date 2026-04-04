@@ -150,7 +150,8 @@ function ScannerContent() {
 
         if (!d2.isQuick) {
           saveScores(d2.stocks.map((s: ScoredStock) => ({
-            ticker: s.stock.ticker, strategyId: filters.strategyId, score: s.score.total,
+            ticker: s.stock.ticker, strategyId: filters.strategyId,
+            score: s.score.total, subScores: s.score.subScores,
           })));
           evaluate(
             d2.stocks.map((s: ScoredStock) => ({
