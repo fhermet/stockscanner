@@ -11,7 +11,10 @@ import { DataProvider } from "./provider";
  * ~100 tickers couvrant US large/mid caps + quelques europeens.
  */
 
-const yf = new YahooFinance({ suppressNotices: ["yahooSurvey"] });
+const yf = new YahooFinance({
+  suppressNotices: ["yahooSurvey"],
+  validation: { logErrors: false },
+});
 
 // ~100 tickers diversifies : tech, sante, finance, conso, industrie, energie, immo, telecom
 const DEFAULT_TICKERS = [
@@ -74,7 +77,7 @@ const COUNTRY_MAP: Record<string, string> = {
 async function fetchStock(ticker: string): Promise<Stock | undefined> {
   try {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const result: any = await yf.quoteSummary(ticker, {
+    const result: any = await (yf as any).quoteSummary(ticker, {
       modules: [
         "price",
         "summaryDetail",
@@ -82,7 +85,7 @@ async function fetchStock(ticker: string): Promise<Stock | undefined> {
         "financialData",
         "assetProfile",
       ],
-    });
+    }, { validateResult: false });
 
     const price = result.price;
     const detail = result.summaryDetail;
