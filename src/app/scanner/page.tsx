@@ -52,6 +52,7 @@ function ScannerContent() {
   const [marketCap, setMarketCap] = useState("");
   const [viewMode, setViewMode] = useState<"table" | "cards">("table");
   const [meta, setMeta] = useState<DataMeta | null>(null);
+  const [universe, setUniverse] = useState<{ total: number; fetched: number; displayed: number } | null>(null);
 
   const fetchStocks = useCallback(async () => {
     setLoading(true);
@@ -71,6 +72,7 @@ function ScannerContent() {
     setSectors(data.filters.sectors);
     setCountries(data.filters.countries);
     if (data.meta) setMeta(data.meta);
+    if (data.universe) setUniverse(data.universe);
     setLoading(false);
   }, [strategyId, sector, country, marketCap]);
 
@@ -124,9 +126,21 @@ function ScannerContent() {
 
       {/* View toggle + count */}
       <div className="mb-4 flex items-center justify-between">
-        <p className="text-sm text-slate-500">
-          {loading ? "Chargement..." : `${stocks.length} actions`}
-        </p>
+        <div>
+          <p className="text-sm text-slate-500">
+            {loading
+              ? "Chargement de l'univers..."
+              : `${stocks.length} actions classees`}
+          </p>
+          {!loading && universe && (
+            <p className="text-xs text-slate-400">
+              Base sur un univers de {universe.total} actions
+              {universe.fetched < universe.total && (
+                <> · {universe.fetched} recuperees</>
+              )}
+            </p>
+          )}
+        </div>
         <div className="flex rounded-lg border border-slate-200 overflow-hidden">
           <button
             onClick={() => setViewMode("table")}

@@ -8,6 +8,7 @@ import "@/lib/scoring/strategies/lynch";
 import "@/lib/scoring/strategies/growth";
 import "@/lib/scoring/strategies/dividend";
 import { scoreAndRankStocks } from "@/lib/scoring/engine";
+import { UNIVERSE_SIZE } from "@/lib/tickers";
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
@@ -48,5 +49,10 @@ export async function GET(request: NextRequest) {
     strategy,
     filters: { sectors, countries },
     meta,
+    universe: {
+      total: UNIVERSE_SIZE,
+      fetched: stocks.length,
+      displayed: scored.length,
+    },
   });
 }
