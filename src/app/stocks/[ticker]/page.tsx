@@ -303,6 +303,12 @@ export default async function StockDetailPage({
               </svg>
               Retour au scanner
             </Link>
+            <Link
+              href={`/compare?tickers=${stock.ticker}&strategy=${strategyId}`}
+              className="flex items-center justify-center gap-2 rounded-lg border border-brand-200 bg-brand-50 px-4 py-2.5 text-sm font-medium text-brand-700 hover:bg-brand-100 transition-colors w-full"
+            >
+              Comparer avec...
+            </Link>
           </div>
         </div>
       </div>

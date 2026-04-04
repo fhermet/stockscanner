@@ -11,9 +11,11 @@ interface StockCardProps {
   readonly item: ScoredStock;
   readonly strategyId: StrategyId;
   readonly rank: number;
+  readonly onToggleCompare?: (ticker: string) => void;
+  readonly isCompareSelected?: boolean;
 }
 
-export default function StockCard({ item, strategyId, rank }: StockCardProps) {
+export default function StockCard({ item, strategyId, rank, onToggleCompare, isCompareSelected }: StockCardProps) {
   const topExplanation = item.score.explanations.find(
     (e) => e.type === "positive"
   );
@@ -25,6 +27,15 @@ export default function StockCard({ item, strategyId, rank }: StockCardProps) {
     >
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-center gap-3">
+          {onToggleCompare && (
+            <input
+              type="checkbox"
+              checked={isCompareSelected ?? false}
+              onChange={(e) => { e.preventDefault(); onToggleCompare(item.stock.ticker); }}
+              onClick={(e) => e.stopPropagation()}
+              className="h-3.5 w-3.5 rounded border-slate-300 text-brand-600 focus:ring-brand-500"
+            />
+          )}
           <span className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 text-xs font-bold text-slate-500">
             {rank}
           </span>

@@ -9,10 +9,12 @@ import WatchlistButton from "./watchlist-button";
 interface StockTableProps {
   readonly stocks: readonly ScoredStock[];
   readonly strategyId: StrategyId;
+  readonly onToggleCompare?: (ticker: string) => void;
+  readonly isCompareSelected?: (ticker: string) => boolean;
 }
 
 
-export default function StockTable({ stocks, strategyId }: StockTableProps) {
+export default function StockTable({ stocks, strategyId, onToggleCompare, isCompareSelected }: StockTableProps) {
   if (stocks.length === 0) {
     return (
       <div className="rounded-xl border border-slate-200 bg-white p-12 text-center">
@@ -56,6 +58,16 @@ export default function StockTable({ stocks, strategyId }: StockTableProps) {
               key={item.stock.ticker}
               className="hover:bg-slate-50 transition-colors"
             >
+              {onToggleCompare && (
+                <td className="px-2 py-3 text-center">
+                  <input
+                    type="checkbox"
+                    checked={isCompareSelected?.(item.stock.ticker) ?? false}
+                    onChange={() => onToggleCompare(item.stock.ticker)}
+                    className="h-3.5 w-3.5 rounded border-slate-300 text-brand-600 focus:ring-brand-500"
+                  />
+                </td>
+              )}
               <td className="px-4 py-3 text-sm text-slate-400 font-medium">
                 {index + 1}
               </td>

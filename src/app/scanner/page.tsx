@@ -22,6 +22,8 @@ import { useWatchlist } from "@/hooks/use-watchlist";
 import ScoreMovers from "@/components/score-movers";
 import IndexSelector from "@/components/index-selector";
 import { explainScoreChange } from "@/lib/scoring/change-explanation";
+import { useCompare } from "@/hooks/use-compare";
+import CompareBar from "@/components/compare-bar";
 
 function parseMarketCapFilter(value: string): Partial<StockFiltersType> {
   switch (value) {
@@ -98,6 +100,7 @@ function ScannerContent() {
   const { evaluate } = useAlerts();
   const { prefs } = usePreferences();
   const { tickers: watchlistTickers } = useWatchlist();
+  const compare = useCompare(filters.strategyId);
   const abortRef = useRef<AbortController | null>(null);
 
   // Immutable filter updater — pushes URL for navigational params only
@@ -270,14 +273,34 @@ function ScannerContent() {
           <div className="h-8 w-8 animate-spin rounded-full border-4 border-slate-200 border-t-brand-600" />
         </div>
       ) : viewMode === "table" ? (
-        <StockTable stocks={stocks} strategyId={filters.strategyId} />
+        <StockTable
+          stocks={stocks}
+          strategyId={filters.strategyId}
+          onToggleCompare={compare.toggle}
+          isCompareSelected={compare.isSelected}
+        />
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {stocks.map((item, i) => (
-            <StockCard key={item.stock.ticker} item={item} strategyId={filters.strategyId} rank={i + 1} />
+            <StockCard
+              key={item.stock.ticker}
+              item={item}
+              strategyId={filters.strategyId}
+              rank={i + 1}
+              onToggleCompare={compare.toggle}
+              isCompareSelected={compare.isSelected(item.stock.ticker)}
+            />
           ))}
         </div>
       )}
+
+      {/* Compare floating bar */}
+      <CompareBar
+        selected={compare.selected}
+        onClear={compare.clear}
+        onCompare={compare.goCompare}
+        canCompare={compare.canCompare}
+      />
     </div>
   );
 }
