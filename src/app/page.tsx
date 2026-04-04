@@ -50,7 +50,7 @@ export default function HomePage() {
               Choisis ta stratégie
             </h3>
             <p className="mt-1 text-sm text-slate-500">
-              Buffett, Lynch, Growth ou Dividende. Chaque mode a ses propres
+              Warren Buffett, Peter Lynch, Growth ou Dividende. Chaque mode a ses propres
               critères de sélection.
             </p>
           </div>
@@ -91,7 +91,7 @@ export default function HomePage() {
             StockScanner est un outil d&apos;analyse fondamentale qui classe les actions
             selon des stratégies d&apos;investissement éprouvées. Au lieu de filtrer
             manuellement des centaines de ratios financiers, choisissez une approche
-            — Buffett, Peter Lynch, Growth ou Dividende — et découvrez instantanément
+            — Warren Buffett, Peter Lynch, Growth ou Dividende — et découvrez instantanément
             quelles actions y correspondent le mieux.
           </p>
           <p>

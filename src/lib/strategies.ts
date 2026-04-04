@@ -3,23 +3,23 @@ import { Strategy, StrategyId } from "./types";
 export const STRATEGIES: readonly Strategy[] = [
   {
     id: "buffett",
-    name: "Buffett",
-    subtitle: "Qualite & valeur",
+    name: "Warren Buffett",
+    subtitle: "Qualité & valeur",
     description:
-      "Identifie les entreprises de qualite avec un avantage competitif durable, une rentabilite forte et une valorisation raisonnable.",
+      "Identifie les entreprises de qualité avec un avantage compétitif durable, une rentabilité forte et une valorisation raisonnable.",
     philosophy:
-      "Acheter de merveilleuses entreprises a un prix raisonnable, plutot que des entreprises mediocres a prix brade.",
+      "Acheter de merveilleuses entreprises à un prix raisonnable, plutôt que des entreprises médiocres à prix bradé.",
     icon: "shield",
     color: "indigo",
   },
   {
     id: "lynch",
     name: "Peter Lynch",
-    subtitle: "Croissance a prix raisonnable",
+    subtitle: "Croissance à prix raisonnable",
     description:
-      "Trouve les entreprises en croissance dont le prix reste raisonnable par rapport a leur potentiel de benefices.",
+      "Trouve les entreprises en croissance dont le prix reste raisonnable par rapport à leur potentiel de bénéfices.",
     philosophy:
-      "Investir dans ce que l'on comprend. Le PEG est la cle : une croissance solide a un prix sense.",
+      "Investir dans ce que l'on comprend. Le PEG est la clé : une croissance solide à un prix sensé.",
     icon: "trending-up",
     color: "emerald",
   },
@@ -28,20 +28,20 @@ export const STRATEGIES: readonly Strategy[] = [
     name: "Growth",
     subtitle: "Croissance agressive",
     description:
-      "Cible les entreprises a forte croissance de revenus et de benefices, avec un momentum fondamental fort.",
+      "Cible les entreprises à forte croissance de revenus et de bénéfices, avec un momentum fondamental fort.",
     philosophy:
-      "Miser sur les entreprises qui capturent des marches en expansion rapide, meme si la valorisation est elevee.",
+      "Miser sur les entreprises qui capturent des marchés en expansion rapide, même si la valorisation est élevée.",
     icon: "rocket",
     color: "violet",
   },
   {
     id: "dividend",
     name: "Dividende",
-    subtitle: "Rendement & stabilite",
+    subtitle: "Rendement & stabilité",
     description:
-      "Selectionne les entreprises offrant un dividende attractif, soutenable et en croissance.",
+      "Sélectionne les entreprises offrant un dividende attractif, soutenable et en croissance.",
     philosophy:
-      "Privilegier les revenus reguliers et la preservation du capital grace a des dividendes fiables et bien couverts.",
+      "Privilégier les revenus réguliers et la préservation du capital grâce à des dividendes fiables et bien couverts.",
     icon: "banknotes",
     color: "amber",
   },
