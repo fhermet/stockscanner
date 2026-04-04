@@ -16,6 +16,7 @@ import StockCard from "@/components/stock-card";
 import DataSourceBadge from "@/components/ui/data-source-badge";
 import TickerSearch from "@/components/ticker-search";
 import { useScoreHistory } from "@/hooks/use-score-history";
+import ScoreMovers from "@/components/score-movers";
 
 function parseMarketCapFilter(value: string): Partial<StockFiltersType> {
   switch (value) {
@@ -203,6 +204,11 @@ function ScannerContent() {
             Actualisation des donnees en direct...
           </p>
         </div>
+      )}
+
+      {/* Score movers (only when we have live data, not during refresh) */}
+      {!loading && !refreshing && stocks.length > 0 && (
+        <ScoreMovers stocks={stocks} strategyId={strategyId} />
       )}
 
       {/* View toggle + count */}
