@@ -35,7 +35,12 @@ export default async function StockDetailPage({
       : "buffett";
 
   const provider = getDataProvider();
-  const stock = await provider.getStock(ticker);
+  let stock;
+  try {
+    stock = await provider.getStock(ticker);
+  } catch {
+    notFound();
+  }
   if (!stock) notFound();
 
   const score = scoreStock(stock, strategyId);
