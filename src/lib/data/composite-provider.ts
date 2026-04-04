@@ -1,6 +1,9 @@
 import { Stock, StockFilters } from "../types";
 import { DataProvider } from "./provider";
 import { updateMeta, buildFreshMeta } from "./metadata";
+import { createLogger } from "../logger";
+
+const log = createLogger("composite");
 
 /**
  * Composite data provider avec fallback automatique et metadata tracking.
@@ -23,11 +26,13 @@ export class CompositeDataProvider implements DataProvider {
       try {
         const result = await provider.getStocks(filters);
         if (result.length > 0) {
+          if (i > 0) log.warn("fallback used for getStocks", { provider: provider.name, index: i });
           updateMeta(buildFreshMeta(provider.name, i > 0));
           return result;
         }
-      } catch {
-        // Fall through to next provider
+      } catch (err: unknown) {
+        const msg = err instanceof Error ? err.message : "unknown";
+        log.error("provider failed on getStocks", { provider: provider.name, error: msg });
       }
     }
     return [];
@@ -39,11 +44,13 @@ export class CompositeDataProvider implements DataProvider {
       try {
         const result = await provider.getStock(ticker);
         if (result) {
+          if (i > 0) log.warn("fallback used for getStock", { provider: provider.name, ticker });
           updateMeta(buildFreshMeta(provider.name, i > 0));
           return result;
         }
-      } catch {
-        // Fall through
+      } catch (err: unknown) {
+        const msg = err instanceof Error ? err.message : "unknown";
+        log.error("provider failed on getStock", { provider: provider.name, ticker, error: msg });
       }
     }
     return undefined;

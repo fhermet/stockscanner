@@ -1,6 +1,9 @@
 import YahooFinance from "yahoo-finance2";
 import { Stock, StockFilters } from "../types";
 import { DataProvider } from "./provider";
+import { createLogger } from "../logger";
+
+const log = createLogger("yahoo-provider");
 
 /**
  * Yahoo Finance data provider (gratuit, sans cle API).
@@ -157,7 +160,9 @@ async function fetchStock(ticker: string): Promise<Stock | undefined> {
       payoutRatio,
       history: [], // Yahoo quoteSummary ne fournit pas l'historique EPS simplement
     };
-  } catch {
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : "unknown";
+    log.error("fetchStock failed", { ticker, error: msg });
     return undefined;
   }
 }
@@ -171,9 +176,10 @@ export class YahooDataProvider implements DataProvider {
   }
 
   async getStocks(filters?: StockFilters): Promise<readonly Stock[]> {
-    // Fetch par batch de 10 pour eviter de surcharger Yahoo
+    const start = Date.now();
     const batchSize = 10;
     const allStocks: Stock[] = [];
+    let failures = 0;
 
     for (let i = 0; i < this.tickers.length; i += batchSize) {
       const batch = this.tickers.slice(i, i + batchSize);
@@ -184,9 +190,18 @@ export class YahooDataProvider implements DataProvider {
       for (const r of results) {
         if (r.status === "fulfilled" && r.value) {
           allStocks.push(r.value);
+        } else {
+          failures++;
         }
       }
     }
+
+    log.info("getStocks complete", {
+      total: this.tickers.length,
+      fetched: allStocks.length,
+      failures,
+      durationMs: Date.now() - start,
+    });
 
     let stocks = allStocks;
 
