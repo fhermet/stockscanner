@@ -78,6 +78,7 @@ function CompareContent() {
   const [strategyId, setStrategyId] = useState<StrategyId>(isValidStrategyId(strategyParam) ? strategyParam : "buffett");
   const [input, setInput] = useState("");
   const [stocks, setStocks] = useState<ScoredStock[]>([]);
+  const [failedTickers, setFailedTickers] = useState<string[]>([]);
   const [comparison, setComparison] = useState<ComparisonResult | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -86,19 +87,23 @@ function CompareContent() {
   }, [router]);
 
   const fetchStocks = useCallback(async () => {
-    if (tickers.length < 2) { setStocks([]); setComparison(null); return; }
+    if (tickers.length < 2) { setStocks([]); setComparison(null); setFailedTickers([]); return; }
     setLoading(true);
+    setFailedTickers([]);
     const results: ScoredStock[] = [];
+    const failed: string[] = [];
     for (const ticker of tickers) {
       try {
         const res = await fetch(`/api/stocks/${encodeURIComponent(ticker)}?strategy=${strategyId}`);
-        if (!res.ok) continue;
+        if (!res.ok) { failed.push(ticker); continue; }
         const data = await res.json();
         results.push({ stock: data.stock, score: data.score });
-      } catch { /* skip */ }
+      } catch { failed.push(ticker); }
     }
     setStocks(results);
+    setFailedTickers(failed);
     if (results.length >= 2) setComparison(compareStocks(results, strategyId));
+    else setComparison(null);
     setLoading(false);
   }, [tickers, strategyId]);
 
@@ -143,6 +148,14 @@ function CompareContent() {
         ))}
         {tickers.length < 2 && <span className="text-xs text-slate-400 self-center">Ajoutez au moins 2 tickers</span>}
       </div>
+
+      {failedTickers.length > 0 && (
+        <div className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-2.5">
+          <p className="text-sm text-red-700">
+            Impossible de charger : {failedTickers.join(", ")}
+          </p>
+        </div>
+      )}
 
       <div className="mb-6 flex flex-wrap gap-2">
         {STRATEGY_OPTIONS.map((s) => (
