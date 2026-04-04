@@ -47,7 +47,7 @@ npm run dev
   │  │  Yahoo   │ ──► │ Mock (local) │  │
   │  │ Finance  │     │  25 actions  │  │
   │  └─────────┘     └──────────────┘  │
-  │    ~100 tickers     fallback auto   │
+  │    ~340 tickers     fallback auto   │
   └─────────────────────────────────────┘
 ```
 
@@ -83,19 +83,45 @@ Chaque reponse API inclut un objet `meta` :
 
 Affiche dans l'UI : source, fraicheur, indicateur stale/fallback.
 
+## Univers d'actions
+
+| Region | Indices couverts | Tickers |
+|--------|-----------------|---------|
+| **US** | S&P 500 top, NASDAQ 100 | ~243 |
+| **Europe** | CAC 40, DAX 40, FTSE 100, Nordic, Swiss | ~94 |
+| **Total** | | **~340** |
+
+L'univers est centralise dans `src/lib/tickers/` :
+- `us.ts` — tickers US (suffixe implicite)
+- `europe.ts` — tickers europeens avec suffixes Yahoo (.PA, .DE, .L, .SW, .ST)
+- `index.ts` — merge deduplique + stats
+
+**Recherche libre** : l'utilisateur peut aussi saisir n'importe quel ticker manuellement via la barre de recherche. Le ticker est score a la volee via Yahoo, meme s'il n'est pas dans l'univers.
+
+### Performance
+
+Premier chargement (~340 tickers) : **~15-20 secondes** (3 batches de 20 en parallele).
+Ensuite : **instantane** grace au cache SWR (1h fresh, 4h stale tolerance).
+
 ## Architecture projet
 
 ```
 src/
-├── app/                               # Pages + API routes
-│   ├── api/stocks/                    # API avec meta dans la reponse
-│   ├── scanner/page.tsx               # Scanner + DataSourceBadge
+├── app/
+│   ├── api/stocks/                    # API avec meta + universe stats
+│   ├── api/stocks/search/             # Recherche libre par ticker
+│   ├── scanner/page.tsx               # Scanner + recherche + badges
 │   └── stocks/[ticker]/page.tsx       # Detail via DataProvider
 │
 ├── lib/
+│   ├── tickers/                       # Univers d'actions centralise
+│   │   ├── us.ts                      #   S&P 500 + NASDAQ 100 (~243)
+│   │   ├── europe.ts                  #   CAC/DAX/FTSE/Nordic/Swiss (~94)
+│   │   └── index.ts                   #   Merge deduplique (337)
+│   │
 │   ├── data/                          # Data Provider Pattern
 │   │   ├── provider.ts                #   Interface DataProvider
-│   │   ├── yahoo-provider.ts          #   Yahoo Finance (~100 tickers)
+│   │   ├── yahoo-provider.ts          #   Yahoo Finance (~340 tickers)
 │   │   ├── mock-provider.ts           #   Dataset local (25 actions)
 │   │   ├── composite-provider.ts      #   Fallback chain + logging
 │   │   ├── cache.ts                   #   SWR cache + stats
@@ -112,14 +138,13 @@ src/
 │   │
 │   ├── logger.ts                      #   Structured JSON logger
 │   ├── types.ts                       #   Stock, Score, DataMeta...
-│   ├── format.ts                      #   Formatage partage
-│   └── mock-data.ts
+│   └── format.ts                      #   Formatage partage
 │
 ├── components/
+│   ├── ticker-search.tsx              # Recherche libre par ticker
 │   └── ui/
 │       ├── confidence-badge.tsx       # Confiance high/medium/low
 │       ├── data-source-badge.tsx      # Source + fraicheur + warnings
-│       ├── score-badge.tsx
 │       └── ...
 │
 └── hooks/                             # useWatchlist, useTheme, useStocks
@@ -143,14 +168,21 @@ npm run test:watch   # watch mode
 ## Limites connues
 
 - **Yahoo Finance** peut etre instable (rate limit, schema changes). Le fallback local mitigue ce risque.
-- **~100 tickers hardcodes** : pas de vrai screener dynamique. Ajouter des tickers = editer `DEFAULT_TICKERS` dans `yahoo-provider.ts`.
+- **~340 tickers predetermines** : l'univers est large mais pas dynamique. Ajouter des tickers = editer `tickers/us.ts` ou `tickers/europe.ts`. La recherche libre permet d'analyser n'importe quel ticker hors univers.
 - **Pas d'historique EPS** depuis Yahoo (`quoteSummary` ne le fournit pas simplement). L'historique n'est disponible que pour les donnees mockees.
 - **Cache en memoire** : perdu au redemarrage du serveur. Suffisant pour un usage mono-instance.
 - **Pas d'authentification** : pas de watchlist persistante cross-device.
 
 ## Historique des versions
 
-### V2.2 (actuelle) — Production readiness
+### V2.3 (actuelle) — Couverture et recherche
+- Univers elargi a ~340 actions (S&P 500, NASDAQ 100, CAC 40, DAX 40, FTSE 100)
+- Module tickers/ centralise par region (us.ts, europe.ts)
+- Parallel batching (3x20) pour cold load en ~15-20s
+- Recherche libre : scorer n'importe quel ticker hors univers
+- Transparence : "Base sur un univers de X actions" dans le scanner
+
+### V2.2 — Production readiness
 - Fix: page detail utilise maintenant le DataProvider (plus le mock direct)
 - Metadata de transparence: source, fraicheur, fallback, staleness
 - Logger structure JSON pour observabilite
