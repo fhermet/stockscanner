@@ -1,7 +1,7 @@
 "use client";
 
 import { useSearchParams, useRouter } from "next/navigation";
-import { useState, useEffect, useCallback, Suspense } from "react";
+import { useState, useEffect, useCallback, useRef, Suspense } from "react";
 import {
   StrategyId,
   ScoredStock,
@@ -31,6 +31,25 @@ function parseMarketCapFilter(value: string): Partial<StockFiltersType> {
   }
 }
 
+function buildParams(
+  strategyId: StrategyId,
+  sector: string,
+  country: string,
+  marketCap: string,
+  quick?: boolean
+): string {
+  const params = new URLSearchParams({ strategy: strategyId });
+  if (sector) params.set("sector", sector);
+  if (country) params.set("country", country);
+  const capFilter = parseMarketCapFilter(marketCap);
+  if (capFilter.marketCapMin !== undefined)
+    params.set("marketCapMin", String(capFilter.marketCapMin));
+  if (capFilter.marketCapMax !== undefined)
+    params.set("marketCapMax", String(capFilter.marketCapMax));
+  if (quick) params.set("quick", "true");
+  return params.toString();
+}
+
 function ScannerContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -46,38 +65,76 @@ function ScannerContent() {
   const [sectors, setSectors] = useState<readonly string[]>([]);
   const [countries, setCountries] = useState<readonly string[]>([]);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
 
   const [sector, setSector] = useState("");
   const [country, setCountry] = useState("");
   const [marketCap, setMarketCap] = useState("");
   const [viewMode, setViewMode] = useState<"table" | "cards">("table");
   const [meta, setMeta] = useState<DataMeta | null>(null);
-  const [universe, setUniverse] = useState<{ total: number; fetched: number; displayed: number } | null>(null);
+  const [universe, setUniverse] = useState<{
+    total: number;
+    fetched: number;
+    displayed: number;
+  } | null>(null);
+
+  // Abort controller for cancelling stale fetches
+  const abortRef = useRef<AbortController | null>(null);
 
   const fetchStocks = useCallback(async () => {
-    setLoading(true);
-    const params = new URLSearchParams({ strategy: strategyId });
-    if (sector) params.set("sector", sector);
-    if (country) params.set("country", country);
-    const capFilter = parseMarketCapFilter(marketCap);
-    if (capFilter.marketCapMin !== undefined)
-      params.set("marketCapMin", String(capFilter.marketCapMin));
-    if (capFilter.marketCapMax !== undefined)
-      params.set("marketCapMax", String(capFilter.marketCapMax));
+    // Cancel any in-flight request
+    abortRef.current?.abort();
+    const controller = new AbortController();
+    abortRef.current = controller;
 
-    const res = await fetch(`/api/stocks?${params.toString()}`);
-    const data = await res.json();
-    setStocks(data.stocks);
-    setStrategy(data.strategy);
-    setSectors(data.filters.sectors);
-    setCountries(data.filters.countries);
-    if (data.meta) setMeta(data.meta);
-    if (data.universe) setUniverse(data.universe);
-    setLoading(false);
+    setLoading(true);
+    setRefreshing(false);
+
+    try {
+      // Phase 1: quick mock data (instant)
+      const quickParams = buildParams(strategyId, sector, country, marketCap, true);
+      const quickRes = await fetch(`/api/stocks?${quickParams}`, {
+        signal: controller.signal,
+      });
+      const quickData = await quickRes.json();
+
+      if (!controller.signal.aborted) {
+        setStocks(quickData.stocks);
+        setStrategy(quickData.strategy);
+        setSectors(quickData.filters.sectors);
+        setCountries(quickData.filters.countries);
+        if (quickData.meta) setMeta(quickData.meta);
+        if (quickData.universe) setUniverse(quickData.universe);
+        setLoading(false);
+        setRefreshing(true);
+      }
+
+      // Phase 2: full live data (may take 15-20s on cold)
+      const fullParams = buildParams(strategyId, sector, country, marketCap);
+      const fullRes = await fetch(`/api/stocks?${fullParams}`, {
+        signal: controller.signal,
+      });
+      const fullData = await fullRes.json();
+
+      if (!controller.signal.aborted) {
+        setStocks(fullData.stocks);
+        setStrategy(fullData.strategy);
+        setSectors(fullData.filters.sectors);
+        setCountries(fullData.filters.countries);
+        if (fullData.meta) setMeta(fullData.meta);
+        if (fullData.universe) setUniverse(fullData.universe);
+        setRefreshing(false);
+      }
+    } catch (err: unknown) {
+      if (err instanceof DOMException && err.name === "AbortError") return;
+      setLoading(false);
+      setRefreshing(false);
+    }
   }, [strategyId, sector, country, marketCap]);
 
   useEffect(() => {
     fetchStocks();
+    return () => abortRef.current?.abort();
   }, [fetchStocks]);
 
   const handleStrategyChange = (id: StrategyId) => {
@@ -124,19 +181,29 @@ function ScannerContent() {
         />
       </div>
 
+      {/* Refreshing banner */}
+      {refreshing && (
+        <div className="mb-4 flex items-center gap-2 rounded-lg border border-brand-200 bg-brand-50 px-4 py-2.5">
+          <div className="h-4 w-4 animate-spin rounded-full border-2 border-brand-300 border-t-brand-600" />
+          <p className="text-sm text-brand-700">
+            Actualisation des donnees en direct...
+          </p>
+        </div>
+      )}
+
       {/* View toggle + count */}
       <div className="mb-4 flex items-center justify-between">
         <div>
           <p className="text-sm text-slate-500">
             {loading
-              ? "Chargement de l'univers..."
+              ? "Chargement..."
               : `${stocks.length} actions classees`}
           </p>
           {!loading && universe && (
             <p className="text-xs text-slate-400">
               Base sur un univers de {universe.total} actions
               {universe.fetched < universe.total && (
-                <> · {universe.fetched} recuperees</>
+                <> &middot; {universe.fetched} recuperees</>
               )}
             </p>
           )}

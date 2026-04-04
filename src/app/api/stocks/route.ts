@@ -9,6 +9,7 @@ import "@/lib/scoring/strategies/growth";
 import "@/lib/scoring/strategies/dividend";
 import { scoreAndRankStocks } from "@/lib/scoring/engine";
 import { UNIVERSE_SIZE } from "@/lib/tickers";
+import { MockDataProvider } from "@/lib/data";
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
@@ -21,7 +22,9 @@ export async function GET(request: NextRequest) {
     );
   }
 
-  const provider = getDataProvider();
+  // quick=true → return mock data only (for progressive loading phase 1)
+  const isQuick = searchParams.get("quick") === "true";
+  const provider = isQuick ? new MockDataProvider() : getDataProvider();
 
   const filters: StockFilters = {
     sector: searchParams.get("sector") ?? undefined,
@@ -54,5 +57,6 @@ export async function GET(request: NextRequest) {
       fetched: stocks.length,
       displayed: scored.length,
     },
+    isQuick,
   });
 }
