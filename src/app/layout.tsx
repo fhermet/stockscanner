@@ -8,11 +8,11 @@ const inter = Inter({ subsets: ["latin"] });
 
 const SITE_NAME = "StockScanner";
 const SITE_DESCRIPTION =
-  "Choisissez une strategie d'investissement (Buffett, Lynch, Growth, Dividende) et decouvrez les actions les mieux classees parmi 340+ titres US et europeens.";
+  "Choisissez une stratégie d'investissement (Buffett, Lynch, Growth, Dividende) et découvrez les actions les mieux classées parmi 340+ titres US et européens.";
 
 export const metadata: Metadata = {
   title: {
-    default: `${SITE_NAME} — Trouvez les actions qui correspondent a votre strategie`,
+    default: `${SITE_NAME} — Trouvez les actions qui correspondent à votre stratégie`,
     template: `%s | ${SITE_NAME}`,
   },
   description: SITE_DESCRIPTION,
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     "stock screener",
     "analyse fondamentale",
     "investissement",
-    "strategie",
+    "stratégie",
     "Buffett",
     "dividende",
     "croissance",
@@ -29,13 +29,13 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     siteName: SITE_NAME,
-    title: `${SITE_NAME} — Scanner d'actions par strategie d'investissement`,
+    title: `${SITE_NAME} — Scanner d'actions par stratégie d'investissement`,
     description: SITE_DESCRIPTION,
     locale: "fr_FR",
   },
   twitter: {
     card: "summary",
-    title: `${SITE_NAME} — Scanner d'actions par strategie`,
+    title: `${SITE_NAME} — Scanner d'actions par stratégie`,
     description: SITE_DESCRIPTION,
   },
   robots: {
