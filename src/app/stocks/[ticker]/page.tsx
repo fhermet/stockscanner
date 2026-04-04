@@ -14,7 +14,7 @@ import ExplanationList from "@/components/ui/explanation-list";
 import ConfidenceBadge from "@/components/ui/confidence-badge";
 import DataSourceBadge from "@/components/ui/data-source-badge";
 import WatchlistButton from "@/components/watchlist-button";
-import { formatMarketCap } from "@/lib/format";
+import { formatMarketCap, formatPrice } from "@/lib/format";
 
 interface PageProps {
   params: Promise<{ ticker: string }>;
@@ -83,7 +83,7 @@ export default async function StockDetailPage({
           </div>
           <p className="mt-1 text-lg text-slate-500">{stock.name}</p>
           <p className="text-sm text-slate-400">
-            {stock.sector} &middot; {stock.country}
+            {stock.sector} &middot; {stock.country} &middot; {stock.exchange} &middot; {stock.currency}
           </p>
           <div className="mt-2">
             <DataSourceBadge meta={meta} />
@@ -91,7 +91,7 @@ export default async function StockDetailPage({
         </div>
         <div className="text-right">
           <p className="text-3xl font-bold text-slate-900">
-            ${stock.price.toFixed(2)}
+            {formatPrice(stock.price, stock.currency)}
           </p>
           <div className="mt-2">
             <ScoreBadge score={score.total} size="lg" />
@@ -232,7 +232,7 @@ export default async function StockDetailPage({
           </h2>
           <MetricCard
             label="Market Cap"
-            value={formatMarketCap(stock.marketCap)}
+            value={formatMarketCap(stock.marketCap, stock.currency)}
           />
           <MetricCard label="PER" value={String(stock.per)} />
           <MetricCard label="PEG" value={String(stock.peg)} />
@@ -247,7 +247,7 @@ export default async function StockDetailPage({
           />
           <MetricCard
             label="Free Cash Flow"
-            value={`${stock.freeCashFlow} Mds$`}
+            value={`${stock.freeCashFlow} Mds ${stock.currency}`}
           />
           <MetricCard
             label="Croissance CA"

@@ -5,16 +5,12 @@ import { ScoredStock, StrategyId } from "@/lib/types";
 import ScoreBadge from "./ui/score-badge";
 import ScoreGauge from "./ui/score-gauge";
 import WatchlistButton from "./watchlist-button";
+import { formatPrice, formatMarketCap } from "@/lib/format";
 
 interface StockCardProps {
   readonly item: ScoredStock;
   readonly strategyId: StrategyId;
   readonly rank: number;
-}
-
-function formatMarketCap(cap: number): string {
-  if (cap >= 1000) return `${(cap / 1000).toFixed(1)}T$`;
-  return `${cap}B$`;
 }
 
 export default function StockCard({ item, strategyId, rank }: StockCardProps) {
@@ -48,7 +44,7 @@ export default function StockCard({ item, strategyId, rank }: StockCardProps) {
       <div className="mt-4 grid grid-cols-3 gap-2 text-center">
         <div>
           <p className="text-xs text-slate-400">Prix</p>
-          <p className="text-sm font-semibold">${item.stock.price}</p>
+          <p className="text-sm font-semibold">{formatPrice(item.stock.price, item.stock.currency)}</p>
         </div>
         <div>
           <p className="text-xs text-slate-400">PER</p>
@@ -57,7 +53,7 @@ export default function StockCard({ item, strategyId, rank }: StockCardProps) {
         <div>
           <p className="text-xs text-slate-400">Cap.</p>
           <p className="text-sm font-semibold">
-            {formatMarketCap(item.stock.marketCap)}
+            {formatMarketCap(item.stock.marketCap, item.stock.currency)}
           </p>
         </div>
       </div>

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useWatchlist } from "@/hooks/use-watchlist";
 import { useScoreHistory, ScoreDelta } from "@/hooks/use-score-history";
 import { StrategyId, ScoredStock } from "@/lib/types";
+import { formatPrice } from "@/lib/format";
 import ScoreBadge from "@/components/ui/score-badge";
 import ScoreDeltaBadge from "@/components/ui/score-delta";
 
@@ -17,6 +18,7 @@ interface WatchlistItem {
   readonly score: number;
   readonly delta: ScoreDelta;
   readonly price: number;
+  readonly currency: string;
 }
 
 export default function WatchlistPage() {
@@ -52,6 +54,7 @@ export default function WatchlistPage() {
           score: scored.score.total,
           delta,
           price: scored.stock.price,
+          currency: scored.stock.currency,
         });
       } catch {
         // Skip failed fetches
@@ -192,7 +195,7 @@ export default function WatchlistPage() {
                     </div>
                     <div className="mt-2 flex items-center gap-4 text-xs text-slate-400">
                       <span>{item.sector}</span>
-                      <span>${item.price.toFixed(2)}</span>
+                      <span>{formatPrice(item.price, item.currency)}</span>
                       {item.delta.daysAgo !== null && (
                         <span>vs il y a {item.delta.daysAgo}j</span>
                       )}

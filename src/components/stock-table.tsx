@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { ScoredStock, StrategyId } from "@/lib/types";
 import ScoreBadge from "./ui/score-badge";
+import { formatPrice, formatMarketCap } from "@/lib/format";
 import WatchlistButton from "./watchlist-button";
 
 interface StockTableProps {
@@ -10,10 +11,6 @@ interface StockTableProps {
   readonly strategyId: StrategyId;
 }
 
-function formatMarketCap(cap: number): string {
-  if (cap >= 1000) return `${(cap / 1000).toFixed(1)}T$`;
-  return `${cap}B$`;
-}
 
 export default function StockTable({ stocks, strategyId }: StockTableProps) {
   if (stocks.length === 0) {
@@ -79,10 +76,10 @@ export default function StockTable({ stocks, strategyId }: StockTableProps) {
                 {item.stock.sector}
               </td>
               <td className="px-4 py-3 text-right text-sm font-medium text-slate-900">
-                ${item.stock.price.toFixed(2)}
+                {formatPrice(item.stock.price, item.stock.currency)}
               </td>
               <td className="px-4 py-3 text-right text-sm text-slate-600">
-                {formatMarketCap(item.stock.marketCap)}
+                {formatMarketCap(item.stock.marketCap, item.stock.currency)}
               </td>
               <td className="px-4 py-3 text-right text-sm text-slate-600">
                 {item.stock.per}
