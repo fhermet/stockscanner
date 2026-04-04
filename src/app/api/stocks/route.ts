@@ -71,11 +71,15 @@ export async function GET(request: NextRequest) {
       : undefined,
   };
 
-  const [stocks, sectors, countries] = await Promise.all([
+  const [stocksResult, sectorsResult, countriesResult] = await Promise.allSettled([
     provider.getStocks(filters),
     provider.getSectors(),
     provider.getCountries(),
   ]);
+
+  const stocks = stocksResult.status === "fulfilled" ? stocksResult.value : [];
+  const sectors = sectorsResult.status === "fulfilled" ? sectorsResult.value : [];
+  const countries = countriesResult.status === "fulfilled" ? countriesResult.value : [];
 
   const scored = await scoreAndRankStocks(stocks, strategyParam);
   const strategy = getStrategy(strategyParam);
