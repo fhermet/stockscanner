@@ -33,6 +33,8 @@ export const metadata: Metadata = {
     title: `${SITE_NAME} — Scanner d'actions par stratégie d'investissement`,
     description: SITE_DESCRIPTION,
     locale: "fr_FR",
+    // To enable rich link previews, add an image to /public/og.png (1200x630)
+    // and uncomment: images: [{ url: "/og.png", width: 1200, height: 630, alt: SITE_NAME }],
   },
   twitter: {
     card: "summary",
