@@ -172,9 +172,9 @@ export default function DailyDigest() {
                 <p className="text-xs font-medium text-slate-700">
                   {alert.label} &middot; {formatValue(alert)}
                 </p>
-                {alert.explanation && (
+                {(alert.changeExplanation || alert.explanation) && (
                   <p className="text-xs text-slate-500 mt-0.5">
-                    {alert.explanation}
+                    {alert.changeExplanation ?? alert.explanation}
                   </p>
                 )}
               </div>

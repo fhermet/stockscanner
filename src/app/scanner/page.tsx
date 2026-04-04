@@ -21,6 +21,7 @@ import { usePreferences } from "@/hooks/use-preferences";
 import { useWatchlist } from "@/hooks/use-watchlist";
 import ScoreMovers from "@/components/score-movers";
 import IndexSelector from "@/components/index-selector";
+import { explainScoreChange } from "@/lib/scoring/change-explanation";
 
 function parseMarketCapFilter(value: string): Partial<StockFiltersType> {
   switch (value) {
@@ -93,7 +94,7 @@ function ScannerContent() {
     total: number; fetched: number; displayed: number;
   } | null>(null);
 
-  const { saveScores, getDelta } = useScoreHistory();
+  const { saveScores, getDelta, getPreviousSnapshot } = useScoreHistory();
   const { evaluate } = useAlerts();
   const { prefs } = usePreferences();
   const { tickers: watchlistTickers } = useWatchlist();
@@ -154,13 +155,20 @@ function ScannerContent() {
             score: s.score.total, subScores: s.score.subScores,
           })));
           evaluate(
-            d2.stocks.map((s: ScoredStock) => ({
-              ticker: s.stock.ticker,
-              name: s.stock.name,
-              score: s.score.total,
-              delta: getDelta(s.stock.ticker, filters.strategyId, s.score.total).delta,
-              strategyId: filters.strategyId,
-            })),
+            d2.stocks.map((s: ScoredStock) => {
+              const d = getDelta(s.stock.ticker, filters.strategyId, s.score.total);
+              const prev = getPreviousSnapshot(s.stock.ticker, filters.strategyId);
+              return {
+                ticker: s.stock.ticker,
+                name: s.stock.name,
+                score: s.score.total,
+                delta: d.delta,
+                strategyId: filters.strategyId,
+                changeExplanation: d.delta && prev?.subScores
+                  ? explainScoreChange(d.delta, s.score.subScores, prev.subScores)
+                  : undefined,
+              };
+            }),
             { watchlistOnly: prefs.watchlistOnly, watchlistTickers }
           );
         }

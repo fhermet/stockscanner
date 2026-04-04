@@ -29,6 +29,7 @@ export interface TriggeredAlert {
   readonly type: AlertRuleType;
   readonly strategyId: StrategyId;
   readonly explanation: string;
+  readonly changeExplanation?: string; // sub-score based cause
   readonly triggeredAt: string;
 }
 
@@ -146,6 +147,7 @@ interface StockScore {
   readonly score: number;
   readonly delta: number | null;
   readonly strategyId: StrategyId;
+  readonly changeExplanation?: string;
 }
 
 interface EvaluateOptions {
@@ -224,6 +226,7 @@ export function useAlerts() {
               rule.strategyId
             ),
             triggeredAt: todayStr,
+            changeExplanation: stock.changeExplanation,
           });
         }
       }
