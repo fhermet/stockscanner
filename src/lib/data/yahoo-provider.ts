@@ -143,15 +143,19 @@ async function fetchStock(ticker: string): Promise<Stock | undefined> {
  *  → 60 per wave, ~6 waves, ~15-20s cold load
  */
 async function fetchAll(tickers: readonly string[]): Promise<Stock[]> {
+  // Deduplicate tickers before fetching
+  const uniqueTickers = [...new Set(tickers)];
+
   const batchSize = 20;
   const parallelGroups = 3;
   const waveSize = batchSize * parallelGroups;
   const allStocks: Stock[] = [];
+  const seen = new Set<string>();
   let failures = 0;
   const start = Date.now();
 
-  for (let i = 0; i < tickers.length; i += waveSize) {
-    const wave = tickers.slice(i, i + waveSize);
+  for (let i = 0; i < uniqueTickers.length; i += waveSize) {
+    const wave = uniqueTickers.slice(i, i + waveSize);
 
     // Split wave into parallel batches
     const batches: string[][] = [];
@@ -169,7 +173,10 @@ async function fetchAll(tickers: readonly string[]): Promise<Stock[]> {
     for (const results of batchResults) {
       for (const r of results) {
         if (r.status === "fulfilled" && r.value) {
-          allStocks.push(r.value);
+          if (!seen.has(r.value.ticker)) {
+            seen.add(r.value.ticker);
+            allStocks.push(r.value);
+          }
         } else {
           failures++;
         }
@@ -178,7 +185,7 @@ async function fetchAll(tickers: readonly string[]): Promise<Stock[]> {
   }
 
   log.info("fetchAll complete", {
-    total: tickers.length,
+    total: uniqueTickers.length,
     fetched: allStocks.length,
     failures,
     durationMs: Date.now() - start,
