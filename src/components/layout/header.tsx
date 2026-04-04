@@ -38,6 +38,13 @@ export default function Header() {
           </span>
         )}
       </Link>
+      <Link
+        href="/strategies"
+        className="text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors"
+        onClick={() => setMobileOpen(false)}
+      >
+        Stratégies
+      </Link>
       {alertCount > 0 && (
         <Link
           href="/"
