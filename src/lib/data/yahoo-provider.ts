@@ -29,13 +29,13 @@ function safeNumber(value: unknown, fallback = 0): number {
 
 async function fetchStock(ticker: string): Promise<Stock | undefined> {
   try {
-    const result = await yahooFinance.quoteSummary(ticker, {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const result: any = await yahooFinance.quoteSummary(ticker, {
       modules: [
         "price",
         "summaryDetail",
         "defaultKeyStatistics",
         "financialData",
-        "earningsTrend",
       ],
     });
 

@@ -58,11 +58,21 @@ export interface Explanation {
   readonly value?: string;
 }
 
+export interface DataCompleteness {
+  readonly score: number; // 0-100, percentage of available metrics
+  readonly available: readonly string[]; // names of available metrics
+  readonly missing: readonly string[]; // names of missing metrics
+}
+
+export type ScoreConfidence = "high" | "medium" | "low";
+
 export interface StrategyScore {
   readonly strategyId: StrategyId;
   readonly total: number; // 0-100
   readonly subScores: readonly SubScore[];
   readonly explanations: readonly Explanation[];
+  readonly confidence: ScoreConfidence;
+  readonly dataCompleteness: DataCompleteness;
 }
 
 export interface ScoredStock {

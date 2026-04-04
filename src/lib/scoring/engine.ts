@@ -1,12 +1,10 @@
-import { Stock, StrategyId, StrategyScore, SubScore, ScoredStock, StockFilters } from "../types";
+import { Stock, StrategyId, StrategyScore, SubScore, ScoredStock } from "../types";
 import { computeWeightedTotal } from "./utils";
 import { generateExplanations } from "./explain";
+import { computeDataCompleteness, computeConfidence } from "./completeness";
 
 /**
  * Interface que chaque strategie doit implementer.
- *
- * Ajouter une strategie = creer une classe qui implemente
- * StrategyScorer, puis l'enregistrer via registerStrategy().
  */
 export interface StrategyScorer {
   readonly id: StrategyId;
@@ -33,7 +31,7 @@ export function getAllScorerIds(): StrategyId[] {
   return [...registry.keys()];
 }
 
-// --- Scoring functions ---
+// --- Scoring ---
 
 export function scoreStock(
   stock: Stock,
@@ -43,8 +41,10 @@ export function scoreStock(
   const subScores = scorer.score(stock);
   const total = computeWeightedTotal(subScores);
   const explanations = generateExplanations(stock, subScores, strategyId);
+  const dataCompleteness = computeDataCompleteness(stock, strategyId);
+  const confidence = computeConfidence(dataCompleteness);
 
-  return { strategyId, total, subScores, explanations };
+  return { strategyId, total, subScores, explanations, confidence, dataCompleteness };
 }
 
 export function scoreStockAllStrategies(
