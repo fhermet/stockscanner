@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { getStockByTicker } from "@/lib/mock-data";
+import { getDataProvider } from "@/lib/data";
 import { isValidStrategyId, getStrategy } from "@/lib/strategies";
 import "@/lib/scoring/strategies/buffett";
 import "@/lib/scoring/strategies/lynch";
@@ -12,15 +12,11 @@ import ScoreGauge from "@/components/ui/score-gauge";
 import MetricCard from "@/components/ui/metric-card";
 import ExplanationList from "@/components/ui/explanation-list";
 import ConfidenceBadge from "@/components/ui/confidence-badge";
+import { formatMarketCap } from "@/lib/format";
 
 interface PageProps {
   params: Promise<{ ticker: string }>;
   searchParams: Promise<{ strategy?: string }>;
-}
-
-function formatMarketCap(cap: number): string {
-  if (cap >= 1000) return `${(cap / 1000).toFixed(1)}T$`;
-  return `${cap}B$`;
 }
 
 export default async function StockDetailPage({
@@ -35,7 +31,8 @@ export default async function StockDetailPage({
       ? strategyParam
       : "buffett";
 
-  const stock = getStockByTicker(ticker);
+  const provider = getDataProvider();
+  const stock = await provider.getStock(ticker);
   if (!stock) notFound();
 
   const score = scoreStock(stock, strategyId);
