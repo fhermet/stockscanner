@@ -92,6 +92,42 @@ export const SECTOR_BENCHMARKS: Record<string, SectorBenchmark> = {
     per: 25,
     dividendYield: 0.5,
   },
+  Industrie: {
+    roe: 20,
+    operatingMargin: 14,
+    debtToEquity: 1.0,
+    revenueGrowth: 6,
+    epsGrowth: 10,
+    per: 22,
+    dividendYield: 1.5,
+  },
+  Energie: {
+    roe: 18,
+    operatingMargin: 15,
+    debtToEquity: 0.4,
+    revenueGrowth: 3,
+    epsGrowth: 5,
+    per: 12,
+    dividendYield: 3.5,
+  },
+  "Services publics": {
+    roe: 10,
+    operatingMargin: 20,
+    debtToEquity: 1.5,
+    revenueGrowth: 3,
+    epsGrowth: 4,
+    per: 18,
+    dividendYield: 3.5,
+  },
+  Materiaux: {
+    roe: 14,
+    operatingMargin: 12,
+    debtToEquity: 0.6,
+    revenueGrowth: 4,
+    epsGrowth: 6,
+    per: 16,
+    dividendYield: 2.5,
+  },
 };
 
 const DEFAULT_BENCHMARK: SectorBenchmark = {
