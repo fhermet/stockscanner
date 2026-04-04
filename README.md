@@ -147,7 +147,21 @@ src/
 │       ├── data-source-badge.tsx      # Source + fraicheur + warnings
 │       └── ...
 │
-└── hooks/                             # useWatchlist, useTheme, useStocks
+├── hooks/
+│   ├── use-watchlist.ts               # Watchlist localStorage
+│   ├── use-score-history.ts           # Score snapshots + deltas
+│   ├── use-theme.ts                   # Dark mode
+│   └── use-stocks.ts                  # Fetch + error handling
+│
+└── components/
+    ├── ticker-search.tsx              # Recherche libre
+    ├── top-opportunities.tsx          # Top 5 par strategie (home)
+    ├── score-movers.tsx               # Mouvements notables
+    └── ui/
+        ├── score-delta.tsx            # Badge +N / -N
+        ├── confidence-badge.tsx
+        ├── data-source-badge.tsx
+        └── ...
 ```
 
 ## Tests
@@ -175,7 +189,15 @@ npm run test:watch   # watch mode
 
 ## Historique des versions
 
-### V2.3 (actuelle) — Couverture et recherche
+### V2.4 (actuelle) — Performance percue et engagement
+- Progressive loading: mock instantane (phase 1) + Yahoo en arriere-plan (phase 2)
+- Cold load percu: ~0ms au lieu de 15-20s (donnees indicatives puis live)
+- Score history: snapshots localStorage, deltas entre visites (+3, -2)
+- Top opportunites: section home page avec top 5 par strategie
+- Score movers: detection automatique des mouvements significatifs (>=3 pts)
+- Banniere "Actualisation en cours..." pendant le chargement live
+
+### V2.3 — Couverture et recherche
 - Univers elargi a ~340 actions (S&P 500, NASDAQ 100, CAC 40, DAX 40, FTSE 100)
 - Module tickers/ centralise par region (us.ts, europe.ts)
 - Parallel batching (3x20) pour cold load en ~15-20s
@@ -205,7 +227,7 @@ npm run test:watch   # watch mode
 |----------|------|-----------|
 | P1 | Assistant IA contextuel (chat sur les actions) | Elevee |
 | P1 | Portefeuille virtuel (simulation) | Moyenne |
-| P1 | Insights automatiques (deltas de scores) | Moyenne |
+| ~~P1~~ | ~~Insights automatiques (deltas de scores)~~ | ~~Fait en V2.4~~ |
 | P2 | Screener dynamique (recherche par criteres, pas par liste) | Moyenne |
 | P2 | Authentification + watchlist persistante | Moyenne |
 | P2 | Backtesting de strategies | Elevee |
