@@ -1,5 +1,6 @@
 import { STRATEGIES } from "@/lib/strategies";
 import StrategyCard from "@/components/strategy-card";
+import TopOpportunities from "@/components/top-opportunities";
 
 export default function HomePage() {
   return (
@@ -22,6 +23,11 @@ export default function HomePage() {
         {STRATEGIES.map((strategy) => (
           <StrategyCard key={strategy.id} strategy={strategy} />
         ))}
+      </div>
+
+      {/* Top Opportunities */}
+      <div className="mt-20">
+        <TopOpportunities />
       </div>
 
       {/* How it works */}
