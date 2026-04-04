@@ -36,7 +36,7 @@ export default function ScoreMovers({ stocks, strategyId }: ScoreMoversProps) {
   return (
     <div className="mb-6 rounded-xl border border-slate-200 bg-white p-4">
       <h3 className="text-sm font-semibold text-slate-700 mb-3">
-        Mouvements notables depuis votre derniere visite
+        Mouvements notables depuis votre dernière visite
       </h3>
       <div className="flex flex-wrap gap-3">
         {gainers.map((m) => (

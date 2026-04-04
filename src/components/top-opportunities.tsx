@@ -31,10 +31,10 @@ export default function TopOpportunities() {
   return (
     <section>
       <h2 className="text-2xl font-bold text-slate-900 mb-2">
-        Top opportunites
+        Top opportunités
       </h2>
       <p className="text-sm text-slate-500 mb-6">
-        Les 5 actions les mieux classees par strategie
+        Les 5 actions les mieux classées par stratégie
       </p>
 
       {/* Strategy tabs */}
@@ -60,7 +60,7 @@ export default function TopOpportunities() {
           <div className="h-6 w-6 animate-spin rounded-full border-2 border-slate-200 border-t-brand-600" />
         </div>
       ) : stocks.length === 0 ? (
-        <p className="text-sm text-slate-400 py-6">Aucune donnee disponible</p>
+        <p className="text-sm text-slate-400 py-6">Aucune donnée disponible</p>
       ) : (
         <div className="grid gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-5">
           {stocks.map((item, i) => (

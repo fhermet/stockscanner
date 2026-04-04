@@ -36,7 +36,7 @@ export default function WatchlistButton({
           ? "Retirer de la watchlist"
           : isFull
             ? "Watchlist pleine (5 max)"
-            : "Ajouter a la watchlist"
+            : "Ajouter à la watchlist"
       }
       className={`inline-flex items-center justify-center rounded-full transition-all ${sizeClass} ${
         active

@@ -8,7 +8,7 @@ interface ConfidenceBadgeProps {
 
 const CONFIDENCE_CONFIG = {
   high: {
-    label: "Confiance elevee",
+    label: "Confiance élevée",
     color: "bg-emerald-100 text-emerald-700 ring-emerald-600/20",
     icon: "M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z",
   },

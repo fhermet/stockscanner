@@ -20,7 +20,7 @@ export default function CompareBar({
       <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3">
         <span className="text-sm text-slate-600">
           <span className="font-bold text-slate-900">{selected.length}</span>{" "}
-          <span className="hidden sm:inline">action{selected.length > 1 ? "s" : ""} selectionnee{selected.length > 1 ? "s" : ""}</span>
+          <span className="hidden sm:inline">action{selected.length > 1 ? "s" : ""} sélectionnée{selected.length > 1 ? "s" : ""}</span>
         </span>
         <div className="flex flex-wrap items-center gap-1.5">
           {selected.map((t) => (

@@ -12,8 +12,8 @@ const STRATEGIES: { id: StrategyId; label: string }[] = [
 ];
 
 const MODES: { id: AlertMode; label: string; description: string }[] = [
-  { id: "strict", label: "Strict", description: "Moins d'alertes, seuils eleves" },
-  { id: "normal", label: "Normal", description: "Equilibre par defaut" },
+  { id: "strict", label: "Strict", description: "Moins d'alertes, seuils élevés" },
+  { id: "normal", label: "Normal", description: "Équilibre par défaut" },
   { id: "sensitive", label: "Sensible", description: "Plus d'alertes, seuils bas" },
 ];
 
@@ -29,7 +29,7 @@ export default function SettingsPage() {
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-8">
-      <h1 className="text-2xl font-bold text-slate-900 mb-1">Parametres</h1>
+      <h1 className="text-2xl font-bold text-slate-900 mb-1">Paramètres</h1>
       <p className="text-sm text-slate-500 mb-8">
         Personnalisez votre experience StockScanner
       </p>
@@ -37,7 +37,7 @@ export default function SettingsPage() {
       {/* Favorite strategy */}
       <section className="mb-8">
         <h2 className="text-sm font-semibold text-slate-700 uppercase tracking-wider mb-3">
-          Strategie favorite
+          Stratégie favorite
         </h2>
         <div className="flex flex-wrap gap-2">
           {STRATEGIES.map((s) => (
@@ -169,7 +169,7 @@ export default function SettingsPage() {
           }}
           className="text-sm text-red-500 hover:text-red-700 transition-colors"
         >
-          Reinitialiser tous les parametres
+          Réinitialiser tous les paramètres
         </button>
       </div>
     </div>

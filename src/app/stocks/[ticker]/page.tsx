@@ -119,7 +119,7 @@ export default async function StockDetailPage({
             <ScoreBadge score={score.total} size="lg" />
           </div>
           <p className="mt-1 text-xs text-slate-400">
-            Score strategie {strategy.name}
+            Score stratégie {strategy.name}
           </p>
           <div className="mt-2">
             <ConfidenceBadge
@@ -136,7 +136,7 @@ export default async function StockDetailPage({
           {/* Sub-scores */}
           <section className="rounded-xl border border-slate-200 bg-white p-6">
             <h2 className="text-lg font-bold text-slate-900 mb-4">
-              Decomposition du score
+              Décomposition du score
             </h2>
             <div className="space-y-4">
               {score.subScores.map((sub) => (
@@ -161,7 +161,7 @@ export default async function StockDetailPage({
           {/* Explanation */}
           <section className="rounded-xl border border-slate-200 bg-white p-6">
             <h2 className="text-lg font-bold text-slate-900 mb-4">
-              Pourquoi cette action correspond a la strategie {strategy.name} ?
+              Pourquoi cette action correspond à la stratégie {strategy.name} ?
             </h2>
 
             {positiveExplanations.length > 0 && (
@@ -258,7 +258,7 @@ export default async function StockDetailPage({
         {/* Right: Metrics sidebar */}
         <div className="space-y-3">
           <h2 className="text-sm font-semibold text-slate-500 uppercase tracking-wider">
-            Metriques cles
+            Métriques clés
           </h2>
           <MetricCard
             label="Market Cap"
@@ -272,7 +272,7 @@ export default async function StockDetailPage({
             value={String(stock.debtToEquity)}
           />
           <MetricCard
-            label="Marge operationnelle"
+            label="Marge opérationnelle"
             value={`${stock.operatingMargin}%`}
           />
           <MetricCard

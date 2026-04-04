@@ -64,13 +64,13 @@ export default function DataSourceBadge({ meta }: DataSourceBadgeProps) {
 
       {isFallback && (
         <p className="text-xs text-amber-600">
-          Source principale indisponible — donnees de secours utilisees
+          Source principale indisponible — données de secours utilisées
         </p>
       )}
 
       {isStale && !isFallback && (
         <p className="text-xs text-amber-600">
-          Donnees en cours de rafraichissement
+          Données en cours de rafraîchissement
         </p>
       )}
     </div>

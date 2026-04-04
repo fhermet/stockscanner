@@ -209,7 +209,7 @@ function ScannerContent() {
         </h1>
         {strategy && (
           <p className="mt-1 text-sm text-slate-500">
-            Strategie <strong>{strategy.name}</strong> &middot; {strategy.philosophy}
+            Stratégie <strong>{strategy.name}</strong> &middot; {strategy.philosophy}
           </p>
         )}
         {meta && <div className="mt-2"><DataSourceBadge meta={meta} /></div>}
@@ -243,7 +243,7 @@ function ScannerContent() {
       {refreshing && (
         <div className="mb-4 flex items-center gap-2 rounded-lg border border-brand-200 bg-brand-50 px-4 py-2.5">
           <div className="h-4 w-4 animate-spin rounded-full border-2 border-brand-300 border-t-brand-600" />
-          <p className="text-sm text-brand-700">Actualisation des donnees en direct...</p>
+          <p className="text-sm text-brand-700">Actualisation des données en direct...</p>
         </div>
       )}
 
@@ -254,12 +254,12 @@ function ScannerContent() {
       <div className="mb-4 flex items-center justify-between">
         <div>
           <p className="text-sm text-slate-500">
-            {loading ? "Chargement..." : `${stocks.length} actions classees`}
+            {loading ? "Chargement..." : `${stocks.length} actions classées`}
           </p>
           {!loading && universe && (
             <p className="text-xs text-slate-400">
               Base sur un univers de {universe.total} actions
-              {universe.fetched < universe.total && <> &middot; {universe.fetched} recuperees</>}
+              {universe.fetched < universe.total && <> &middot; {universe.fetched} récupérées</>}
             </p>
           )}
         </div>

@@ -55,7 +55,7 @@ export default function Header() {
       <Link
         href="/settings"
         className="text-slate-400 hover:text-slate-600 transition-colors"
-        title="Parametres"
+        title="Paramètres"
         onClick={() => setMobileOpen(false)}
       >
         <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">

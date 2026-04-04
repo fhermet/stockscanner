@@ -129,7 +129,7 @@ function CompareContent() {
   return (
     <div className="mx-auto max-w-5xl px-4 py-8">
       <h1 className="text-2xl font-bold text-slate-900 mb-1">Comparateur</h1>
-      <p className="text-sm text-slate-500 mb-6">Comparez 2 a 4 actions selon une strategie</p>
+      <p className="text-sm text-slate-500 mb-6">Comparez 2 à 4 actions selon une stratégie</p>
 
       <div className="mb-4 flex items-center gap-2">
         <input type="text" value={input} onChange={(e) => setInput(e.target.value)} onKeyDown={(e) => e.key === "Enter" && addTicker()}
@@ -161,14 +161,14 @@ function CompareContent() {
             Comparez des actions
           </h3>
           <p className="text-sm text-slate-500 mb-4">
-            Ajoutez 2 a 4 tickers ci-dessus pour comparer leurs scores,
-            sous-scores et metriques cles selon une strategie.
+            Ajoutez 2 à 4 tickers ci-dessus pour comparer leurs scores,
+            sous-scores et métriques clés selon une stratégie.
           </p>
           <a
             href="/scanner?strategy=buffett"
             className="text-sm font-medium text-brand-600 hover:text-brand-700 transition-colors"
           >
-            Decouvrir des actions dans le scanner &rarr;
+            Découvrir des actions dans le scanner &rarr;
           </a>
         </div>
       )}
@@ -247,10 +247,10 @@ function CompareContent() {
 
           {/* Metrics */}
           <div className="rounded-xl border border-slate-200 bg-white p-6">
-            <h2 className="text-lg font-bold text-slate-900 mb-4">Metriques cles</h2>
-            <ComparisonTable title="Metrique" metrics={comparison.metricComparison} tickers={stocks.map((s) => s.stock.ticker)} />
+            <h2 className="text-lg font-bold text-slate-900 mb-4">Métriques clés</h2>
+            <ComparisonTable title="Métrique" metrics={comparison.metricComparison} tickers={stocks.map((s) => s.stock.ticker)} />
             {comparison.metricComparison.some((m) => m.isPartial) && (
-              <p className="mt-2 text-[10px] text-slate-400">* Donnees partielles — comparaison limitee sur ces metriques</p>
+              <p className="mt-2 text-[10px] text-slate-400">* Données partielles — comparaison limitée sur ces métriques</p>
             )}
           </div>
         </div>

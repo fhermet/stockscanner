@@ -13,14 +13,14 @@ export default function ErrorPage({ reset }: ErrorPageProps) {
         Une erreur est survenue
       </h1>
       <p className="text-sm text-slate-500 mb-8">
-        Le chargement de cette page a echoue. Cela peut etre du a un probleme
-        temporaire avec les donnees ou le reseau.
+        Le chargement de cette page a échoué. Cela peut être dû à un problème
+        temporaire avec les données ou le réseau.
       </p>
       <button
         onClick={reset}
         className="rounded-lg bg-brand-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-brand-700 transition-colors"
       >
-        Reessayer
+        Réessayer
       </button>
     </div>
   );

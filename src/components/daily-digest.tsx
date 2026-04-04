@@ -87,7 +87,7 @@ export default function DailyDigest() {
   const SORTS: { id: DigestSort; label: string }[] = [
     { id: "importance", label: "Importance" },
     { id: "variation", label: "Variation" },
-    { id: "strategy", label: "Strategie" },
+    { id: "strategy", label: "Stratégie" },
   ];
 
   return (

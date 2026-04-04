@@ -50,7 +50,7 @@ export default function ScoreHistoryPanel({
           Evolution du score
         </h2>
         <p className="text-sm text-slate-400">
-          L&apos;historique sera disponible a partir de votre prochaine visite.
+          L&apos;historique sera disponible à partir de votre prochaine visite.
         </p>
       </section>
     );

@@ -22,7 +22,7 @@ export default function Sparkline({
   if (data.length < 2) {
     return (
       <p className="text-xs text-slate-400 italic">
-        Pas assez de donnees pour afficher un graphique
+        Pas assez de données pour afficher un graphique
       </p>
     );
   }

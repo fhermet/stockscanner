@@ -41,7 +41,7 @@ export default function StockFilters({
       {/* Strategy selector */}
       <div>
         <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
-          Strategie
+          Stratégie
         </label>
         <div className="flex flex-wrap gap-2">
           {STRATEGY_OPTIONS.map((opt) => (
