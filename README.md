@@ -9,7 +9,7 @@ Application web de **stock screener oriente strategies d'investissement**.
 ```bash
 npm install
 npm run dev          # http://localhost:3000
-npm test             # 58 tests
+npm test             # 72 tests
 ```
 
 Pour activer les donnees Yahoo Finance (gratuites, temps reel) :
@@ -169,7 +169,7 @@ src/
 ## Tests
 
 ```bash
-npm test             # 58 tests
+npm test             # 72 tests
 npm run test:watch   # watch mode
 ```
 
@@ -180,6 +180,7 @@ npm run test:watch   # watch mode
 | completeness | 7 | Completeness, confiance |
 | strategies | 20 | Registry, output shape, donnees partielles |
 | **coherence** | **11** | **Panel de reference, coherence metier** |
+| **alerts** | **14** | **Evaluation, seuils, dedup, watchlist filter, modes** |
 
 ## Limites connues
 
@@ -191,7 +192,17 @@ npm run test:watch   # watch mode
 
 ## Historique des versions
 
-### V2.5 (actuelle) — Engagement et retour quotidien
+### V2.6 (actuelle) — Personnalisation et alertes intelligentes
+- Preferences utilisateur (localStorage): strategie favorite, mode alerte, seuils
+- 3 modes d'alerte: strict (score>85/delta>8), normal (80/5), sensitive (70/3)
+- Page /settings: mode selector, toggles on/off par regle, seuils editables,
+  switch watchlist-only, bouton reset
+- Alertes enrichies avec explanation (1 phrase contextuelle par alerte)
+- Daily digest ameliore: filtres (toutes/watchlist/hausse/baisse),
+  tri (importance/variation/strategie), badge strategie, explications
+- 72 tests (14 nouveaux pour le moteur d'alertes)
+
+### V2.5 — Engagement et retour quotidien
 - Systeme d'alertes: 4 types de regles (score_above/below, delta_above/below),
   evaluation automatique, persistence localStorage, deduplication par jour
 - Page /watchlist dediee: scores live, deltas, tri par score/variation/nom,
