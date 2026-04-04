@@ -14,6 +14,7 @@ import StockFiltersComponent from "@/components/stock-filters";
 import StockTable from "@/components/stock-table";
 import StockCard from "@/components/stock-card";
 import DataSourceBadge from "@/components/ui/data-source-badge";
+import TickerSearch from "@/components/ticker-search";
 
 function parseMarketCapFilter(value: string): Partial<StockFiltersType> {
   switch (value) {
@@ -98,6 +99,11 @@ function ScannerContent() {
             <DataSourceBadge meta={meta} />
           </div>
         )}
+      </div>
+
+      {/* Search */}
+      <div className="mb-4">
+        <TickerSearch strategyId={strategyId} />
       </div>
 
       {/* Filters */}
