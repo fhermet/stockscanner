@@ -29,6 +29,12 @@ export default function Header() {
           >
             Scanner
           </Link>
+          <Link
+            href="/watchlist"
+            className="text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors"
+          >
+            Watchlist
+          </Link>
         </nav>
       </div>
     </header>
