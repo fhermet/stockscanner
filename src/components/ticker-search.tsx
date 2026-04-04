@@ -45,7 +45,7 @@ export default function TickerSearch({ strategyId }: TickerSearchProps) {
 
   return (
     <div className="flex items-center gap-2">
-      <div className="relative flex-1 max-w-xs">
+      <div className="relative flex-1 sm:max-w-xs">
         <input
           type="text"
           value={query}

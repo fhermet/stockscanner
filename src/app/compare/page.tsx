@@ -134,7 +134,7 @@ function CompareContent() {
       <div className="mb-4 flex items-center gap-2">
         <input type="text" value={input} onChange={(e) => setInput(e.target.value)} onKeyDown={(e) => e.key === "Enter" && addTicker()}
           placeholder="Ajouter un ticker (ex: AAPL)" disabled={tickers.length >= MAX_TICKERS}
-          className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 focus:border-brand-500 focus:ring-1 focus:ring-brand-500 focus:outline-none w-48" />
+          className="rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-700 focus:border-brand-500 focus:ring-1 focus:ring-brand-500 focus:outline-none w-full sm:w-48" />
         <button onClick={addTicker} disabled={!input.trim() || tickers.length >= MAX_TICKERS}
           className="rounded-lg bg-brand-600 px-3 py-2 text-sm font-medium text-white hover:bg-brand-700 disabled:opacity-50 transition-colors">
           Ajouter
