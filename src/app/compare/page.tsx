@@ -150,8 +150,28 @@ function CompareContent() {
             </button>
           </span>
         ))}
-        {tickers.length < 2 && <span className="text-xs text-slate-400 self-center">Ajoutez au moins 2 tickers</span>}
       </div>
+
+      {tickers.length < 2 && !loading && (
+        <div className="mb-6 rounded-xl border border-slate-200 bg-white p-8 text-center">
+          <svg className="mx-auto h-10 w-10 text-slate-300 mb-3" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 21 3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" />
+          </svg>
+          <h3 className="text-lg font-semibold text-slate-900 mb-1">
+            Comparez des actions
+          </h3>
+          <p className="text-sm text-slate-500 mb-4">
+            Ajoutez 2 a 4 tickers ci-dessus pour comparer leurs scores,
+            sous-scores et metriques cles selon une strategie.
+          </p>
+          <a
+            href="/scanner?strategy=buffett"
+            className="text-sm font-medium text-brand-600 hover:text-brand-700 transition-colors"
+          >
+            Decouvrir des actions dans le scanner &rarr;
+          </a>
+        </div>
+      )}
 
       {failedTickers.length > 0 && (
         <div className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-2.5">
