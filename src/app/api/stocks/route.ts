@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getDataProvider } from "@/lib/data";
+import { getDataProvider, getMeta } from "@/lib/data";
 import { isValidStrategyId, getStrategy } from "@/lib/strategies";
 import { StockFilters } from "@/lib/types";
 
@@ -41,10 +41,12 @@ export async function GET(request: NextRequest) {
 
   const scored = await scoreAndRankStocks(stocks, strategyParam);
   const strategy = getStrategy(strategyParam);
+  const meta = getMeta();
 
   return NextResponse.json({
     stocks: scored,
     strategy,
     filters: { sectors, countries },
+    meta,
   });
 }

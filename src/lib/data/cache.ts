@@ -1,30 +1,20 @@
 import { Stock, StockFilters } from "../types";
 import { DataProvider } from "./provider";
+import { updateMeta, buildCachedMeta } from "./metadata";
 
 interface CacheEntry<T> {
   readonly data: T;
-  readonly expiresAt: number;
+  readonly cachedAt: number;
+  readonly innerSource: string;
 }
 
-/**
- * Cache decorator pour un DataProvider.
- *
- * Wrap un provider existant et met en cache les resultats
- * avec un TTL configurable.
- *
- * Usage :
- *   const provider = new CachedDataProvider(new FMPDataProvider(key), {
- *     stocksTTL: 60 * 60 * 1000,    // 1h
- *     stockTTL: 15 * 60 * 1000,     // 15min
- *   });
- */
 export interface CacheConfig {
-  readonly stocksTTL: number; // TTL pour getStocks (ms)
-  readonly stockTTL: number; // TTL pour getStock (ms)
+  readonly stocksTTL: number;
+  readonly stockTTL: number;
 }
 
 const DEFAULT_CONFIG: CacheConfig = {
-  stocksTTL: 60 * 60 * 1000, // 1 heure
+  stocksTTL: 60 * 60 * 1000, // 1 hour
   stockTTL: 15 * 60 * 1000, // 15 minutes
 };
 
@@ -34,69 +24,96 @@ export class CachedDataProvider implements DataProvider {
   private readonly config: CacheConfig;
   private readonly cache = new Map<string, CacheEntry<unknown>>();
 
+  // Observable stats
+  private _hits = 0;
+  private _misses = 0;
+
   constructor(inner: DataProvider, config?: Partial<CacheConfig>) {
     this.inner = inner;
     this.name = `cached:${inner.name}`;
     this.config = { ...DEFAULT_CONFIG, ...config };
   }
 
-  private get<T>(key: string): T | undefined {
-    const entry = this.cache.get(key);
-    if (!entry) return undefined;
-    if (Date.now() > entry.expiresAt) {
-      this.cache.delete(key);
-      return undefined;
-    }
-    return entry.data as T;
+  get stats() {
+    return {
+      hits: this._hits,
+      misses: this._misses,
+      entries: this.cache.size,
+      hitRate: this._hits + this._misses > 0
+        ? Math.round((this._hits / (this._hits + this._misses)) * 100)
+        : 0,
+    };
   }
 
-  private set<T>(key: string, data: T, ttl: number): void {
-    this.cache.set(key, { data, expiresAt: Date.now() + ttl });
+  private get<T>(key: string, ttl: number): T | undefined {
+    const entry = this.cache.get(key) as CacheEntry<T> | undefined;
+    if (!entry) {
+      this._misses++;
+      return undefined;
+    }
+    this._hits++;
+    updateMeta(buildCachedMeta(entry.innerSource, entry.cachedAt, ttl));
+    return entry.data;
+  }
+
+  private set<T>(key: string, data: T): void {
+    // Extract inner source name from composite provider name
+    const innerSource = this.inner.name.includes("composite")
+      ? this.inner.name
+      : this.inner.name;
+
+    this.cache.set(key, {
+      data,
+      cachedAt: Date.now(),
+      innerSource,
+    });
   }
 
   async getStocks(filters?: StockFilters): Promise<readonly Stock[]> {
     const key = `stocks:${JSON.stringify(filters ?? {})}`;
-    const cached = this.get<readonly Stock[]>(key);
+    const cached = this.get<readonly Stock[]>(key, this.config.stocksTTL);
     if (cached) return cached;
 
     const result = await this.inner.getStocks(filters);
-    this.set(key, result, this.config.stocksTTL);
+    this.set(key, result);
     return result;
   }
 
   async getStock(ticker: string): Promise<Stock | undefined> {
     const key = `stock:${ticker.toLowerCase()}`;
-    const cached = this.get<Stock | undefined>(key);
+    const cached = this.get<Stock | undefined>(key, this.config.stockTTL);
     if (cached !== undefined) return cached;
 
     const result = await this.inner.getStock(ticker);
     if (result) {
-      this.set(key, result, this.config.stockTTL);
+      this.set(key, result);
     }
     return result;
   }
 
   async getSectors(): Promise<readonly string[]> {
     const key = "sectors";
-    const cached = this.get<readonly string[]>(key);
+    const cached = this.get<readonly string[]>(key, this.config.stocksTTL);
     if (cached) return cached;
 
     const result = await this.inner.getSectors();
-    this.set(key, result, this.config.stocksTTL);
+    this.set(key, result);
     return result;
   }
 
   async getCountries(): Promise<readonly string[]> {
     const key = "countries";
-    const cached = this.get<readonly string[]>(key);
+    const cached = this.get<readonly string[]>(key, this.config.stocksTTL);
     if (cached) return cached;
 
     const result = await this.inner.getCountries();
-    this.set(key, result, this.config.stocksTTL);
+    this.set(key, result);
     return result;
   }
 
   clearCache(): void {
     this.cache.clear();
+    this._hits = 0;
+    this._misses = 0;
   }
 }

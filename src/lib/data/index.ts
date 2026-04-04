@@ -9,6 +9,7 @@ export { MockDataProvider } from "./mock-provider";
 export { YahooDataProvider } from "./yahoo-provider";
 export { CompositeDataProvider } from "./composite-provider";
 export { CachedDataProvider } from "./cache";
+export { getMeta } from "./metadata";
 
 /**
  * Factory singleton pour le DataProvider.

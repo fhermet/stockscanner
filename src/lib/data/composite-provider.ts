@@ -1,14 +1,9 @@
 import { Stock, StockFilters } from "../types";
 import { DataProvider } from "./provider";
+import { updateMeta, buildFreshMeta } from "./metadata";
 
 /**
- * Composite data provider avec fallback automatique.
- *
- * Essaie les providers dans l'ordre. Si le premier echoue ou
- * retourne un resultat vide, passe au suivant.
- *
- * Usage typique : CompositeProvider([yahooProvider, mockProvider])
- * → essaie Yahoo d'abord, fallback sur les donnees locales.
+ * Composite data provider avec fallback automatique et metadata tracking.
  */
 export class CompositeDataProvider implements DataProvider {
   readonly name: string;
@@ -23,24 +18,32 @@ export class CompositeDataProvider implements DataProvider {
   }
 
   async getStocks(filters?: StockFilters): Promise<readonly Stock[]> {
-    for (const provider of this.providers) {
+    for (let i = 0; i < this.providers.length; i++) {
+      const provider = this.providers[i];
       try {
         const result = await provider.getStocks(filters);
-        if (result.length > 0) return result;
+        if (result.length > 0) {
+          updateMeta(buildFreshMeta(provider.name, i > 0));
+          return result;
+        }
       } catch {
-        // Silently fall through to next provider
+        // Fall through to next provider
       }
     }
     return [];
   }
 
   async getStock(ticker: string): Promise<Stock | undefined> {
-    for (const provider of this.providers) {
+    for (let i = 0; i < this.providers.length; i++) {
+      const provider = this.providers[i];
       try {
         const result = await provider.getStock(ticker);
-        if (result) return result;
+        if (result) {
+          updateMeta(buildFreshMeta(provider.name, i > 0));
+          return result;
+        }
       } catch {
-        // Silently fall through to next provider
+        // Fall through
       }
     }
     return undefined;

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getDataProvider } from "@/lib/data";
+import { getDataProvider, getMeta } from "@/lib/data";
 import { isValidStrategyId, getStrategy } from "@/lib/strategies";
 
 import "@/lib/scoring/strategies/buffett";
@@ -35,6 +35,7 @@ export async function GET(
 
   const score = scoreStock(stock, strategyParam);
   const strategy = getStrategy(strategyParam);
+  const meta = getMeta();
 
-  return NextResponse.json({ stock, score, strategy });
+  return NextResponse.json({ stock, score, strategy, meta });
 }

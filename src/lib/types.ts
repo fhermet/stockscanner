@@ -89,6 +89,17 @@ export interface StockFilters {
   readonly marketCapMax?: number;
 }
 
+// --- Data metadata ---
+
+export interface DataMeta {
+  readonly source: string; // "yahoo" | "mock" | "cache:yahoo" | "cache:mock"
+  readonly fetchedAt: number; // unix timestamp ms
+  readonly isFallback: boolean; // true if came from fallback provider
+  readonly isCached: boolean;
+  readonly cacheAgeMs: number; // 0 if not cached
+  readonly isStale: boolean; // true if cache expired but serving stale data
+}
+
 // --- API responses ---
 
 export interface StrategiesResponse {
