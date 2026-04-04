@@ -17,6 +17,8 @@ import DataSourceBadge from "@/components/ui/data-source-badge";
 import TickerSearch from "@/components/ticker-search";
 import { useScoreHistory } from "@/hooks/use-score-history";
 import { useAlerts } from "@/hooks/use-alerts";
+import { usePreferences } from "@/hooks/use-preferences";
+import { useWatchlist } from "@/hooks/use-watchlist";
 import ScoreMovers from "@/components/score-movers";
 
 function parseMarketCapFilter(value: string): Partial<StockFiltersType> {
@@ -83,6 +85,8 @@ function ScannerContent() {
 
   const { saveScores, getDelta } = useScoreHistory();
   const { evaluate } = useAlerts();
+  const { prefs } = usePreferences();
+  const { tickers: watchlistTickers } = useWatchlist();
 
   // Abort controller for cancelling stale fetches
   const abortRef = useRef<AbortController | null>(null);
@@ -147,7 +151,11 @@ function ScannerContent() {
               score: s.score.total,
               delta: getDelta(s.stock.ticker, strategyId, s.score.total).delta,
               strategyId,
-            }))
+            })),
+            {
+              watchlistOnly: prefs.watchlistOnly,
+              watchlistTickers,
+            }
           );
         }
       }

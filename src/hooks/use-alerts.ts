@@ -15,8 +15,9 @@ export interface AlertRule {
   readonly type: AlertRuleType;
   readonly threshold: number;
   readonly strategyId: StrategyId;
-  readonly ticker?: string; // undefined = applies to all stocks
+  readonly ticker?: string;
   readonly label: string;
+  readonly enabled: boolean;
 }
 
 export interface TriggeredAlert {
@@ -26,51 +27,65 @@ export interface TriggeredAlert {
   readonly value: number;
   readonly label: string;
   readonly type: AlertRuleType;
-  readonly triggeredAt: string; // ISO date
+  readonly strategyId: StrategyId;
+  readonly explanation: string;
+  readonly triggeredAt: string;
 }
 
-// --- Default rules (active out of the box, no config needed) ---
+// --- Default rules ---
 
-const DEFAULT_RULES: AlertRule[] = [
-  {
-    id: "score-above-80",
-    type: "score_above",
-    threshold: 80,
-    strategyId: "buffett",
-    label: "Score Buffett > 80",
-  },
-  {
-    id: "score-above-80-dividend",
-    type: "score_above",
-    threshold: 80,
-    strategyId: "dividend",
-    label: "Score Dividende > 80",
-  },
-  {
-    id: "delta-above-5",
-    type: "delta_above",
-    threshold: 5,
-    strategyId: "buffett",
-    label: "Hausse > +5 pts (Buffett)",
-  },
-  {
-    id: "delta-below-minus5",
-    type: "delta_below",
-    threshold: -5,
-    strategyId: "buffett",
-    label: "Baisse > -5 pts (Buffett)",
-  },
-];
+function buildDefaultRules(scoreThreshold: number, deltaThreshold: number): AlertRule[] {
+  return [
+    {
+      id: "score-above-buffett",
+      type: "score_above",
+      threshold: scoreThreshold,
+      strategyId: "buffett",
+      label: `Score Buffett > ${scoreThreshold}`,
+      enabled: true,
+    },
+    {
+      id: "score-above-dividend",
+      type: "score_above",
+      threshold: scoreThreshold,
+      strategyId: "dividend",
+      label: `Score Dividende > ${scoreThreshold}`,
+      enabled: true,
+    },
+    {
+      id: "delta-above",
+      type: "delta_above",
+      threshold: deltaThreshold,
+      strategyId: "buffett",
+      label: `Hausse > +${deltaThreshold} pts`,
+      enabled: true,
+    },
+    {
+      id: "delta-below",
+      type: "delta_below",
+      threshold: -deltaThreshold,
+      strategyId: "buffett",
+      label: `Baisse > -${deltaThreshold} pts`,
+      enabled: true,
+    },
+  ];
+}
 
 // --- Storage ---
 
 function loadRules(): AlertRule[] {
-  if (typeof window === "undefined") return DEFAULT_RULES;
+  if (typeof window === "undefined") return buildDefaultRules(80, 5);
   try {
     const raw = localStorage.getItem(RULES_KEY);
-    return raw ? JSON.parse(raw) : DEFAULT_RULES;
+    if (!raw) return buildDefaultRules(80, 5);
+    const parsed = JSON.parse(raw) as AlertRule[];
+    // Migration: add enabled field if missing
+    return parsed.map((r) => ({
+      ...r,
+      enabled: r.enabled ?? true,
+    }));
   } catch {
-    return DEFAULT_RULES;
+    return buildDefaultRules(80, 5);
   }
 }
 
@@ -91,9 +106,36 @@ function loadTriggered(): TriggeredAlert[] {
 
 function saveTriggered(alerts: TriggeredAlert[]): void {
   if (typeof window === "undefined") return;
-  // Keep only last 50 alerts
-  const trimmed = alerts.slice(-50);
-  localStorage.setItem(TRIGGERED_KEY, JSON.stringify(trimmed));
+  localStorage.setItem(TRIGGERED_KEY, JSON.stringify(alerts.slice(-50)));
+}
+
+// --- Explanation generator ---
+
+function buildExplanation(
+  type: AlertRuleType,
+  value: number,
+  strategyId: StrategyId
+): string {
+  const strategyLabel: Record<StrategyId, string> = {
+    buffett: "Buffett",
+    lynch: "Lynch",
+    growth: "Growth",
+    dividend: "Dividende",
+  };
+  const name = strategyLabel[strategyId];
+
+  switch (type) {
+    case "score_above":
+      return `Score ${name} de ${value}/100 — profil solide selon les criteres ${name}.`;
+    case "score_below":
+      return `Score ${name} passe a ${value}/100 — les fondamentaux se deteriorent.`;
+    case "delta_above":
+      return `Progression de +${value} pts en ${name} — amelioration des metriques cles.`;
+    case "delta_below":
+      return `Recul de ${value} pts en ${name} — degradation recente des fondamentaux.`;
+    default:
+      return "";
+  }
 }
 
 // --- Evaluation ---
@@ -106,7 +148,13 @@ interface StockScore {
   readonly strategyId: StrategyId;
 }
 
+interface EvaluateOptions {
+  readonly watchlistTickers?: readonly string[];
+  readonly watchlistOnly?: boolean;
+}
+
 function evaluateRule(rule: AlertRule, stock: StockScore): boolean {
+  if (!rule.enabled) return false;
   if (rule.strategyId !== stock.strategyId) return false;
   if (rule.ticker && rule.ticker !== stock.ticker) return false;
 
@@ -136,18 +184,22 @@ export function useAlerts() {
   }, []);
 
   const evaluate = useCallback(
-    (stocks: StockScore[]): TriggeredAlert[] => {
+    (stocks: StockScore[], options?: EvaluateOptions): TriggeredAlert[] => {
       const currentRules = loadRules();
       const todayStr = new Date().toISOString().split("T")[0];
       const existing = loadTriggered();
 
+      // Filter to watchlist-only if requested
+      const filteredStocks = options?.watchlistOnly && options.watchlistTickers
+        ? stocks.filter((s) => options.watchlistTickers!.includes(s.ticker))
+        : stocks;
+
       const newAlerts: TriggeredAlert[] = [];
 
-      for (const stock of stocks) {
+      for (const stock of filteredStocks) {
         for (const rule of currentRules) {
           if (!evaluateRule(rule, stock)) continue;
 
-          // Deduplicate: one alert per rule+ticker per day
           const alreadyTriggered = existing.some(
             (a) =>
               a.ruleId === rule.id &&
@@ -165,6 +217,12 @@ export function useAlerts() {
               : stock.score,
             label: rule.label,
             type: rule.type,
+            strategyId: rule.strategyId,
+            explanation: buildExplanation(
+              rule.type,
+              rule.type.startsWith("delta") ? (stock.delta ?? 0) : stock.score,
+              rule.strategyId
+            ),
             triggeredAt: todayStr,
           });
         }
@@ -181,12 +239,33 @@ export function useAlerts() {
     []
   );
 
+  const toggleRule = useCallback(
+    (ruleId: string) => {
+      const updated = rules.map((r) =>
+        r.id === ruleId ? { ...r, enabled: !r.enabled } : r
+      );
+      setRules(updated);
+      saveRules(updated);
+    },
+    [rules]
+  );
+
+  const updateRuleThreshold = useCallback(
+    (ruleId: string, threshold: number) => {
+      const updated = rules.map((r) =>
+        r.id === ruleId
+          ? { ...r, threshold, label: r.label.replace(/[><=]\s*[-+]?\d+/, `> ${threshold}`) }
+          : r
+      );
+      setRules(updated);
+      saveRules(updated);
+    },
+    [rules]
+  );
+
   const addRule = useCallback(
-    (rule: Omit<AlertRule, "id">) => {
-      const newRule: AlertRule = {
-        ...rule,
-        id: `custom-${Date.now()}`,
-      };
+    (rule: Omit<AlertRule, "id" | "enabled">) => {
+      const newRule: AlertRule = { ...rule, id: `custom-${Date.now()}`, enabled: true };
       const updated = [...rules, newRule];
       setRules(updated);
       saveRules(updated);
@@ -203,6 +282,15 @@ export function useAlerts() {
     [rules]
   );
 
+  const resetRules = useCallback(
+    (scoreThreshold: number, deltaThreshold: number) => {
+      const defaults = buildDefaultRules(scoreThreshold, deltaThreshold);
+      setRules(defaults);
+      saveRules(defaults);
+    },
+    []
+  );
+
   const clearTriggered = useCallback(() => {
     setTriggered([]);
     saveTriggered([]);
@@ -217,8 +305,11 @@ export function useAlerts() {
     triggered,
     todayAlerts,
     evaluate,
+    toggleRule,
+    updateRuleThreshold,
     addRule,
     removeRule,
+    resetRules,
     clearTriggered,
     alertCount: todayAlerts.length,
   };
