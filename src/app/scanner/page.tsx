@@ -16,6 +16,7 @@ import StockCard from "@/components/stock-card";
 import DataSourceBadge from "@/components/ui/data-source-badge";
 import TickerSearch from "@/components/ticker-search";
 import { useScoreHistory } from "@/hooks/use-score-history";
+import { useAlerts } from "@/hooks/use-alerts";
 import ScoreMovers from "@/components/score-movers";
 
 function parseMarketCapFilter(value: string): Partial<StockFiltersType> {
@@ -80,7 +81,8 @@ function ScannerContent() {
     displayed: number;
   } | null>(null);
 
-  const { saveScores } = useScoreHistory();
+  const { saveScores, getDelta } = useScoreHistory();
+  const { evaluate } = useAlerts();
 
   // Abort controller for cancelling stale fetches
   const abortRef = useRef<AbortController | null>(null);
@@ -129,13 +131,22 @@ function ScannerContent() {
         if (fullData.universe) setUniverse(fullData.universe);
         setRefreshing(false);
 
-        // Save live scores for delta tracking (skip mock phase)
+        // Save live scores + evaluate alerts (skip mock phase)
         if (!fullData.isQuick) {
-          saveScores(
+          const scoredItems = fullData.stocks.map((s: ScoredStock) => ({
+            ticker: s.stock.ticker,
+            strategyId,
+            score: s.score.total,
+          }));
+          saveScores(scoredItems);
+
+          evaluate(
             fullData.stocks.map((s: ScoredStock) => ({
               ticker: s.stock.ticker,
-              strategyId,
+              name: s.stock.name,
               score: s.score.total,
+              delta: getDelta(s.stock.ticker, strategyId, s.score.total).delta,
+              strategyId,
             }))
           );
         }
