@@ -15,6 +15,7 @@ import StockTable from "@/components/stock-table";
 import StockCard from "@/components/stock-card";
 import DataSourceBadge from "@/components/ui/data-source-badge";
 import TickerSearch from "@/components/ticker-search";
+import { useScoreHistory } from "@/hooks/use-score-history";
 
 function parseMarketCapFilter(value: string): Partial<StockFiltersType> {
   switch (value) {
@@ -78,6 +79,8 @@ function ScannerContent() {
     displayed: number;
   } | null>(null);
 
+  const { saveScores } = useScoreHistory();
+
   // Abort controller for cancelling stale fetches
   const abortRef = useRef<AbortController | null>(null);
 
@@ -124,6 +127,17 @@ function ScannerContent() {
         if (fullData.meta) setMeta(fullData.meta);
         if (fullData.universe) setUniverse(fullData.universe);
         setRefreshing(false);
+
+        // Save live scores for delta tracking (skip mock phase)
+        if (!fullData.isQuick) {
+          saveScores(
+            fullData.stocks.map((s: ScoredStock) => ({
+              ticker: s.stock.ticker,
+              strategyId,
+              score: s.score.total,
+            }))
+          );
+        }
       }
     } catch (err: unknown) {
       if (err instanceof DOMException && err.name === "AbortError") return;
