@@ -40,8 +40,6 @@ function parseMarketCapFilter(value: string): Partial<StockFiltersType> {
   }
 }
 
-// --- Single source of truth for all scanner state ---
-
 interface ScannerFilters {
   strategyId: StrategyId;
   indexCountry: string;
@@ -103,7 +101,22 @@ function ScannerContent() {
   const compare = useCompare(filters.strategyId);
   const abortRef = useRef<AbortController | null>(null);
 
-  // Immutable filter updater — pushes URL for navigational params only
+  // Refs for side-effect functions — avoids stale closures in fetchStocks
+  // while preventing these from triggering re-fetches when they change.
+  const saveScoresRef = useRef(saveScores);
+  const getDeltaRef = useRef(getDelta);
+  const getPrevRef = useRef(getPreviousSnapshot);
+  const evaluateRef = useRef(evaluate);
+  const prefsRef = useRef(prefs);
+  const watchlistRef = useRef(watchlistTickers);
+
+  useEffect(() => { saveScoresRef.current = saveScores; }, [saveScores]);
+  useEffect(() => { getDeltaRef.current = getDelta; }, [getDelta]);
+  useEffect(() => { getPrevRef.current = getPreviousSnapshot; }, [getPreviousSnapshot]);
+  useEffect(() => { evaluateRef.current = evaluate; }, [evaluate]);
+  useEffect(() => { prefsRef.current = prefs; }, [prefs]);
+  useEffect(() => { watchlistRef.current = watchlistTickers; }, [watchlistTickers]);
+
   const patch = useCallback(
     (update: Partial<ScannerFilters>) => {
       setFilters((prev) => {
@@ -117,7 +130,6 @@ function ScannerContent() {
     [router]
   );
 
-  // Two-phase fetch driven by the single filters object
   const fetchStocks = useCallback(async () => {
     abortRef.current?.abort();
     const ctrl = new AbortController();
@@ -153,14 +165,15 @@ function ScannerContent() {
         setRefreshing(false);
 
         if (!d2.isQuick) {
-          saveScores(d2.stocks.map((s: ScoredStock) => ({
+          // Use refs to get latest values without stale closures
+          saveScoresRef.current(d2.stocks.map((s: ScoredStock) => ({
             ticker: s.stock.ticker, strategyId: filters.strategyId,
             score: s.score.total, subScores: s.score.subScores,
           })));
-          evaluate(
+          evaluateRef.current(
             d2.stocks.map((s: ScoredStock) => {
-              const d = getDelta(s.stock.ticker, filters.strategyId, s.score.total);
-              const prev = getPreviousSnapshot(s.stock.ticker, filters.strategyId);
+              const d = getDeltaRef.current(s.stock.ticker, filters.strategyId, s.score.total);
+              const prev = getPrevRef.current(s.stock.ticker, filters.strategyId);
               return {
                 ticker: s.stock.ticker,
                 name: s.stock.name,
@@ -172,7 +185,7 @@ function ScannerContent() {
                   : undefined,
               };
             }),
-            { watchlistOnly: prefs.watchlistOnly, watchlistTickers }
+            { watchlistOnly: prefsRef.current.watchlistOnly, watchlistTickers: watchlistRef.current }
           );
         }
       }
@@ -190,7 +203,6 @@ function ScannerContent() {
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-8">
-      {/* Header */}
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-slate-900">
           {indexInfo ? `Top ${strategy?.name ?? "Buffett"} — ${indexInfo.name}` : "Scanner"}
@@ -203,7 +215,6 @@ function ScannerContent() {
         {meta && <div className="mt-2"><DataSourceBadge meta={meta} /></div>}
       </div>
 
-      {/* Country → Index */}
       <div className="mb-6">
         <IndexSelector
           selectedCountry={filters.indexCountry}
@@ -213,12 +224,10 @@ function ScannerContent() {
         />
       </div>
 
-      {/* Search */}
       <div className="mb-4">
         <TickerSearch strategyId={filters.strategyId} />
       </div>
 
-      {/* Strategy + sector + market cap */}
       <div className="mb-6">
         <StockFiltersComponent
           sectors={sectors}
@@ -231,7 +240,6 @@ function ScannerContent() {
         />
       </div>
 
-      {/* Refreshing */}
       {refreshing && (
         <div className="mb-4 flex items-center gap-2 rounded-lg border border-brand-200 bg-brand-50 px-4 py-2.5">
           <div className="h-4 w-4 animate-spin rounded-full border-2 border-brand-300 border-t-brand-600" />
@@ -239,12 +247,10 @@ function ScannerContent() {
         </div>
       )}
 
-      {/* Score movers */}
       {!loading && !refreshing && stocks.length > 0 && (
         <ScoreMovers stocks={stocks} strategyId={filters.strategyId} />
       )}
 
-      {/* Count + view toggle */}
       <div className="mb-4 flex items-center justify-between">
         <div>
           <p className="text-sm text-slate-500">
@@ -267,51 +273,28 @@ function ScannerContent() {
         </div>
       </div>
 
-      {/* Results */}
       {loading ? (
         <div className="flex items-center justify-center py-20">
           <div className="h-8 w-8 animate-spin rounded-full border-4 border-slate-200 border-t-brand-600" />
         </div>
       ) : viewMode === "table" ? (
-        <StockTable
-          stocks={stocks}
-          strategyId={filters.strategyId}
-          onToggleCompare={compare.toggle}
-          isCompareSelected={compare.isSelected}
-        />
+        <StockTable stocks={stocks} strategyId={filters.strategyId} onToggleCompare={compare.toggle} isCompareSelected={compare.isSelected} />
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {stocks.map((item, i) => (
-            <StockCard
-              key={item.stock.ticker}
-              item={item}
-              strategyId={filters.strategyId}
-              rank={i + 1}
-              onToggleCompare={compare.toggle}
-              isCompareSelected={compare.isSelected(item.stock.ticker)}
-            />
+            <StockCard key={item.stock.ticker} item={item} strategyId={filters.strategyId} rank={i + 1} onToggleCompare={compare.toggle} isCompareSelected={compare.isSelected(item.stock.ticker)} />
           ))}
         </div>
       )}
 
-      {/* Compare floating bar */}
-      <CompareBar
-        selected={compare.selected}
-        onClear={compare.clear}
-        onCompare={compare.goCompare}
-        canCompare={compare.canCompare}
-      />
+      <CompareBar selected={compare.selected} onClear={compare.clear} onCompare={compare.goCompare} canCompare={compare.canCompare} />
     </div>
   );
 }
 
 export default function ScannerPage() {
   return (
-    <Suspense fallback={
-      <div className="flex items-center justify-center py-20">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-slate-200 border-t-brand-600" />
-      </div>
-    }>
+    <Suspense fallback={<div className="flex items-center justify-center py-20"><div className="h-8 w-8 animate-spin rounded-full border-4 border-slate-200 border-t-brand-600" /></div>}>
       <ScannerContent />
     </Suspense>
   );
