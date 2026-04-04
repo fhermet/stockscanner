@@ -92,7 +92,7 @@ function loadRules(): AlertRule[] {
 
 function saveRules(rules: AlertRule[]): void {
   if (typeof window === "undefined") return;
-  localStorage.setItem(RULES_KEY, JSON.stringify(rules));
+  try { localStorage.setItem(RULES_KEY, JSON.stringify(rules)); } catch { /* quota exceeded */ }
 }
 
 function loadTriggered(): TriggeredAlert[] {
@@ -107,7 +107,7 @@ function loadTriggered(): TriggeredAlert[] {
 
 function saveTriggered(alerts: TriggeredAlert[]): void {
   if (typeof window === "undefined") return;
-  localStorage.setItem(TRIGGERED_KEY, JSON.stringify(alerts.slice(-50)));
+  try { localStorage.setItem(TRIGGERED_KEY, JSON.stringify(alerts.slice(-50))); } catch { /* quota exceeded */ }
 }
 
 // --- Explanation generator ---

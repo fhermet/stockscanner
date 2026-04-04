@@ -43,7 +43,7 @@ function loadHistory(): ScoreHistory {
 
 function saveHistory(history: ScoreHistory): void {
   if (typeof window === "undefined") return;
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(history));
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(history)); } catch { /* quota exceeded */ }
 }
 
 /** Remove entries older than MAX_DAYS */

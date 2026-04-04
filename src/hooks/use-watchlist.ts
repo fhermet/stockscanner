@@ -28,7 +28,7 @@ function loadFromStorage(): string[] {
 
 function saveToStorage(tickers: string[]): void {
   if (typeof window === "undefined") return;
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(tickers));
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(tickers)); } catch { /* quota exceeded */ }
 }
 
 export function useWatchlist(): UseWatchlistReturn {
