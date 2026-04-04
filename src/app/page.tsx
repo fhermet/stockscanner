@@ -1,6 +1,7 @@
 import { STRATEGIES } from "@/lib/strategies";
 import StrategyCard from "@/components/strategy-card";
 import TopOpportunities from "@/components/top-opportunities";
+import DailyDigest from "@/components/daily-digest";
 
 export default function HomePage() {
   return (
@@ -25,8 +26,13 @@ export default function HomePage() {
         ))}
       </div>
 
+      {/* Daily Digest (alerts) */}
+      <div className="mt-12">
+        <DailyDigest />
+      </div>
+
       {/* Top Opportunities */}
-      <div className="mt-20">
+      <div className="mt-12">
         <TopOpportunities />
       </div>
 
