@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getDataProvider, getMeta } from "@/lib/data";
@@ -20,6 +21,21 @@ import { formatMarketCap, formatPrice } from "@/lib/format";
 interface PageProps {
   params: Promise<{ ticker: string }>;
   searchParams: Promise<{ strategy?: string }>;
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ ticker: string }>;
+}): Promise<Metadata> {
+  const { ticker } = await params;
+  const provider = getDataProvider();
+  const stock = await provider.getStock(ticker).catch(() => null);
+  if (!stock) return { title: ticker.toUpperCase() };
+  return {
+    title: `${stock.ticker} — ${stock.name}`,
+    description: `Analyse fondamentale de ${stock.name} (${stock.ticker}). Secteur : ${stock.sector}, Pays : ${stock.country}.`,
+  };
 }
 
 export default async function StockDetailPage({
