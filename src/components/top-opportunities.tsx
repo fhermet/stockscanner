@@ -19,7 +19,7 @@ export default function TopOpportunities() {
 
   useEffect(() => {
     setLoading(true);
-    fetch(`/api/stocks?strategy=${activeStrategy}&quick=true`)
+    fetch(`/api/stocks?strategy=${activeStrategy}`)
       .then((r) => r.json())
       .then((data) => {
         setStocks(data.stocks?.slice(0, 5) ?? []);

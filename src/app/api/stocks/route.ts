@@ -46,9 +46,7 @@ export async function GET(request: NextRequest) {
   let provider: DataProvider;
   let indexMeta: { id: string; name: string; theoreticalCount: number } | null = null;
 
-  if (isQuick) {
-    provider = new MockDataProvider();
-  } else if (indexParam && isValidIndexId(indexParam)) {
+  if (indexParam && isValidIndexId(indexParam)) {
     const indexDef = getIndexById(indexParam)!;
     indexMeta = {
       id: indexDef.id,
