@@ -14,6 +14,7 @@ interface FundamentalsHistoryPanelProps {
 interface MetricConfig {
   readonly key: string;
   readonly label: string;
+  readonly labelShort: string;
   readonly format: (annual: SecAnnual) => string;
   readonly values: (annual: SecAnnual) => number | null;
   readonly color: string;
@@ -23,6 +24,7 @@ const METRICS: readonly MetricConfig[] = [
   {
     key: "roe",
     label: "ROE",
+    labelShort: "ROE",
     format: (a) => formatPercent(a.ratios.roe),
     values: (a) => a.ratios.roe,
     color: "#6366f1",
@@ -30,6 +32,7 @@ const METRICS: readonly MetricConfig[] = [
   {
     key: "operating_margin",
     label: "Marge opérationnelle",
+    labelShort: "Marge op.",
     format: (a) => formatPercent(a.ratios.operating_margin),
     values: (a) => a.ratios.operating_margin,
     color: "#10b981",
@@ -37,6 +40,7 @@ const METRICS: readonly MetricConfig[] = [
   {
     key: "revenue_growth",
     label: "Croissance CA",
+    labelShort: "Crois. CA",
     format: (a) => formatPercent(a.ratios.revenue_growth),
     values: (a) => a.ratios.revenue_growth,
     color: "#f59e0b",
@@ -44,6 +48,7 @@ const METRICS: readonly MetricConfig[] = [
   {
     key: "debt_to_equity",
     label: "Dette / Capitaux propres",
+    labelShort: "D/E",
     format: (a) => formatRatio(a.ratios.debt_to_equity),
     values: (a) => a.ratios.debt_to_equity,
     color: "#ef4444",
@@ -97,6 +102,51 @@ function MiniSparkline({
         strokeLinejoin="round"
       />
     </svg>
+  );
+}
+
+/** Mobile card layout: one card per metric with sparkline + latest values */
+function MobileMetricCard({
+  metric,
+  annuals,
+}: {
+  readonly metric: MetricConfig;
+  readonly annuals: readonly SecAnnual[];
+}) {
+  const recent = annuals.slice(-5);
+  const latest = recent[recent.length - 1];
+  const prev = recent.length >= 2 ? recent[recent.length - 2] : null;
+  const latestVal = latest ? metric.format(latest) : "N/A";
+  const prevVal = prev ? metric.format(prev) : null;
+
+  return (
+    <div className="flex items-center gap-3 py-2.5 border-b border-slate-100 last:border-b-0">
+      <div
+        className="w-1 h-8 rounded-full flex-shrink-0"
+        style={{ backgroundColor: metric.color }}
+      />
+      <div className="flex-1 min-w-0">
+        <p className="text-sm font-medium text-slate-700">{metric.labelShort}</p>
+        <div className="flex items-center gap-2 text-xs text-slate-400">
+          {recent.map((a) => (
+            <span key={a.fiscal_year} className="tabular-nums">
+              {metric.format(a)}
+            </span>
+          ))}
+        </div>
+      </div>
+      <MiniSparkline values={annuals.map(metric.values)} color={metric.color} />
+      <div className="text-right flex-shrink-0">
+        <p className="text-sm font-semibold text-slate-800 tabular-nums">
+          {latestVal}
+        </p>
+        {prevVal && (
+          <p className="text-[10px] text-slate-400 tabular-nums">
+            {annuals[annuals.length - 1]?.fiscal_year}
+          </p>
+        )}
+      </div>
+    </div>
   );
 }
 
@@ -179,17 +229,25 @@ export default function FundamentalsHistoryPanel({
   const lastUpdated = response.data.last_updated;
 
   return (
-    <section className="rounded-xl border border-slate-200 bg-white p-6">
+    <section className="rounded-xl border border-slate-200 bg-white p-4 sm:p-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 mb-4">
         <h2 className="text-lg font-bold text-slate-900">
           Historique fondamental
         </h2>
         <span className="text-xs text-slate-400">
-          Source : SEC/EDGAR &middot; {lastUpdated}
+          SEC/EDGAR &middot; {lastUpdated}
         </span>
       </div>
 
-      <div className="overflow-x-auto">
+      {/* Mobile: card layout */}
+      <div className="sm:hidden">
+        {METRICS.map((metric) => (
+          <MobileMetricCard key={metric.key} metric={metric} annuals={annuals} />
+        ))}
+      </div>
+
+      {/* Desktop: full table */}
+      <div className="hidden sm:block overflow-x-auto">
         <table className="min-w-full text-sm">
           <thead>
             <tr className="border-b border-slate-200">
@@ -199,12 +257,12 @@ export default function FundamentalsHistoryPanel({
               {annuals.map((a) => (
                 <th
                   key={a.fiscal_year}
-                  className="py-2 text-right font-semibold text-slate-600 min-w-[52px]"
+                  className="py-2 text-right font-semibold text-slate-600"
                 >
                   {a.fiscal_year}
                 </th>
               ))}
-              <th className="py-2 text-center font-semibold text-slate-600 min-w-[52px]">
+              <th className="py-2 text-center font-semibold text-slate-600">
                 Tendance
               </th>
             </tr>
@@ -215,7 +273,7 @@ export default function FundamentalsHistoryPanel({
                 key={metric.key}
                 className="border-b border-slate-100 hover:bg-slate-50 transition-colors"
               >
-                <td className="py-2.5 font-medium text-slate-700">
+                <td className="py-2.5 font-medium text-slate-700 whitespace-nowrap">
                   {metric.label}
                 </td>
                 {annuals.map((annual) => {
@@ -248,17 +306,17 @@ export default function FundamentalsHistoryPanel({
       {annuals.length > 0 && (
         <div className="mt-3 flex items-center gap-2 text-xs text-slate-400">
           <span>
-            {annuals.length} année{annuals.length > 1 ? "s" : ""} de données
+            {annuals.length} année{annuals.length > 1 ? "s" : ""}
           </span>
           {annuals.every((a) => a.completeness.completeness_ratio === 1) ? (
             <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-emerald-600">
               <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-              Données complètes
+              Complètes
             </span>
           ) : (
             <span className="inline-flex items-center gap-1 rounded-full bg-amber-50 px-2 py-0.5 text-amber-600">
               <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />
-              Données partielles
+              Partielles
             </span>
           )}
         </div>

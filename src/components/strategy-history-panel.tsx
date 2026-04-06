@@ -208,7 +208,7 @@ function StrategyRow({
                     .map((ss) => (
                       <th
                         key={ss.name}
-                        className="py-1.5 text-right font-semibold text-slate-500"
+                        className="py-1.5 text-right font-semibold text-slate-500 hidden sm:table-cell"
                       >
                         {ss.label}
                       </th>
@@ -237,7 +237,7 @@ function StrategyRow({
                         .map((ss) => (
                           <td
                             key={ss.name}
-                            className="py-1.5 text-right tabular-nums text-slate-600"
+                            className="py-1.5 text-right tabular-nums text-slate-600 hidden sm:table-cell"
                           >
                             {ss.value}
                           </td>
@@ -309,7 +309,7 @@ export default function StrategyHistoryPanel({
 
   if (loading) {
     return (
-      <section className="rounded-xl border border-slate-200 bg-white p-6">
+      <section className="rounded-xl border border-slate-200 bg-white p-4 sm:p-6">
         <h2 className="text-lg font-bold text-slate-900 mb-4">
           Historique des scores par stratégie
         </h2>
@@ -328,7 +328,7 @@ export default function StrategyHistoryPanel({
   const { points, meta } = response;
 
   return (
-    <section className="rounded-xl border border-slate-200 bg-white p-6">
+    <section className="rounded-xl border border-slate-200 bg-white p-4 sm:p-6">
       <div className="flex items-center justify-between mb-1">
         <h2 className="text-lg font-bold text-slate-900">
           Historique des scores par stratégie
