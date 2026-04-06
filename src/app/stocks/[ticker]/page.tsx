@@ -18,6 +18,7 @@ import WatchlistButton from "@/components/watchlist-button";
 import ScoreHistoryPanel from "@/components/score-history-panel";
 import FundamentalsHistoryPanel from "@/components/fundamentals-history-panel";
 import StrategyHistoryPanel from "@/components/strategy-history-panel";
+import DetailTabs from "@/components/detail-tabs";
 import { formatMarketCap, formatPrice } from "@/lib/format";
 
 interface PageProps {
@@ -79,6 +80,147 @@ export default async function StockDetailPage({
     (e) => e.type === "neutral"
   );
 
+  // --- Tab contents ---
+
+  const scoreContent = (
+    <>
+      {/* Sub-scores */}
+      <section className="rounded-xl border border-slate-200 bg-white p-6">
+        <h2 className="text-lg font-bold text-slate-900 mb-4">
+          Décomposition du score
+        </h2>
+        <div className="space-y-4">
+          {score.subScores.map((sub) => (
+            <div key={sub.name}>
+              <ScoreGauge score={sub.value} label={sub.label} />
+              <p className="mt-0.5 text-xs text-slate-400">
+                Poids : {Math.round(sub.weight * 100)}%
+              </p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Score history (localStorage snapshots) */}
+      <ScoreHistoryPanel
+        ticker={stock.ticker}
+        strategyId={strategyId}
+        currentScore={score.total}
+        currentSubScores={score.subScores}
+      />
+    </>
+  );
+
+  const historyContent = (
+    <>
+      {/* Fundamentals history (SEC/EDGAR) */}
+      <FundamentalsHistoryPanel ticker={stock.ticker} />
+
+      {/* Historical strategy scores (SEC/EDGAR + Yahoo) */}
+      <StrategyHistoryPanel ticker={stock.ticker} />
+
+      {/* Historical table (Yahoo) */}
+      {stock.history.length > 0 && (
+        <section className="rounded-xl border border-slate-200 bg-white p-6">
+          <h2 className="text-lg font-bold text-slate-900 mb-4">
+            Historique simplifié
+          </h2>
+          <div className="overflow-x-auto">
+            <table className="min-w-full text-sm">
+              <thead>
+                <tr className="border-b border-slate-200">
+                  <th className="py-2 text-left font-semibold text-slate-600">
+                    Année
+                  </th>
+                  <th className="py-2 text-right font-semibold text-slate-600">
+                    CA (M$)
+                  </th>
+                  <th className="py-2 text-right font-semibold text-slate-600">
+                    BPA
+                  </th>
+                  <th className="py-2 text-right font-semibold text-slate-600">
+                    Div/action
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {stock.history.map((h) => (
+                  <tr
+                    key={h.year}
+                    className="border-b border-slate-100"
+                  >
+                    <td className="py-2 font-medium text-slate-900">
+                      {h.year}
+                    </td>
+                    <td className="py-2 text-right text-slate-600">
+                      {typeof h.revenue === "number" ? h.revenue.toLocaleString("fr-FR") : "N/A"}
+                    </td>
+                    <td className="py-2 text-right text-slate-600">
+                      {typeof h.eps === "number" ? `$${h.eps.toFixed(2)}` : "N/A"}
+                    </td>
+                    <td className="py-2 text-right text-slate-600">
+                      {typeof h.dividendPerShare === "number" && h.dividendPerShare > 0
+                        ? `$${h.dividendPerShare.toFixed(2)}`
+                        : "-"}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
+      )}
+    </>
+  );
+
+  const analysisContent = (
+    <>
+      {/* Explanation */}
+      <section className="rounded-xl border border-slate-200 bg-white p-6">
+        <h2 className="text-lg font-bold text-slate-900 mb-4">
+          Pourquoi cette action correspond à la stratégie {strategy.name} ?
+        </h2>
+
+        {positiveExplanations.length > 0 && (
+          <div className="mb-5">
+            <h3 className="text-sm font-semibold text-emerald-700 mb-2">
+              Points forts
+            </h3>
+            <ExplanationList explanations={positiveExplanations} />
+          </div>
+        )}
+
+        {neutralExplanations.length > 0 && (
+          <div className="mb-5">
+            <h3 className="text-sm font-semibold text-slate-600 mb-2">
+              Points neutres
+            </h3>
+            <ExplanationList explanations={neutralExplanations} />
+          </div>
+        )}
+
+        {negativeExplanations.length > 0 && (
+          <div>
+            <h3 className="text-sm font-semibold text-red-600 mb-2">
+              Points d&apos;attention
+            </h3>
+            <ExplanationList explanations={negativeExplanations} />
+          </div>
+        )}
+
+        {score.dataCompleteness.missing.length > 0 && (
+          <div className="mt-5">
+            <ConfidenceBadge
+              confidence={score.confidence}
+              completeness={score.dataCompleteness}
+              showDetail
+            />
+          </div>
+        )}
+      </section>
+    </>
+  );
+
   return (
     <div className="mx-auto max-w-4xl px-4 py-8">
       {/* Breadcrumb */}
@@ -137,134 +279,13 @@ export default async function StockDetailPage({
       </div>
 
       <div className="grid gap-8 lg:grid-cols-3">
-        {/* Left: Scores + Explanations */}
-        <div className="lg:col-span-2 space-y-8">
-          {/* Sub-scores */}
-          <section className="rounded-xl border border-slate-200 bg-white p-6">
-            <h2 className="text-lg font-bold text-slate-900 mb-4">
-              Décomposition du score
-            </h2>
-            <div className="space-y-4">
-              {score.subScores.map((sub) => (
-                <div key={sub.name}>
-                  <ScoreGauge score={sub.value} label={sub.label} />
-                  <p className="mt-0.5 text-xs text-slate-400">
-                    Poids : {Math.round(sub.weight * 100)}%
-                  </p>
-                </div>
-              ))}
-            </div>
-          </section>
-
-          {/* Score history */}
-          <ScoreHistoryPanel
-            ticker={stock.ticker}
-            strategyId={strategyId}
-            currentScore={score.total}
-            currentSubScores={score.subScores}
+        {/* Left: Tabbed content */}
+        <div className="lg:col-span-2">
+          <DetailTabs
+            scoreContent={scoreContent}
+            historyContent={historyContent}
+            analysisContent={analysisContent}
           />
-
-          {/* Fundamentals history (SEC/EDGAR) */}
-          <FundamentalsHistoryPanel ticker={stock.ticker} />
-
-          {/* Historical strategy scores (SEC/EDGAR) */}
-          <StrategyHistoryPanel ticker={stock.ticker} />
-
-          {/* Explanation */}
-          <section className="rounded-xl border border-slate-200 bg-white p-6">
-            <h2 className="text-lg font-bold text-slate-900 mb-4">
-              Pourquoi cette action correspond à la stratégie {strategy.name} ?
-            </h2>
-
-            {positiveExplanations.length > 0 && (
-              <div className="mb-5">
-                <h3 className="text-sm font-semibold text-emerald-700 mb-2">
-                  Points forts
-                </h3>
-                <ExplanationList explanations={positiveExplanations} />
-              </div>
-            )}
-
-            {neutralExplanations.length > 0 && (
-              <div className="mb-5">
-                <h3 className="text-sm font-semibold text-slate-600 mb-2">
-                  Points neutres
-                </h3>
-                <ExplanationList explanations={neutralExplanations} />
-              </div>
-            )}
-
-            {negativeExplanations.length > 0 && (
-              <div>
-                <h3 className="text-sm font-semibold text-red-600 mb-2">
-                  Points d&apos;attention
-                </h3>
-                <ExplanationList explanations={negativeExplanations} />
-              </div>
-            )}
-
-            {score.dataCompleteness.missing.length > 0 && (
-              <div className="mt-5">
-                <ConfidenceBadge
-                  confidence={score.confidence}
-                  completeness={score.dataCompleteness}
-                  showDetail
-                />
-              </div>
-            )}
-          </section>
-
-          {/* History */}
-          {stock.history.length > 0 && (
-            <section className="rounded-xl border border-slate-200 bg-white p-6">
-              <h2 className="text-lg font-bold text-slate-900 mb-4">
-                Historique simplifié
-              </h2>
-              <div className="overflow-x-auto">
-                <table className="min-w-full text-sm">
-                  <thead>
-                    <tr className="border-b border-slate-200">
-                      <th className="py-2 text-left font-semibold text-slate-600">
-                        Année
-                      </th>
-                      <th className="py-2 text-right font-semibold text-slate-600">
-                        CA (M$)
-                      </th>
-                      <th className="py-2 text-right font-semibold text-slate-600">
-                        BPA
-                      </th>
-                      <th className="py-2 text-right font-semibold text-slate-600">
-                        Div/action
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {stock.history.map((h) => (
-                      <tr
-                        key={h.year}
-                        className="border-b border-slate-100"
-                      >
-                        <td className="py-2 font-medium text-slate-900">
-                          {h.year}
-                        </td>
-                        <td className="py-2 text-right text-slate-600">
-                          {typeof h.revenue === "number" ? h.revenue.toLocaleString("fr-FR") : "N/A"}
-                        </td>
-                        <td className="py-2 text-right text-slate-600">
-                          {typeof h.eps === "number" ? `$${h.eps.toFixed(2)}` : "N/A"}
-                        </td>
-                        <td className="py-2 text-right text-slate-600">
-                          {typeof h.dividendPerShare === "number" && h.dividendPerShare > 0
-                            ? `$${h.dividendPerShare.toFixed(2)}`
-                            : "-"}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </section>
-          )}
         </div>
 
         {/* Right: Metrics sidebar */}
@@ -316,7 +337,7 @@ export default async function StockDetailPage({
             }
           />
 
-          <div className="pt-4">
+          <div className="pt-4 space-y-2">
             <Link
               href={`/scanner?strategy=${strategyId}`}
               className="flex items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors w-full"
