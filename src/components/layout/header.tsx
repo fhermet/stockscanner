@@ -39,6 +39,13 @@ export default function Header() {
         )}
       </Link>
       <Link
+        href="/backtest"
+        className="text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors"
+        onClick={() => setMobileOpen(false)}
+      >
+        Backtest
+      </Link>
+      <Link
         href="/strategies"
         className="text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors"
         onClick={() => setMobileOpen(false)}
