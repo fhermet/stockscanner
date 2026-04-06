@@ -15,7 +15,8 @@
 
 import type { SecAnnual, SecTickerData } from "@/lib/types/sec-fundamentals";
 import type { StrategyId } from "@/lib/types";
-import { scoreMetric, normalizeOptimalRange } from "./normalize";
+import type { MergedAnnual, MergedHistory } from "@/lib/data/merged-history";
+import { scoreMetric, normalize, normalizeOptimalRange } from "./normalize";
 import { weightedAverage } from "./utils";
 
 // --- Types ---
@@ -334,4 +335,257 @@ export function getStrategyCoverage(strategyId: StrategyId): {
     },
   };
   return configs[strategyId];
+}
+
+// =============================================================================
+// FULL HISTORICAL SCORING (SEC + Yahoo prices)
+// =============================================================================
+
+function scoreBuffettFull(m: MergedAnnual): HistoricalStrategyScore {
+  // Quality: ROE + margin + FCF yield
+  const roeScore = m.roe !== null ? scoreMetric("roe", m.roe * 100) : 0;
+  const marginScore = m.operatingMargin !== null ? scoreMetric("operatingMargin", m.operatingMargin * 100) : 0;
+  const fcfYieldScore = m.fcfYield !== null ? scoreMetric("fcfYield", m.fcfYield) : 0;
+
+  const qualityItems: { score: number; weight: number }[] = [];
+  if (m.roe !== null) qualityItems.push({ score: roeScore, weight: 0.4 });
+  if (m.operatingMargin !== null) qualityItems.push({ score: marginScore, weight: 0.35 });
+  if (m.fcfYield !== null) qualityItems.push({ score: fcfYieldScore, weight: 0.25 });
+  const qualityAvailable = qualityItems.length > 0;
+  const qualityValue = qualityAvailable ? weightedAverage(qualityItems) : 0;
+
+  // Strength: debt/equity + FCF positive
+  const debtScore = m.debtToEquity !== null ? scoreMetric("debtToEquity", m.debtToEquity) : 0;
+  const fcfPosScore = m.freeCashFlow !== null ? (m.freeCashFlow > 0 ? 100 : 10) : 0;
+  const strengthItems: { score: number; weight: number }[] = [];
+  if (m.debtToEquity !== null) strengthItems.push({ score: debtScore, weight: 0.6 });
+  if (m.freeCashFlow !== null) strengthItems.push({ score: fcfPosScore, weight: 0.4 });
+  const strengthAvailable = strengthItems.length > 0;
+  const strengthValue = strengthAvailable ? weightedAverage(strengthItems) : 0;
+
+  // Valuation: PER
+  const perScore = m.per !== null ? scoreMetric("per", m.per) : 0;
+  const valuationAvailable = m.per !== null;
+
+  const subScores: HistoricalSubScore[] = [
+    { name: "quality", label: "Qualité", value: qualityValue, weight: 0.4, available: qualityAvailable },
+    { name: "strength", label: "Solidité financière", value: strengthValue, weight: 0.3, available: strengthAvailable },
+    { name: "valuation", label: "Valorisation", value: perScore, weight: 0.3, available: valuationAvailable },
+  ];
+
+  const available = subScores.filter((s) => s.available);
+  const totalAvailableWeight = available.reduce((acc, s) => acc + s.weight, 0);
+  const total = totalAvailableWeight > 0
+    ? Math.round(available.reduce((acc, s) => acc + s.value * s.weight, 0) / totalAvailableWeight)
+    : 0;
+
+  const excluded = subScores.filter((s) => !s.available).map((s) => s.label);
+
+  return {
+    strategyId: "buffett",
+    strategyLabel: "Warren Buffett",
+    total,
+    subScores,
+    coverage: totalAvailableWeight,
+    excludedSubScores: excluded,
+    isPartial: totalAvailableWeight < 1,
+  };
+}
+
+function scoreDividendFull(m: MergedAnnual, allAnnuals: readonly MergedAnnual[]): HistoricalStrategyScore {
+  // Yield
+  const yieldScore = m.dividendYield !== null ? scoreMetric("dividendYield", m.dividendYield) : 0;
+  const yieldAvailable = m.dividendYield !== null;
+
+  // Sustainability: payout + FCF coverage
+  const payoutScore = m.payoutRatio !== null ? normalizeOptimalRange(m.payoutRatio * 100, 30, 60, 0, 100) : 0;
+
+  let fcfCoverageScore = 0;
+  if (m.dividendYield !== null && m.dividendYield > 0 && m.marketCap !== null && m.marketCap > 0 && m.freeCashFlow !== null) {
+    const dividendCost = m.marketCap * (m.dividendYield / 100);
+    if (dividendCost > 0) {
+      const coverage = m.freeCashFlow / dividendCost;
+      if (coverage >= 2.5) fcfCoverageScore = 100;
+      else if (coverage >= 1.5) fcfCoverageScore = 80;
+      else if (coverage >= 1.0) fcfCoverageScore = 55;
+      else if (coverage >= 0.5) fcfCoverageScore = 25;
+      else fcfCoverageScore = 5;
+    }
+  }
+
+  const sustainItems: { score: number; weight: number }[] = [];
+  if (m.payoutRatio !== null) sustainItems.push({ score: payoutScore, weight: 0.5 });
+  if (m.dividendYield !== null && m.freeCashFlow !== null && m.marketCap !== null) {
+    sustainItems.push({ score: fcfCoverageScore, weight: 0.5 });
+  }
+  const sustainAvailable = sustainItems.length > 0;
+  const sustainValue = sustainAvailable ? weightedAverage(sustainItems) : 0;
+
+  // Stability: debt + dividend growth
+  const debtScore = m.debtToEquity !== null ? scoreMetric("debtToEquity", m.debtToEquity) : 0;
+  const divGrowth = scoreDividendGrowthFromMerged(m.fiscalYear, allAnnuals);
+  const stabilityItems: { score: number; weight: number }[] = [];
+  if (m.debtToEquity !== null) stabilityItems.push({ score: debtScore, weight: 0.4 });
+  stabilityItems.push({ score: divGrowth, weight: 0.6 });
+  const stabilityAvailable = m.debtToEquity !== null;
+  const stabilityValue = weightedAverage(stabilityItems);
+
+  const subScores: HistoricalSubScore[] = [
+    { name: "yield", label: "Rendement", value: yieldScore, weight: 0.3, available: yieldAvailable },
+    { name: "sustainability", label: "Soutenabilité", value: sustainValue, weight: 0.35, available: sustainAvailable },
+    { name: "stability", label: "Stabilité", value: stabilityValue, weight: 0.35, available: stabilityAvailable },
+  ];
+
+  const available = subScores.filter((s) => s.available);
+  const totalAvailableWeight = available.reduce((acc, s) => acc + s.weight, 0);
+  const total = totalAvailableWeight > 0
+    ? Math.round(available.reduce((acc, s) => acc + s.value * s.weight, 0) / totalAvailableWeight)
+    : 0;
+
+  const excluded = subScores.filter((s) => !s.available).map((s) => s.label);
+
+  return {
+    strategyId: "dividend",
+    strategyLabel: "Dividende",
+    total,
+    subScores,
+    coverage: totalAvailableWeight,
+    excludedSubScores: excluded,
+    isPartial: totalAvailableWeight < 1,
+  };
+}
+
+function scoreGrowthFull(m: MergedAnnual): HistoricalStrategyScore {
+  // Momentum: revenue growth + EPS growth
+  const revScore = m.revenueGrowth !== null ? scoreMetric("revenueGrowth", m.revenueGrowth * 100) : 0;
+  const epsScore = m.epsGrowth !== null ? scoreMetric("epsGrowth", m.epsGrowth * 100) : 0;
+  const momentumItems: { score: number; weight: number }[] = [];
+  if (m.revenueGrowth !== null) momentumItems.push({ score: revScore, weight: 0.5 });
+  if (m.epsGrowth !== null) momentumItems.push({ score: epsScore, weight: 0.5 });
+  const momentumAvailable = momentumItems.length > 0;
+  const momentumValue = momentumAvailable ? weightedAverage(momentumItems) : 0;
+
+  // Profitability: margin + ROE
+  const marginScore = m.operatingMargin !== null ? scoreMetric("operatingMargin", m.operatingMargin * 100) : 0;
+  const roeScore = m.roe !== null ? scoreMetric("roe", m.roe * 100) : 0;
+  const profitItems: { score: number; weight: number }[] = [];
+  if (m.operatingMargin !== null) profitItems.push({ score: marginScore, weight: 0.5 });
+  if (m.roe !== null) profitItems.push({ score: roeScore, weight: 0.5 });
+  const profitAvailable = profitItems.length > 0;
+  const profitValue = profitAvailable ? weightedAverage(profitItems) : 0;
+
+  // Scalability: marketCap (inverted: small = better)
+  const scaleScore = m.marketCap !== null ? normalize(m.marketCap / 1e9, { min: 3000, max: 10 }) : 0;
+  const scaleAvailable = m.marketCap !== null;
+
+  const subScores: HistoricalSubScore[] = [
+    { name: "momentum", label: "Momentum de croissance", value: momentumValue, weight: 0.5, available: momentumAvailable },
+    { name: "profitability", label: "Rentabilité", value: profitValue, weight: 0.25, available: profitAvailable },
+    { name: "scalability", label: "Potentiel de croissance", value: scaleScore, weight: 0.25, available: scaleAvailable },
+  ];
+
+  const available = subScores.filter((s) => s.available);
+  const totalAvailableWeight = available.reduce((acc, s) => acc + s.weight, 0);
+  const total = totalAvailableWeight > 0
+    ? Math.round(available.reduce((acc, s) => acc + s.value * s.weight, 0) / totalAvailableWeight)
+    : 0;
+
+  const excluded = subScores.filter((s) => !s.available).map((s) => s.label);
+
+  return {
+    strategyId: "growth",
+    strategyLabel: "Growth",
+    total,
+    subScores,
+    coverage: totalAvailableWeight,
+    excludedSubScores: excluded,
+    isPartial: totalAvailableWeight < 1,
+  };
+}
+
+function scoreLynchFull(m: MergedAnnual): HistoricalStrategyScore {
+  // Growth: EPS growth + revenue growth
+  const epsScore = m.epsGrowth !== null ? scoreMetric("epsGrowth", m.epsGrowth * 100) : 0;
+  const revScore = m.revenueGrowth !== null ? scoreMetric("revenueGrowth", m.revenueGrowth * 100) : 0;
+  const growthItems: { score: number; weight: number }[] = [];
+  if (m.epsGrowth !== null) growthItems.push({ score: epsScore, weight: 0.6 });
+  if (m.revenueGrowth !== null) growthItems.push({ score: revScore, weight: 0.4 });
+  const growthAvailable = growthItems.length > 0;
+  const growthValue = growthAvailable ? weightedAverage(growthItems) : 0;
+
+  // Value: PEG
+  const pegScore = m.peg !== null ? scoreMetric("peg", m.peg) : 0;
+  const valueAvailable = m.peg !== null;
+
+  // Quality: margin + debt/equity
+  const marginScore = m.operatingMargin !== null ? scoreMetric("operatingMargin", m.operatingMargin * 100) : 0;
+  const debtScore = m.debtToEquity !== null ? scoreMetric("debtToEquity", m.debtToEquity) : 0;
+  const qualityItems: { score: number; weight: number }[] = [];
+  if (m.operatingMargin !== null) qualityItems.push({ score: marginScore, weight: 0.5 });
+  if (m.debtToEquity !== null) qualityItems.push({ score: debtScore, weight: 0.5 });
+  const qualityAvailable = qualityItems.length > 0;
+  const qualityValue = qualityAvailable ? weightedAverage(qualityItems) : 0;
+
+  const subScores: HistoricalSubScore[] = [
+    { name: "growth", label: "Croissance", value: growthValue, weight: 0.4, available: growthAvailable },
+    { name: "value", label: "Valeur (PEG)", value: pegScore, weight: 0.35, available: valueAvailable },
+    { name: "quality", label: "Qualité", value: qualityValue, weight: 0.25, available: qualityAvailable },
+  ];
+
+  const available = subScores.filter((s) => s.available);
+  const totalAvailableWeight = available.reduce((acc, s) => acc + s.weight, 0);
+  const total = totalAvailableWeight > 0
+    ? Math.round(available.reduce((acc, s) => acc + s.value * s.weight, 0) / totalAvailableWeight)
+    : 0;
+
+  const excluded = subScores.filter((s) => !s.available).map((s) => s.label);
+
+  return {
+    strategyId: "lynch",
+    strategyLabel: "Peter Lynch",
+    total,
+    subScores,
+    coverage: totalAvailableWeight,
+    excludedSubScores: excluded,
+    isPartial: totalAvailableWeight < 1,
+  };
+}
+
+function scoreDividendGrowthFromMerged(
+  currentYear: number,
+  allAnnuals: readonly MergedAnnual[],
+): number {
+  const sorted = [...allAnnuals]
+    .filter((a) => a.fiscalYear <= currentYear)
+    .sort((a, b) => a.fiscalYear - b.fiscalYear);
+
+  if (sorted.length < 2) return 50;
+
+  let growingYears = 0;
+  for (let i = 1; i < sorted.length; i++) {
+    const prev = sorted[i - 1].dividendsPaid;
+    const curr = sorted[i].dividendsPaid;
+    if (prev !== null && curr !== null && curr > prev) {
+      growingYears++;
+    }
+  }
+  return Math.round((growingYears / (sorted.length - 1)) * 100);
+}
+
+/**
+ * Compute full historical scores using merged SEC + Yahoo data.
+ * Falls back to SEC-only scoring for years without price data.
+ */
+export function computeFullHistoricalScores(
+  merged: MergedHistory,
+): readonly HistoricalScorePoint[] {
+  return merged.annuals.map((m) => ({
+    fiscalYear: m.fiscalYear,
+    scores: [
+      scoreBuffettFull(m),
+      scoreDividendFull(m, merged.annuals),
+      scoreGrowthFull(m),
+      scoreLynchFull(m),
+    ],
+  }));
 }
