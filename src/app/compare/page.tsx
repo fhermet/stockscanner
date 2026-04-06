@@ -94,15 +94,23 @@ function CompareContent() {
     if (tickers.length < 2) { setStocks([]); setComparison(null); setFailedTickers([]); return; }
     setLoading(true);
     setFailedTickers([]);
+    const responses = await Promise.allSettled(
+      tickers.map(async (ticker) => {
+        const res = await fetch(`/api/stocks/${encodeURIComponent(ticker)}?strategy=${strategyId}`);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+        return { ticker, stock: data.stock, score: data.score } as { ticker: string; stock: ScoredStock["stock"]; score: ScoredStock["score"] };
+      })
+    );
     const results: ScoredStock[] = [];
     const failed: string[] = [];
-    for (const ticker of tickers) {
-      try {
-        const res = await fetch(`/api/stocks/${encodeURIComponent(ticker)}?strategy=${strategyId}`);
-        if (!res.ok) { failed.push(ticker); continue; }
-        const data = await res.json();
-        results.push({ stock: data.stock, score: data.score });
-      } catch { failed.push(ticker); }
+    for (const resp of responses) {
+      if (resp.status === "fulfilled") {
+        results.push({ stock: resp.value.stock, score: resp.value.score });
+      } else {
+        const idx = responses.indexOf(resp);
+        failed.push(tickers[idx]);
+      }
     }
     setStocks(results);
     setFailedTickers(failed);
@@ -133,7 +141,7 @@ function CompareContent() {
 
       <div className="mb-4 flex items-center gap-2">
         <input type="text" value={input} onChange={(e) => setInput(e.target.value)} onKeyDown={(e) => e.key === "Enter" && addTicker()}
-          placeholder="Ajouter un ticker (ex: AAPL)" disabled={tickers.length >= MAX_TICKERS}
+          placeholder="Ajouter un ticker (ex: AAPL)" disabled={tickers.length >= MAX_TICKERS} maxLength={10}
           className="rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-700 focus:border-brand-500 focus:ring-1 focus:ring-brand-500 focus:outline-none w-full sm:w-48" />
         <button onClick={addTicker} disabled={!input.trim() || tickers.length >= MAX_TICKERS}
           className="rounded-lg bg-brand-600 px-3 py-2 text-sm font-medium text-white hover:bg-brand-700 disabled:opacity-50 transition-colors">
@@ -145,7 +153,7 @@ function CompareContent() {
         {tickers.map((t) => (
           <span key={t} className="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-white px-3 py-1 text-sm font-medium text-slate-700">
             {t}
-            <button onClick={() => removeTicker(t)} className="ml-1 text-slate-400 hover:text-red-500">
+            <button aria-label={`Retirer ${t}`} onClick={() => removeTicker(t)} className="ml-1 text-slate-400 hover:text-red-500">
               <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" /></svg>
             </button>
           </span>

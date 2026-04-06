@@ -31,7 +31,7 @@ export default function SettingsPage() {
     <div className="mx-auto max-w-2xl px-4 py-8">
       <h1 className="text-2xl font-bold text-slate-900 mb-1">Paramètres</h1>
       <p className="text-sm text-slate-500 mb-8">
-        Personnalisez votre experience StockScanner
+        Personnalisez votre expérience StockScanner
       </p>
 
       {/* Favorite strategy */}
@@ -90,10 +90,13 @@ export default function SettingsPage() {
               Alertes watchlist uniquement
             </p>
             <p className="text-xs text-slate-500 mt-0.5">
-              Ne declencher les alertes que pour les actions suivies
+              Ne déclencher les alertes que pour les actions suivies
             </p>
           </div>
           <button
+            role="switch"
+            aria-checked={prefs.watchlistOnly}
+            aria-label="Alertes watchlist uniquement"
             onClick={() => update({ watchlistOnly: !prefs.watchlistOnly })}
             className={`relative h-6 w-11 rounded-full transition-colors ${
               prefs.watchlistOnly ? "bg-brand-600" : "bg-slate-300"
@@ -111,7 +114,7 @@ export default function SettingsPage() {
       {/* Alert rules */}
       <section className="mb-8">
         <h2 className="text-sm font-semibold text-slate-700 uppercase tracking-wider mb-3">
-          Regles d&apos;alerte
+          Règles d&apos;alerte
         </h2>
         <div className="space-y-3">
           {rules.map((rule) => (
@@ -126,6 +129,9 @@ export default function SettingsPage() {
               <div className="flex items-center justify-between mb-2">
                 <p className="font-medium text-slate-900 text-sm">{rule.label}</p>
                 <button
+                  role="switch"
+                  aria-checked={rule.enabled}
+                  aria-label={`Activer ${rule.label}`}
                   onClick={() => toggleRule(rule.id)}
                   className={`relative h-5 w-9 rounded-full transition-colors ${
                     rule.enabled ? "bg-emerald-500" : "bg-slate-300"

@@ -214,14 +214,14 @@ export default async function StockDetailPage({
           {stock.history.length > 0 && (
             <section className="rounded-xl border border-slate-200 bg-white p-6">
               <h2 className="text-lg font-bold text-slate-900 mb-4">
-                Historique simplifie
+                Historique simplifié
               </h2>
               <div className="overflow-x-auto">
                 <table className="min-w-full text-sm">
                   <thead>
                     <tr className="border-b border-slate-200">
                       <th className="py-2 text-left font-semibold text-slate-600">
-                        Annee
+                        Année
                       </th>
                       <th className="py-2 text-right font-semibold text-slate-600">
                         CA (M$)

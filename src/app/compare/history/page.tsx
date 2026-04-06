@@ -222,6 +222,7 @@ function CompareHistoryContent() {
             >
               {ticker}
               <button
+                aria-label={`Retirer ${ticker}`}
                 onClick={() => removeTicker(ticker)}
                 className="text-slate-400 hover:text-red-500 transition-colors"
               >
