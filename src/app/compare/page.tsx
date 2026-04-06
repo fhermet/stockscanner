@@ -42,7 +42,7 @@ function CellHighlight({
 function ComparisonTable({ title, metrics, tickers }: { title: string; metrics: readonly ComparedMetric[]; tickers: readonly string[] }) {
   return (
     <div className="overflow-x-auto -mx-6 px-6">
-      <table className="w-full text-sm min-w-[400px]">
+      <table className="w-full text-sm">
         <thead>
           <tr className="border-b border-slate-200">
             <th className="py-2 text-left text-xs font-semibold text-slate-500 uppercase whitespace-nowrap">{title}</th>

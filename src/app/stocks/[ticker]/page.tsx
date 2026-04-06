@@ -240,7 +240,7 @@ export default async function StockDetailPage({
       </div>
 
       {/* Header */}
-      <div className="flex flex-wrap items-start justify-between gap-4 mb-8">
+      <div className="flex flex-wrap items-start justify-between gap-3 sm:gap-4 mb-6 sm:mb-8">
         <div>
           <div className="flex items-center gap-3">
             <h1 className="text-3xl font-extrabold text-slate-900">

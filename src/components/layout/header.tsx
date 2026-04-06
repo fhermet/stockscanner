@@ -127,8 +127,8 @@ export default function Header() {
 
       {/* Mobile dropdown */}
       {mobileOpen && (
-        <div className="sm:hidden border-t border-slate-200 bg-white px-4 py-3">
-          <nav className="flex flex-col gap-3">
+        <div className="sm:hidden border-t border-slate-200 bg-white px-4 py-2">
+          <nav className="flex flex-col [&>a]:py-2.5 [&>a]:border-b [&>a]:border-slate-100 [&>a:last-of-type]:border-b-0">
             {navLinks}
           </nav>
         </div>

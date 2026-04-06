@@ -366,7 +366,7 @@ function CompareHistoryContent() {
               Synthèse
             </h2>
             <div className="overflow-x-auto">
-              <table className="w-full text-sm min-w-[500px]">
+              <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-slate-200">
                     <th className="py-2 text-left text-xs font-semibold text-slate-500 uppercase">
@@ -375,20 +375,20 @@ function CompareHistoryContent() {
                     <th className="py-2 text-center text-xs font-semibold text-slate-500 uppercase">
                       Dernier score
                     </th>
-                    <th className="py-2 text-center text-xs font-semibold text-slate-500 uppercase">
+                    <th className="py-2 text-center text-xs font-semibold text-slate-500 uppercase hidden sm:table-cell">
                       Il y a 5 ans
                     </th>
-                    <th className="py-2 text-center text-xs font-semibold text-slate-500 uppercase">
-                      Variation 5 ans
+                    <th className="py-2 text-center text-xs font-semibold text-slate-500 uppercase hidden sm:table-cell">
+                      Var. 5 ans
                     </th>
                     <th className="py-2 text-center text-xs font-semibold text-slate-500 uppercase">
-                      Variation totale
+                      Var. totale
                     </th>
                     <th className="py-2 text-center text-xs font-semibold text-slate-500 uppercase">
-                      Tendance
+                      Tend.
                     </th>
-                    <th className="py-2 text-center text-xs font-semibold text-slate-500 uppercase">
-                      Moyenne
+                    <th className="py-2 text-center text-xs font-semibold text-slate-500 uppercase hidden sm:table-cell">
+                      Moy.
                     </th>
                     <th className="py-2 text-center text-xs font-semibold text-slate-500 uppercase">
                       Volatilité
@@ -450,10 +450,10 @@ function SummaryRow({
           <span className="text-slate-300">N/A</span>
         )}
       </td>
-      <td className="py-2.5 text-center tabular-nums text-slate-600">
+      <td className="py-2.5 text-center tabular-nums text-slate-600 hidden sm:table-cell">
         {s.fiveYearsAgoScore !== null ? s.fiveYearsAgoScore : "—"}
       </td>
-      <td className="py-2.5 text-center tabular-nums">
+      <td className="py-2.5 text-center tabular-nums hidden sm:table-cell">
         <DeltaBadge value={s.fiveYearDelta} />
       </td>
       <td className="py-2.5 text-center tabular-nums">
@@ -464,7 +464,7 @@ function SummaryRow({
           {TREND_ICONS[s.trend]}
         </span>
       </td>
-      <td className="py-2.5 text-center tabular-nums text-slate-600">
+      <td className="py-2.5 text-center tabular-nums text-slate-600 hidden sm:table-cell">
         {s.avgScore}
       </td>
       <td className="py-2.5 text-center">

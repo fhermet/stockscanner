@@ -193,7 +193,7 @@ function StrategyRow({
         <div className="px-1 pb-3">
           {/* Annual table */}
           <div className="overflow-x-auto">
-            <table className="min-w-full text-xs">
+            <table className="w-full text-xs">
               <thead>
                 <tr className="border-b border-slate-200">
                   <th className="py-1.5 text-left font-semibold text-slate-500">

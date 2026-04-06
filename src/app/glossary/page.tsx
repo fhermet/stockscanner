@@ -383,7 +383,7 @@ export default function GlossaryPage() {
         <h2 className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-3">
           Sommaire
         </h2>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {CATEGORIES.map((cat) => {
             const catMetrics = METRICS.filter((m) => m.category === cat.id);
             if (catMetrics.length === 0) return null;

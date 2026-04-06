@@ -36,7 +36,7 @@ export default function DetailTabs({
           <button
             key={tab.id}
             onClick={() => setActive(tab.id)}
-            className={`flex-1 rounded-md px-3 py-2 text-sm font-medium transition-colors ${
+            className={`flex-1 rounded-md px-3 py-2.5 text-sm font-medium transition-colors ${
               active === tab.id
                 ? "bg-white text-slate-900 shadow-sm"
                 : "text-slate-500 hover:text-slate-700"

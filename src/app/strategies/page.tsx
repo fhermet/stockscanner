@@ -267,7 +267,7 @@ export default function StrategiesPage() {
         </Link>
       </p>
 
-      <div className="space-y-12">
+      <div className="space-y-8 sm:space-y-12">
         {STRATEGIES.map((s) => (
           <article
             key={s.id}
@@ -301,7 +301,7 @@ export default function StrategiesPage() {
             <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">
               Détail des sous-scores
             </h3>
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 mb-6">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 mb-6">
               {s.subScores.map((sub) => (
                 <SubScoreCard
                   key={sub.name}

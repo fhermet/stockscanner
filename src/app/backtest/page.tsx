@@ -168,7 +168,7 @@ function BacktestContent() {
 
       {/* Controls */}
       <div className="rounded-xl border border-slate-200 bg-white p-6 mb-6">
-        <div className="grid gap-4 sm:grid-cols-3">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
           {/* Strategy */}
           <div>
             <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
@@ -270,7 +270,7 @@ function BacktestContent() {
           </section>
 
           {/* Key numbers */}
-          <div className="grid gap-4 sm:grid-cols-3">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
             <div className="rounded-xl border border-slate-200 bg-white p-5 text-center">
               <p className="text-xs text-slate-500 uppercase tracking-wider mb-1">
                 Portefeuille
@@ -321,13 +321,13 @@ function BacktestContent() {
               Détail du portefeuille
             </h2>
             <div className="overflow-x-auto">
-              <table className="w-full text-sm min-w-[500px]">
+              <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-slate-200">
                     <th className="py-2 text-left text-xs font-semibold text-slate-500 uppercase">Action</th>
-                    <th className="py-2 text-center text-xs font-semibold text-slate-500 uppercase">Score {result.startYear}</th>
-                    <th className="py-2 text-right text-xs font-semibold text-slate-500 uppercase">Prix {result.startYear}</th>
-                    <th className="py-2 text-right text-xs font-semibold text-slate-500 uppercase">Prix {result.endYear}</th>
+                    <th className="py-2 text-center text-xs font-semibold text-slate-500 uppercase hidden sm:table-cell">Score</th>
+                    <th className="py-2 text-right text-xs font-semibold text-slate-500 uppercase hidden sm:table-cell">Prix {result.startYear}</th>
+                    <th className="py-2 text-right text-xs font-semibold text-slate-500 uppercase hidden sm:table-cell">Prix {result.endYear}</th>
                     <th className="py-2 text-right text-xs font-semibold text-slate-500 uppercase">Rendement</th>
                   </tr>
                 </thead>
@@ -345,15 +345,15 @@ function BacktestContent() {
                           {stock.companyName}
                         </span>
                       </td>
-                      <td className="py-2.5 text-center">
+                      <td className="py-2.5 text-center hidden sm:table-cell">
                         <span className="inline-flex items-center justify-center rounded-md bg-indigo-50 px-2 py-0.5 text-xs font-semibold text-indigo-700 tabular-nums">
                           {stock.scoreAtStart}
                         </span>
                       </td>
-                      <td className="py-2.5 text-right tabular-nums text-slate-600">
+                      <td className="py-2.5 text-right tabular-nums text-slate-600 hidden sm:table-cell">
                         ${stock.priceAtStart.toFixed(2)}
                       </td>
-                      <td className="py-2.5 text-right tabular-nums text-slate-600">
+                      <td className="py-2.5 text-right tabular-nums text-slate-600 hidden sm:table-cell">
                         ${stock.priceAtEnd.toFixed(2)}
                       </td>
                       <td className="py-2.5 text-right">

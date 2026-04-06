@@ -180,12 +180,12 @@ export default function FundamentalsHistoryPanel({
 
   return (
     <section className="rounded-xl border border-slate-200 bg-white p-6">
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 mb-4">
         <h2 className="text-lg font-bold text-slate-900">
           Historique fondamental
         </h2>
         <span className="text-xs text-slate-400">
-          Source : SEC/EDGAR &middot; Mis à jour le {lastUpdated}
+          Source : SEC/EDGAR &middot; {lastUpdated}
         </span>
       </div>
 
@@ -199,12 +199,12 @@ export default function FundamentalsHistoryPanel({
               {annuals.map((a) => (
                 <th
                   key={a.fiscal_year}
-                  className="py-2 text-right font-semibold text-slate-600 min-w-[70px]"
+                  className="py-2 text-right font-semibold text-slate-600 min-w-[52px]"
                 >
                   {a.fiscal_year}
                 </th>
               ))}
-              <th className="py-2 text-center font-semibold text-slate-600 min-w-[70px]">
+              <th className="py-2 text-center font-semibold text-slate-600 min-w-[52px]">
                 Tendance
               </th>
             </tr>

@@ -75,7 +75,7 @@ export default function HistoryChart({
 
   return (
     <div className="w-full overflow-x-auto">
-      <svg viewBox={`0 0 ${w} ${h}`} className="w-full min-w-[400px]">
+      <svg viewBox={`0 0 ${w} ${h}`} className="w-full">
         {/* Grid lines */}
         {yTicks.map((v) => (
           <g key={v}>
