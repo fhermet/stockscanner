@@ -181,13 +181,21 @@ function CompareContent() {
         </div>
       )}
 
-      <div className="mb-6 flex flex-wrap gap-2">
+      <div className="mb-6 flex flex-wrap items-center gap-2">
         {STRATEGY_OPTIONS.map((s) => (
           <button key={s.id} onClick={() => { setStrategyId(s.id); updateUrl(tickers, s.id); }}
             className={`rounded-full border px-3 py-1.5 text-sm font-medium transition-all ${strategyId === s.id ? "border-brand-300 bg-brand-50 text-brand-700" : "border-slate-200 bg-white text-slate-500 hover:bg-slate-50"}`}>
             {s.label}
           </button>
         ))}
+        {tickers.length >= 2 && (
+          <Link
+            href={`/compare/history?tickers=${tickers.join(",")}&strategy=${strategyId}`}
+            className="ml-auto rounded-lg border border-indigo-200 bg-indigo-50 px-3 py-1.5 text-sm font-medium text-indigo-700 hover:bg-indigo-100 transition-colors"
+          >
+            Voir l&apos;historique des scores &rarr;
+          </Link>
+        )}
       </div>
 
       {loading && <div className="flex justify-center py-12"><div className="h-6 w-6 animate-spin rounded-full border-2 border-slate-200 border-t-brand-600" /></div>}
