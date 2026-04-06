@@ -197,7 +197,7 @@ function CompareHistoryContent() {
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value.toUpperCase())}
             onKeyDown={(e) => e.key === "Enter" && addTicker()}
-            className="flex-1 rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-indigo-400 focus:ring-1 focus:ring-indigo-400 outline-none"
+            className="flex-1 rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-brand-500 focus:ring-1 focus:ring-brand-500 outline-none"
             maxLength={10}
           />
           <button
@@ -207,7 +207,7 @@ function CompareHistoryContent() {
               tickers.includes(inputValue.trim().toUpperCase()) ||
               tickers.length >= MAX_TICKERS
             }
-            className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+            className="rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white hover:bg-brand-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
           >
             Ajouter
           </button>
@@ -245,7 +245,7 @@ function CompareHistoryContent() {
               onClick={() => changeStrategy(opt.id)}
               className={`rounded-lg px-3 py-1.5 text-sm font-medium transition-colors ${
                 strategyId === opt.id
-                  ? "bg-indigo-600 text-white"
+                  ? "bg-brand-600 text-white"
                   : "bg-slate-100 text-slate-600 hover:bg-slate-200"
               }`}
             >
@@ -433,7 +433,7 @@ function SummaryRow({
       <td className="py-2.5 font-medium text-slate-800">
         <Link
           href={`/stocks/${s.ticker}?strategy=buffett`}
-          className="hover:text-indigo-600 transition-colors"
+          className="hover:text-brand-600 transition-colors"
         >
           {s.ticker}
         </Link>
