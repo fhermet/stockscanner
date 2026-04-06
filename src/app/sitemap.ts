@@ -7,15 +7,15 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const staticPages: MetadataRoute.Sitemap = [
     { url: baseUrl, lastModified: new Date(), changeFrequency: "daily", priority: 1.0 },
     { url: `${baseUrl}/scanner`, lastModified: new Date(), changeFrequency: "daily", priority: 0.9 },
-    { url: `${baseUrl}/compare`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.7 },
-    { url: `${baseUrl}/watchlist`, lastModified: new Date(), changeFrequency: "daily", priority: 0.6 },
     { url: `${baseUrl}/strategies`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
+    { url: `${baseUrl}/glossary`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
+    { url: `${baseUrl}/compare`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.7 },
+    { url: `${baseUrl}/compare/history`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.6 },
+    { url: `${baseUrl}/watchlist`, lastModified: new Date(), changeFrequency: "daily", priority: 0.6 },
     { url: `${baseUrl}/settings`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.3 },
   ];
 
-  // Top 50 tickers as dynamic pages (most valuable for SEO)
-  const topTickers = ALL_TICKERS.slice(0, 50);
-  const stockPages: MetadataRoute.Sitemap = topTickers.map((ticker) => ({
+  const stockPages: MetadataRoute.Sitemap = ALL_TICKERS.map((ticker) => ({
     url: `${baseUrl}/stocks/${encodeURIComponent(ticker)}`,
     lastModified: new Date(),
     changeFrequency: "daily" as const,

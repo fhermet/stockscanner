@@ -33,10 +33,14 @@ export async function generateMetadata({
   const { ticker } = await params;
   const provider = getDataProvider();
   const stock = await provider.getStock(ticker).catch(() => null);
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://stockscanner.app";
   if (!stock) return { title: ticker.toUpperCase() };
   return {
     title: `${stock.ticker} — ${stock.name}`,
     description: `Analyse fondamentale de ${stock.name} (${stock.ticker}). Secteur : ${stock.sector}, Pays : ${stock.country}.`,
+    alternates: {
+      canonical: `${baseUrl}/stocks/${encodeURIComponent(stock.ticker)}`,
+    },
   };
 }
 
