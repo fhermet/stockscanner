@@ -45,6 +45,13 @@ export default function Header() {
       >
         Stratégies
       </Link>
+      <Link
+        href="/glossary"
+        className="text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors"
+        onClick={() => setMobileOpen(false)}
+      >
+        Glossaire
+      </Link>
       {alertCount > 0 && (
         <Link
           href="/"

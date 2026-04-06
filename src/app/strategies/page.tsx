@@ -252,11 +252,19 @@ export default function StrategiesPage() {
         reconnues. Chaque score est calculé sur 100 points à partir de
         sous-scores pondérés.
       </p>
-      <p className="text-sm text-slate-500 mb-12 max-w-2xl">
+      <p className="text-sm text-slate-500 mb-4 max-w-2xl">
         Chaque métrique est normalisée sur une plage définie (0 = pire, 100 = meilleur)
         par interpolation linéaire. Les métriques inversées (dette, PER, PEG) attribuent
         un meilleur score aux valeurs basses. Le score final est la moyenne pondérée
         des sous-scores.
+      </p>
+      <p className="text-sm text-slate-500 mb-12">
+        <Link
+          href="/glossary"
+          className="text-brand-600 hover:text-brand-700 transition-colors font-medium"
+        >
+          Voir le glossaire des métriques financières (PER, PEG, ROE, etc.) &rarr;
+        </Link>
       </p>
 
       <div className="space-y-12">
