@@ -13,12 +13,14 @@ interface HistoryChartProps {
   readonly years: readonly number[];
   readonly rows: readonly CompareYearRow[];
   readonly tickers: readonly string[];
+  readonly smoothed?: boolean;
 }
 
 export default function HistoryChart({
   years,
   rows,
   tickers,
+  smoothed = false,
 }: HistoryChartProps) {
   if (years.length < 2) return null;
 
@@ -31,11 +33,18 @@ export default function HistoryChart({
   const innerW = w - padL - padR;
   const innerH = h - padT - padB;
 
+  function getScore(row: CompareYearRow, ticker: string): number | null {
+    return smoothed
+      ? (row.smoothedScores.get(ticker) ?? null)
+      : (row.scores.get(ticker) ?? null);
+  }
+
   // Compute global min/max score
   let minScore = 100;
   let maxScore = 0;
   for (const row of rows) {
-    for (const score of row.scores.values()) {
+    for (const ticker of tickers) {
+      const score = getScore(row, ticker);
       if (score !== null) {
         minScore = Math.min(minScore, score);
         maxScore = Math.max(maxScore, score);
@@ -114,7 +123,7 @@ export default function HistoryChart({
 
           let inPath = false;
           for (let i = 0; i < years.length; i++) {
-            const score = rows[i]?.scores.get(ticker) ?? null;
+            const score = rows[i] ? getScore(rows[i], ticker) : null;
             if (score !== null) {
               const x = toX(i);
               const y = toY(score);

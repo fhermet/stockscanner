@@ -13,6 +13,7 @@ import {
   type CompareHistoryResult,
   type TickerSummary,
 } from "@/lib/compare/compare-history";
+import { VOLATILITY_COLORS } from "@/lib/scoring/score-volatility";
 import HistoryChart from "@/components/history-chart";
 
 const MAX_TICKERS = 4;
@@ -58,6 +59,7 @@ function CompareHistoryContent() {
   const [loading, setLoading] = useState(false);
   const [failedTickers, setFailedTickers] = useState<string[]>([]);
   const [result, setResult] = useState<CompareHistoryResult | null>(null);
+  const [smoothed, setSmoothed] = useState(false);
 
   const updateUrl = useCallback(
     (newTickers: string[], newStrategy: StrategyId) => {
@@ -284,13 +286,38 @@ function CompareHistoryContent() {
         <div className="space-y-6">
           {/* Chart */}
           <section className="rounded-xl border border-slate-200 bg-white p-6">
-            <h2 className="text-lg font-bold text-slate-900 mb-4">
-              Évolution du score {result.strategyLabel}
-            </h2>
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg font-bold text-slate-900">
+                Évolution du score {result.strategyLabel}
+              </h2>
+              <div className="flex items-center gap-1 rounded-lg bg-slate-100 p-0.5">
+                <button
+                  onClick={() => setSmoothed(false)}
+                  className={`rounded-md px-3 py-1 text-xs font-medium transition-colors ${
+                    !smoothed
+                      ? "bg-white text-slate-800 shadow-sm"
+                      : "text-slate-500 hover:text-slate-700"
+                  }`}
+                >
+                  Score brut
+                </button>
+                <button
+                  onClick={() => setSmoothed(true)}
+                  className={`rounded-md px-3 py-1 text-xs font-medium transition-colors ${
+                    smoothed
+                      ? "bg-white text-slate-800 shadow-sm"
+                      : "text-slate-500 hover:text-slate-700"
+                  }`}
+                >
+                  Score lissé
+                </button>
+              </div>
+            </div>
             <HistoryChart
               years={result.years}
               rows={result.rows}
               tickers={result.tickers}
+              smoothed={smoothed}
             />
             {result.isPartial && (
               <p className="text-xs text-slate-400 mt-3">
@@ -298,6 +325,18 @@ function CompareHistoryContent() {
                 indisponibles).
               </p>
             )}
+            {/* Strategy nature info */}
+            <div className="mt-3 flex items-center gap-2 text-xs text-slate-400">
+              <span
+                className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 ${VOLATILITY_COLORS[result.strategyNature.expectedVolatility].bg} ${VOLATILITY_COLORS[result.strategyNature.expectedVolatility].text}`}
+              >
+                <span
+                  className={`h-1.5 w-1.5 rounded-full ${VOLATILITY_COLORS[result.strategyNature.expectedVolatility].dot}`}
+                />
+                {result.strategyNature.label}
+              </span>
+              <span>{result.strategyNature.explanation}</span>
+            </div>
           </section>
 
           {/* Insights */}
@@ -349,6 +388,9 @@ function CompareHistoryContent() {
                     </th>
                     <th className="py-2 text-center text-xs font-semibold text-slate-500 uppercase">
                       Moyenne
+                    </th>
+                    <th className="py-2 text-center text-xs font-semibold text-slate-500 uppercase">
+                      Volatilité
                     </th>
                   </tr>
                 </thead>
@@ -423,6 +465,16 @@ function SummaryRow({
       </td>
       <td className="py-2.5 text-center tabular-nums text-slate-600">
         {s.avgScore}
+      </td>
+      <td className="py-2.5 text-center">
+        <span
+          className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-medium ${VOLATILITY_COLORS[s.volatility.level].bg} ${VOLATILITY_COLORS[s.volatility.level].text}`}
+        >
+          <span
+            className={`h-1.5 w-1.5 rounded-full ${VOLATILITY_COLORS[s.volatility.level].dot}`}
+          />
+          {s.volatility.label}
+        </span>
       </td>
     </tr>
   );

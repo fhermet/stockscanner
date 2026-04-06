@@ -5,6 +5,11 @@ import { useEffect, useState } from "react";
 import type { StrategyId } from "@/lib/types";
 import type { HistoricalScorePoint } from "@/lib/scoring/sec-historical-score";
 import type { HistoricalScoresResponse } from "@/app/api/stocks/[ticker]/historical-scores/route";
+import {
+  computeVolatility,
+  getStrategyNature,
+  VOLATILITY_COLORS,
+} from "@/lib/scoring/score-volatility";
 
 interface StrategyHistoryPanelProps {
   readonly ticker: string;
@@ -110,6 +115,10 @@ function StrategyRow({
     return strategyScore?.total ?? 0;
   });
 
+  const volatility = computeVolatility(scores);
+  const nature = getStrategyNature(strategyId);
+  const volColors = VOLATILITY_COLORS[volatility.level];
+
   const latest = scores[scores.length - 1] ?? 0;
   const earliest = scores[0] ?? 0;
   const delta = latest - earliest;
@@ -131,11 +140,19 @@ function StrategyRow({
           <p className="text-sm font-medium text-slate-800">
             {label}
           </p>
-          <p className="text-xs text-slate-400">
-            {isComplete
-              ? "Score complet (fondamentaux + prix)"
-              : `Couverture : ${coveragePercent}% du score original`}
-          </p>
+          <div className="flex items-center gap-2 mt-0.5">
+            <span className="text-xs text-slate-400">
+              {isComplete
+                ? "Score complet"
+                : `Couverture : ${coveragePercent}%`}
+            </span>
+            <span
+              className={`inline-flex items-center gap-1 rounded-full px-1.5 py-0.5 text-[10px] font-medium ${volColors.bg} ${volColors.text}`}
+            >
+              <span className={`h-1 w-1 rounded-full ${volColors.dot}`} />
+              {volatility.label}
+            </span>
+          </div>
         </div>
         <MiniSparkline values={scores} color={color} />
         <div className="flex items-center gap-2 flex-shrink-0">
@@ -239,6 +256,10 @@ function StrategyRow({
               {excluded.join(" · ")}
             </div>
           )}
+          {/* Strategy nature explanation */}
+          <div className="mt-2 text-xs text-slate-400">
+            {nature.explanation}
+          </div>
         </div>
       )}
     </div>
