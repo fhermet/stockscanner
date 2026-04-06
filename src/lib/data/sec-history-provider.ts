@@ -12,6 +12,11 @@ const SEC_DATA_DIR = path.join(process.cwd(), "public", "data", "sec");
 
 let cachedIndex: SecIndex | null = null;
 
+/** Reset the in-memory index cache (used in tests). */
+export function resetCache(): void {
+  cachedIndex = null;
+}
+
 async function loadIndex(): Promise<SecIndex | null> {
   if (cachedIndex !== null) {
     return cachedIndex;
