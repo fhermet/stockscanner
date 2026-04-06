@@ -3,9 +3,11 @@ import { describe, it, expect } from "vitest";
 import type { SecAnnual, SecTickerData } from "@/lib/types/sec-fundamentals";
 import {
   computeHistoricalScores,
+  computeFullHistoricalScores,
   getStrategyCoverage,
   type HistoricalStrategyScore,
 } from "../sec-historical-score";
+import type { MergedHistory } from "@/lib/data/merged-history";
 
 function makeAnnual(overrides: Partial<SecAnnual> = {}): SecAnnual {
   return {
@@ -274,5 +276,131 @@ describe("partial data handling", () => {
       expect(score.total).toBeGreaterThanOrEqual(0);
       expect(score.total).toBeLessThanOrEqual(100);
     }
+  });
+});
+
+// =============================================================================
+// FULL HISTORICAL SCORING (SEC + Yahoo prices)
+// =============================================================================
+
+function makeMergedHistory(overrides: Partial<MergedHistory["annuals"][0]>[] = []): MergedHistory {
+  const defaultAnnual: MergedHistory["annuals"][0] = {
+    fiscalYear: 2024,
+    revenue: 245000000000,
+    netIncome: 88000000000,
+    shareholdersEquity: 206000000000,
+    totalDebt: 60000000000,
+    epsDiluted: 11.86,
+    dividendsPaid: 22000000000,
+    operatingCashFlow: 118000000000,
+    capitalExpenditure: 44000000000,
+    operatingIncome: 109000000000,
+    sharesOutstanding: 7400000000,
+    roe: 0.43,
+    debtToEquity: 0.29,
+    revenueGrowth: 0.16,
+    epsGrowth: 0.22,
+    freeCashFlow: 74000000000,
+    payoutRatio: 0.25,
+    operatingMargin: 0.45,
+    price: 421.50,
+    priceDate: "2024-12-01",
+    marketCap: 421.50 * 7400000000,
+    per: 421.50 / 11.86,
+    dividendYield: ((22000000000 / 7400000000) / 421.50) * 100,
+    fcfYield: ((74000000000 / 7400000000) / 421.50) * 100,
+    peg: (421.50 / 11.86) / (0.22 * 100),
+    hasPrice: true,
+    secCompleteness: 1.0,
+  };
+
+  const annuals = overrides.length > 0
+    ? overrides.map((o) => ({ ...defaultAnnual, ...o }))
+    : [defaultAnnual];
+
+  return {
+    ticker: "MSFT",
+    companyName: "MICROSOFT CORP",
+    annuals,
+    priceYearsAvailable: annuals.filter((a) => a.hasPrice).length,
+    secYearsAvailable: annuals.length,
+  };
+}
+
+describe("computeFullHistoricalScores", () => {
+  it("produces 4 strategy scores per year", () => {
+    const merged = makeMergedHistory();
+    const points = computeFullHistoricalScores(merged);
+    expect(points).toHaveLength(1);
+    expect(points[0].scores).toHaveLength(4);
+  });
+
+  it("Buffett: 100% coverage with price data", () => {
+    const merged = makeMergedHistory();
+    const buffett = computeFullHistoricalScores(merged)[0].scores.find(
+      (s) => s.strategyId === "buffett",
+    )!;
+
+    expect(buffett.coverage).toBe(1);
+    expect(buffett.isPartial).toBe(false);
+    expect(buffett.subScores.every((s) => s.available)).toBe(true);
+    expect(buffett.total).toBeGreaterThan(0);
+  });
+
+  it("Growth: 100% coverage with price data", () => {
+    const merged = makeMergedHistory();
+    const growth = computeFullHistoricalScores(merged)[0].scores.find(
+      (s) => s.strategyId === "growth",
+    )!;
+
+    expect(growth.coverage).toBe(1);
+    expect(growth.isPartial).toBe(false);
+  });
+
+  it("Lynch: 100% coverage with PEG available", () => {
+    const merged = makeMergedHistory();
+    const lynch = computeFullHistoricalScores(merged)[0].scores.find(
+      (s) => s.strategyId === "lynch",
+    )!;
+
+    expect(lynch.coverage).toBe(1);
+    expect(lynch.isPartial).toBe(false);
+    const valueSub = lynch.subScores.find((s) => s.name === "value");
+    expect(valueSub?.available).toBe(true);
+  });
+
+  it("Dividend: 100% coverage with yield and FCF coverage", () => {
+    const merged = makeMergedHistory();
+    const dividend = computeFullHistoricalScores(merged)[0].scores.find(
+      (s) => s.strategyId === "dividend",
+    )!;
+
+    expect(dividend.coverage).toBeCloseTo(1, 10);
+    expect(dividend.isPartial).toBe(false);
+  });
+
+  it("falls back to partial scoring when no price", () => {
+    const merged = makeMergedHistory([
+      {
+        fiscalYear: 2024,
+        price: null,
+        priceDate: null,
+        marketCap: null,
+        per: null,
+        dividendYield: null,
+        fcfYield: null,
+        peg: null,
+        hasPrice: false,
+      },
+    ]);
+    const buffett = computeFullHistoricalScores(merged)[0].scores.find(
+      (s) => s.strategyId === "buffett",
+    )!;
+
+    expect(buffett.isPartial).toBe(true);
+    expect(buffett.coverage).toBeLessThan(1);
+    // Valuation should not be available
+    const valuation = buffett.subScores.find((s) => s.name === "valuation");
+    expect(valuation?.available).toBe(false);
   });
 });

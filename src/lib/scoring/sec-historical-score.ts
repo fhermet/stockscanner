@@ -388,7 +388,7 @@ function scoreBuffettFull(m: MergedAnnual): HistoricalStrategyScore {
     subScores,
     coverage: totalAvailableWeight,
     excludedSubScores: excluded,
-    isPartial: totalAvailableWeight < 1,
+    isPartial: totalAvailableWeight < 0.99,
   };
 }
 
@@ -451,7 +451,7 @@ function scoreDividendFull(m: MergedAnnual, allAnnuals: readonly MergedAnnual[])
     subScores,
     coverage: totalAvailableWeight,
     excludedSubScores: excluded,
-    isPartial: totalAvailableWeight < 1,
+    isPartial: totalAvailableWeight < 0.99,
   };
 }
 
@@ -499,7 +499,7 @@ function scoreGrowthFull(m: MergedAnnual): HistoricalStrategyScore {
     subScores,
     coverage: totalAvailableWeight,
     excludedSubScores: excluded,
-    isPartial: totalAvailableWeight < 1,
+    isPartial: totalAvailableWeight < 0.99,
   };
 }
 
@@ -547,7 +547,7 @@ function scoreLynchFull(m: MergedAnnual): HistoricalStrategyScore {
     subScores,
     coverage: totalAvailableWeight,
     excludedSubScores: excluded,
-    isPartial: totalAvailableWeight < 1,
+    isPartial: totalAvailableWeight < 0.99,
   };
 }
 
