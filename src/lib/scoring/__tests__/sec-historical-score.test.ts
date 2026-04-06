@@ -1,0 +1,278 @@
+import { describe, it, expect } from "vitest";
+
+import type { SecAnnual, SecTickerData } from "@/lib/types/sec-fundamentals";
+import {
+  computeHistoricalScores,
+  getStrategyCoverage,
+  type HistoricalStrategyScore,
+} from "../sec-historical-score";
+
+function makeAnnual(overrides: Partial<SecAnnual> = {}): SecAnnual {
+  return {
+    fiscal_year: 2024,
+    fundamentals: {
+      revenue: 245000000000,
+      net_income: 88000000000,
+      shareholders_equity: 206000000000,
+      total_debt: 60000000000,
+      eps_diluted: 11.86,
+      dividends_paid: 22000000000,
+      operating_cash_flow: 118000000000,
+      capital_expenditure: 44000000000,
+      operating_income: 109000000000,
+      shares_outstanding: 7431000000,
+    },
+    ratios: {
+      roe: 0.43,
+      debt_to_equity: 0.29,
+      revenue_growth: 0.16,
+      eps_growth: 0.22,
+      free_cash_flow: 74000000000,
+      payout_ratio: 0.25,
+      operating_margin: 0.45,
+    },
+    completeness: {
+      present_field_count: 8,
+      missing_field_count: 0,
+      missing_field_names: [],
+      completeness_ratio: 1.0,
+    },
+    ...overrides,
+  };
+}
+
+function makeTickerData(annuals: SecAnnual[]): SecTickerData {
+  return {
+    ticker: "MSFT",
+    company_name: "MICROSOFT CORP",
+    cik: "0000789019",
+    schema_version: "1.0",
+    last_updated: "2026-04-06",
+    annuals,
+  };
+}
+
+function findStrategy(
+  scores: readonly HistoricalStrategyScore[],
+  id: string,
+): HistoricalStrategyScore {
+  const found = scores.find((s) => s.strategyId === id);
+  if (!found) throw new Error(`Strategy ${id} not found`);
+  return found;
+}
+
+describe("computeHistoricalScores", () => {
+  it("produces one point per annual", () => {
+    const data = makeTickerData([
+      makeAnnual({ fiscal_year: 2022 }),
+      makeAnnual({ fiscal_year: 2023 }),
+      makeAnnual({ fiscal_year: 2024 }),
+    ]);
+    const points = computeHistoricalScores(data);
+    expect(points).toHaveLength(3);
+    expect(points[0].fiscalYear).toBe(2022);
+    expect(points[2].fiscalYear).toBe(2024);
+  });
+
+  it("computes all 4 strategies per point", () => {
+    const data = makeTickerData([makeAnnual()]);
+    const points = computeHistoricalScores(data);
+    const strategyIds = points[0].scores.map((s) => s.strategyId);
+    expect(strategyIds).toEqual(["buffett", "dividend", "growth", "lynch"]);
+  });
+});
+
+describe("Buffett historical scoring", () => {
+  it("computes quality and strength sub-scores", () => {
+    const data = makeTickerData([makeAnnual()]);
+    const buffett = findStrategy(computeHistoricalScores(data)[0].scores, "buffett");
+
+    expect(buffett.total).toBeGreaterThan(0);
+    expect(buffett.isPartial).toBe(true);
+
+    const quality = buffett.subScores.find((s) => s.name === "quality");
+    const strength = buffett.subScores.find((s) => s.name === "strength");
+    const valuation = buffett.subScores.find((s) => s.name === "valuation");
+
+    expect(quality?.available).toBe(true);
+    expect(quality?.value).toBeGreaterThan(0);
+    expect(strength?.available).toBe(true);
+    expect(strength?.value).toBeGreaterThan(0);
+    expect(valuation?.available).toBe(false);
+    expect(valuation?.value).toBe(0);
+  });
+
+  it("handles high ROE and low debt well", () => {
+    const annual = makeAnnual();
+    annual.ratios.roe; // 0.43 = 43% → high quality
+    annual.ratios.debt_to_equity; // 0.29 → low debt → high strength
+    const data = makeTickerData([annual]);
+    const buffett = findStrategy(computeHistoricalScores(data)[0].scores, "buffett");
+
+    expect(buffett.total).toBeGreaterThan(70);
+  });
+
+  it("returns 0 when all ratios are null", () => {
+    const annual = makeAnnual({
+      ratios: {
+        roe: null,
+        debt_to_equity: null,
+        revenue_growth: null,
+        eps_growth: null,
+        free_cash_flow: null,
+        payout_ratio: null,
+        operating_margin: null,
+      },
+    });
+    const data = makeTickerData([annual]);
+    const buffett = findStrategy(computeHistoricalScores(data)[0].scores, "buffett");
+    expect(buffett.total).toBe(0);
+  });
+
+  it("coverage is 0.7 (quality 0.4 + strength 0.3)", () => {
+    const data = makeTickerData([makeAnnual()]);
+    const buffett = findStrategy(computeHistoricalScores(data)[0].scores, "buffett");
+    expect(buffett.coverage).toBe(0.7);
+  });
+});
+
+describe("Growth historical scoring", () => {
+  it("computes momentum and profitability", () => {
+    const data = makeTickerData([makeAnnual()]);
+    const growth = findStrategy(computeHistoricalScores(data)[0].scores, "growth");
+
+    expect(growth.total).toBeGreaterThan(0);
+    const momentum = growth.subScores.find((s) => s.name === "momentum");
+    const profitability = growth.subScores.find((s) => s.name === "profitability");
+    const scalability = growth.subScores.find((s) => s.name === "scalability");
+
+    expect(momentum?.available).toBe(true);
+    expect(profitability?.available).toBe(true);
+    expect(scalability?.available).toBe(false);
+  });
+
+  it("coverage is 0.75 (momentum 0.5 + profitability 0.25)", () => {
+    const data = makeTickerData([makeAnnual()]);
+    const growth = findStrategy(computeHistoricalScores(data)[0].scores, "growth");
+    expect(growth.coverage).toBe(0.75);
+  });
+
+  it("handles strong growth well", () => {
+    const annual = makeAnnual({
+      ratios: {
+        ...makeAnnual().ratios,
+        revenue_growth: 0.30, // 30% growth
+        eps_growth: 0.35, // 35% growth
+      },
+    });
+    const data = makeTickerData([annual]);
+    const growth = findStrategy(computeHistoricalScores(data)[0].scores, "growth");
+    expect(growth.total).toBeGreaterThan(70);
+  });
+});
+
+describe("Lynch historical scoring", () => {
+  it("computes growth and quality sub-scores", () => {
+    const data = makeTickerData([makeAnnual()]);
+    const lynch = findStrategy(computeHistoricalScores(data)[0].scores, "lynch");
+
+    const growthSub = lynch.subScores.find((s) => s.name === "growth");
+    const value = lynch.subScores.find((s) => s.name === "value");
+    const quality = lynch.subScores.find((s) => s.name === "quality");
+
+    expect(growthSub?.available).toBe(true);
+    expect(value?.available).toBe(false);
+    expect(quality?.available).toBe(true);
+  });
+
+  it("coverage is 0.65 (growth 0.4 + quality 0.25)", () => {
+    const data = makeTickerData([makeAnnual()]);
+    const lynch = findStrategy(computeHistoricalScores(data)[0].scores, "lynch");
+    expect(lynch.coverage).toBe(0.65);
+  });
+});
+
+describe("Dividend historical scoring", () => {
+  it("computes sustainability and stability", () => {
+    const data = makeTickerData([makeAnnual()]);
+    const dividend = findStrategy(computeHistoricalScores(data)[0].scores, "dividend");
+
+    const yieldSub = dividend.subScores.find((s) => s.name === "yield");
+    const sustainability = dividend.subScores.find((s) => s.name === "sustainability");
+    const stability = dividend.subScores.find((s) => s.name === "stability");
+
+    expect(yieldSub?.available).toBe(false);
+    expect(sustainability?.available).toBe(true);
+    expect(stability?.available).toBe(true);
+  });
+
+  it("coverage is 0.7 (sustainability 0.35 + stability 0.35)", () => {
+    const data = makeTickerData([makeAnnual()]);
+    const dividend = findStrategy(computeHistoricalScores(data)[0].scores, "dividend");
+    expect(dividend.coverage).toBe(0.7);
+  });
+
+  it("tracks dividend growth across years", () => {
+    const annuals = [
+      makeAnnual({
+        fiscal_year: 2020,
+        fundamentals: { ...makeAnnual().fundamentals, dividends_paid: 10000 },
+      }),
+      makeAnnual({
+        fiscal_year: 2021,
+        fundamentals: { ...makeAnnual().fundamentals, dividends_paid: 12000 },
+      }),
+      makeAnnual({
+        fiscal_year: 2022,
+        fundamentals: { ...makeAnnual().fundamentals, dividends_paid: 14000 },
+      }),
+    ];
+    const data = makeTickerData(annuals);
+    const points = computeHistoricalScores(data);
+
+    // Last year should have full growing history
+    const lastDividend = findStrategy(points[2].scores, "dividend");
+    expect(lastDividend.total).toBeGreaterThan(0);
+  });
+});
+
+describe("getStrategyCoverage", () => {
+  it("returns correct coverage info for each strategy", () => {
+    const buffett = getStrategyCoverage("buffett");
+    expect(buffett.coverage).toBe("70%");
+    expect(buffett.excluded.length).toBeGreaterThan(0);
+
+    const growth = getStrategyCoverage("growth");
+    expect(growth.coverage).toBe("75%");
+
+    const lynch = getStrategyCoverage("lynch");
+    expect(lynch.coverage).toBe("65%");
+
+    const dividend = getStrategyCoverage("dividend");
+    expect(dividend.coverage).toBe("52%");
+  });
+});
+
+describe("partial data handling", () => {
+  it("handles years with only some ratios", () => {
+    const annual = makeAnnual({
+      ratios: {
+        roe: 0.35,
+        debt_to_equity: null,
+        revenue_growth: null,
+        eps_growth: 0.15,
+        free_cash_flow: 50000000000,
+        payout_ratio: null,
+        operating_margin: 0.30,
+      },
+    });
+    const data = makeTickerData([annual]);
+    const points = computeHistoricalScores(data);
+
+    // Should still produce scores (partial)
+    for (const score of points[0].scores) {
+      expect(score.total).toBeGreaterThanOrEqual(0);
+      expect(score.total).toBeLessThanOrEqual(100);
+    }
+  });
+});
