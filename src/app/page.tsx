@@ -95,16 +95,24 @@ export default function HomePage() {
             quelles actions y correspondent le mieux.
           </p>
           <p>
-            L&apos;univers couvre plus de 340 actions issues des principaux indices
-            boursiers : S&amp;P 500, NASDAQ 100, Dow Jones, CAC 40, DAX 40, FTSE 100,
-            SMI et STOXX Europe 50. Chaque action reçoit un score sur 100, décomposé
-            en sous-scores (qualité, valorisation, croissance, solidité financière)
-            avec une explication en langage naturel.
+            L&apos;univers couvre les principaux indices boursiers mondiaux :
+            S&amp;P 500, NASDAQ 100, Dow Jones, CAC 40, DAX 40, FTSE 100,
+            SMI et STOXX Europe 50. Chaque action reçoit un score sur 100,
+            décomposé en sous-scores pondérés (qualité, valorisation, croissance,
+            solidité financière) avec une explication en langage naturel des
+            forces et faiblesses identifiées.
+          </p>
+          <p>
+            Les données fondamentales historiques proviennent de la SEC/EDGAR
+            (bilans, comptes de résultat, cash flows sur 10 à 15 ans pour les
+            entreprises US du S&amp;P 500). Les données de marché (cours, capitalisation)
+            sont issues de Yahoo Finance. Cette double source permet de calculer
+            des scores historiques complets et de simuler des stratégies passées.
           </p>
           <p>
             Comparez plusieurs actions côte à côte, suivez vos favorites dans une
-            watchlist, et recevez des alertes quand un score évolue significativement.
-            Les données proviennent de Yahoo Finance et sont mises à jour en temps réel.
+            watchlist, simulez un backtest sur vos stratégies préférées, et recevez
+            des alertes quand un score évolue significativement.
           </p>
         </div>
       </section>
