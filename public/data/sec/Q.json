@@ -1,0 +1,39 @@
+{
+  "ticker": "Q",
+  "company_name": "Qnity Electronics",
+  "cik": "0002058873",
+  "schema_version": "1.0",
+  "last_updated": "2026-04-06",
+  "annuals": [
+    {
+      "fiscal_year": 2025,
+      "fundamentals": {
+        "revenue": 4754000000.0,
+        "net_income": 729000000.0,
+        "shareholders_equity": 7095000000.0,
+        "total_debt": 4003000000.0,
+        "eps_diluted": 3.3,
+        "dividends_paid": 13000000.0,
+        "operating_cash_flow": 1273000000.0,
+        "capital_expenditure": 285000000.0,
+        "operating_income": 962000000.0,
+        "shares_outstanding": 209800000.0
+      },
+      "ratios": {
+        "roe": 0.102748,
+        "debt_to_equity": 0.5642,
+        "revenue_growth": null,
+        "eps_growth": null,
+        "free_cash_flow": 988000000.0,
+        "payout_ratio": 0.017833,
+        "operating_margin": 0.202356
+      },
+      "completeness": {
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
+      }
+    }
+  ]
+}

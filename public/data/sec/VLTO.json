@@ -1,0 +1,101 @@
+{
+  "ticker": "VLTO",
+  "company_name": "Veralto",
+  "cik": "0001967680",
+  "schema_version": "1.0",
+  "last_updated": "2026-04-06",
+  "annuals": [
+    {
+      "fiscal_year": 2023,
+      "fundamentals": {
+        "revenue": 5021000000.0,
+        "net_income": 839000000.0,
+        "shareholders_equity": 1383000000.0,
+        "total_debt": 2629000000.0,
+        "eps_diluted": 3.4,
+        "dividends_paid": null,
+        "operating_cash_flow": 963000000.0,
+        "capital_expenditure": 54000000.0,
+        "operating_income": 1140000000.0,
+        "shares_outstanding": 246800000.0
+      },
+      "ratios": {
+        "roe": 0.606652,
+        "debt_to_equity": 1.90094,
+        "revenue_growth": null,
+        "eps_growth": null,
+        "free_cash_flow": 909000000.0,
+        "payout_ratio": null,
+        "operating_margin": 0.227046
+      },
+      "completeness": {
+        "present_field_count": 7,
+        "missing_field_count": 1,
+        "missing_field_names": [
+          "dividends_paid"
+        ],
+        "completeness_ratio": 0.875
+      }
+    },
+    {
+      "fiscal_year": 2024,
+      "fundamentals": {
+        "revenue": 5193000000.0,
+        "net_income": 833000000.0,
+        "shareholders_equity": 2038000000.0,
+        "total_debt": 2599000000.0,
+        "eps_diluted": 3.34,
+        "dividends_paid": 89000000.0,
+        "operating_cash_flow": 875000000.0,
+        "capital_expenditure": 55000000.0,
+        "operating_income": 1208000000.0,
+        "shares_outstanding": 249600000.0
+      },
+      "ratios": {
+        "roe": 0.486992,
+        "debt_to_equity": 1.27527,
+        "revenue_growth": 0.034256,
+        "eps_growth": -0.017647,
+        "free_cash_flow": 820000000.0,
+        "payout_ratio": 0.106843,
+        "operating_margin": 0.232621
+      },
+      "completeness": {
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
+      }
+    },
+    {
+      "fiscal_year": 2025,
+      "fundamentals": {
+        "revenue": 5503000000.0,
+        "net_income": 940000000.0,
+        "shareholders_equity": 3105000000.0,
+        "total_debt": 2673000000.0,
+        "eps_diluted": 3.76,
+        "dividends_paid": 109000000.0,
+        "operating_cash_flow": 1077000000.0,
+        "capital_expenditure": 63000000.0,
+        "operating_income": 1277000000.0,
+        "shares_outstanding": 250300000.0
+      },
+      "ratios": {
+        "roe": 0.365545,
+        "debt_to_equity": 0.86087,
+        "revenue_growth": 0.059696,
+        "eps_growth": 0.125749,
+        "free_cash_flow": 1014000000.0,
+        "payout_ratio": 0.115957,
+        "operating_margin": 0.232055
+      },
+      "completeness": {
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
+      }
+    }
+  ]
+}

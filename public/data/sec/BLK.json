@@ -1,0 +1,71 @@
+{
+  "ticker": "BLK",
+  "company_name": "BlackRock",
+  "cik": "0002012383",
+  "schema_version": "1.0",
+  "last_updated": "2026-04-06",
+  "annuals": [
+    {
+      "fiscal_year": 2024,
+      "fundamentals": {
+        "revenue": 12794000000.0,
+        "net_income": 6369000000.0,
+        "shareholders_equity": 47495000000.0,
+        "total_debt": 12314000000.0,
+        "eps_diluted": 42.01,
+        "dividends_paid": 3101000000.0,
+        "operating_cash_flow": 4956000000.0,
+        "capital_expenditure": 255000000.0,
+        "operating_income": 7574000000.0,
+        "shares_outstanding": 151615085.0
+      },
+      "ratios": {
+        "roe": 0.134098,
+        "debt_to_equity": 0.259269,
+        "revenue_growth": null,
+        "eps_growth": null,
+        "free_cash_flow": 4701000000.0,
+        "payout_ratio": 0.48689,
+        "operating_margin": 0.591996
+      },
+      "completeness": {
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
+      }
+    },
+    {
+      "fiscal_year": 2025,
+      "fundamentals": {
+        "revenue": 24216000000.0,
+        "net_income": 5553000000.0,
+        "shareholders_equity": 55888000000.0,
+        "total_debt": 12768000000.0,
+        "eps_diluted": 35.31,
+        "dividends_paid": null,
+        "operating_cash_flow": 3927000000.0,
+        "capital_expenditure": 375000000.0,
+        "operating_income": 7045000000.0,
+        "shares_outstanding": 160866521.0
+      },
+      "ratios": {
+        "roe": 0.107426,
+        "debt_to_equity": 0.228457,
+        "revenue_growth": 0.892762,
+        "eps_growth": -0.159486,
+        "free_cash_flow": 3552000000.0,
+        "payout_ratio": null,
+        "operating_margin": 0.290923
+      },
+      "completeness": {
+        "present_field_count": 7,
+        "missing_field_count": 1,
+        "missing_field_names": [
+          "dividends_paid"
+        ],
+        "completeness_ratio": 0.875
+      }
+    }
+  ]
+}

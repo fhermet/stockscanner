@@ -1,0 +1,107 @@
+{
+  "ticker": "TKO",
+  "company_name": "TKO Group Holdings",
+  "cik": "0001973266",
+  "schema_version": "1.0",
+  "last_updated": "2026-04-06",
+  "annuals": [
+    {
+      "fiscal_year": 2023,
+      "fundamentals": {
+        "revenue": 1674968000.0,
+        "net_income": -35227000.0,
+        "shareholders_equity": 4108980000.0,
+        "total_debt": 2736315000.0,
+        "eps_diluted": -0.43,
+        "dividends_paid": null,
+        "operating_cash_flow": 468381000.0,
+        "capital_expenditure": null,
+        "operating_income": 446663000.0,
+        "shares_outstanding": 82808019.0
+      },
+      "ratios": {
+        "roe": -0.008573,
+        "debt_to_equity": 0.665935,
+        "revenue_growth": null,
+        "eps_growth": null,
+        "free_cash_flow": null,
+        "payout_ratio": null,
+        "operating_margin": 0.26667
+      },
+      "completeness": {
+        "present_field_count": 6,
+        "missing_field_count": 2,
+        "missing_field_names": [
+          "dividends_paid",
+          "capital_expenditure"
+        ],
+        "completeness_ratio": 0.75
+      }
+    },
+    {
+      "fiscal_year": 2024,
+      "fundamentals": {
+        "revenue": 2804341000.0,
+        "net_income": 9408000.0,
+        "shareholders_equity": 4091023000.0,
+        "total_debt": 2759274000.0,
+        "eps_diluted": 0.02,
+        "dividends_paid": null,
+        "operating_cash_flow": 583410000.0,
+        "capital_expenditure": null,
+        "operating_income": 282902000.0,
+        "shares_outstanding": 171874540.0
+      },
+      "ratios": {
+        "roe": 0.002295,
+        "debt_to_equity": 0.67447,
+        "revenue_growth": 0.674265,
+        "eps_growth": null,
+        "free_cash_flow": null,
+        "payout_ratio": null,
+        "operating_margin": 0.10088
+      },
+      "completeness": {
+        "present_field_count": 6,
+        "missing_field_count": 2,
+        "missing_field_names": [
+          "dividends_paid",
+          "capital_expenditure"
+        ],
+        "completeness_ratio": 0.75
+      }
+    },
+    {
+      "fiscal_year": 2025,
+      "fundamentals": {
+        "revenue": 4735151000.0,
+        "net_income": 195403000.0,
+        "shareholders_equity": 3737381000.0,
+        "total_debt": 3762124000.0,
+        "eps_diluted": 2.26,
+        "dividends_paid": 185155000.0,
+        "operating_cash_flow": 1285725000.0,
+        "capital_expenditure": null,
+        "operating_income": 835015000.0,
+        "shares_outstanding": 194011072.0
+      },
+      "ratios": {
+        "roe": 0.049922,
+        "debt_to_equity": 1.00662,
+        "revenue_growth": 0.688508,
+        "eps_growth": 112.0,
+        "free_cash_flow": null,
+        "payout_ratio": 0.947555,
+        "operating_margin": 0.176344
+      },
+      "completeness": {
+        "present_field_count": 7,
+        "missing_field_count": 1,
+        "missing_field_names": [
+          "capital_expenditure"
+        ],
+        "completeness_ratio": 0.875
+      }
+    }
+  ]
+}

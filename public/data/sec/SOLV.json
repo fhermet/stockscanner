@@ -1,0 +1,73 @@
+{
+  "ticker": "SOLV",
+  "company_name": "Solventum",
+  "cik": "0001964738",
+  "schema_version": "1.0",
+  "last_updated": "2026-04-06",
+  "annuals": [
+    {
+      "fiscal_year": 2024,
+      "fundamentals": {
+        "revenue": 8254000000.0,
+        "net_income": 479000000.0,
+        "shareholders_equity": 2959000000.0,
+        "total_debt": 8010000000.0,
+        "eps_diluted": 2.76,
+        "dividends_paid": null,
+        "operating_cash_flow": 1185000000.0,
+        "capital_expenditure": 380000000.0,
+        "operating_income": 1036000000.0,
+        "shares_outstanding": 173700000.0
+      },
+      "ratios": {
+        "roe": 0.161879,
+        "debt_to_equity": 2.706996,
+        "revenue_growth": null,
+        "eps_growth": null,
+        "free_cash_flow": 805000000.0,
+        "payout_ratio": null,
+        "operating_margin": 0.125515
+      },
+      "completeness": {
+        "present_field_count": 7,
+        "missing_field_count": 1,
+        "missing_field_names": [
+          "dividends_paid"
+        ],
+        "completeness_ratio": 0.875
+      }
+    },
+    {
+      "fiscal_year": 2025,
+      "fundamentals": {
+        "revenue": 8325000000.0,
+        "net_income": 1556000000.0,
+        "shareholders_equity": 5049000000.0,
+        "total_debt": 5035000000.0,
+        "eps_diluted": 8.88,
+        "dividends_paid": null,
+        "operating_cash_flow": 369000000.0,
+        "capital_expenditure": 379000000.0,
+        "operating_income": 2181000000.0,
+        "shares_outstanding": 175300000.0
+      },
+      "ratios": {
+        "roe": 0.388611,
+        "debt_to_equity": 0.997227,
+        "revenue_growth": 0.008602,
+        "eps_growth": 2.217391,
+        "free_cash_flow": -10000000.0,
+        "payout_ratio": null,
+        "operating_margin": 0.261982
+      },
+      "completeness": {
+        "present_field_count": 7,
+        "missing_field_count": 1,
+        "missing_field_names": [
+          "dividends_paid"
+        ],
+        "completeness_ratio": 0.875
+      }
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "ticker": "SNDK",
+  "company_name": "Sandisk",
+  "cik": "0002023554",
+  "schema_version": "1.0",
+  "last_updated": "2026-04-06",
+  "annuals": [
+    {
+      "fiscal_year": 2025,
+      "fundamentals": {
+        "revenue": 7355000000.0,
+        "net_income": -1641000000.0,
+        "shareholders_equity": 9216000000.0,
+        "total_debt": 1849000000.0,
+        "eps_diluted": -11.32,
+        "dividends_paid": null,
+        "operating_cash_flow": 84000000.0,
+        "capital_expenditure": 204000000.0,
+        "operating_income": -1377000000.0,
+        "shares_outstanding": 145000000.0
+      },
+      "ratios": {
+        "roe": -0.17806,
+        "debt_to_equity": 0.200629,
+        "revenue_growth": null,
+        "eps_growth": null,
+        "free_cash_flow": -120000000.0,
+        "payout_ratio": null,
+        "operating_margin": -0.18722
+      },
+      "completeness": {
+        "present_field_count": 7,
+        "missing_field_count": 1,
+        "missing_field_names": [
+          "dividends_paid"
+        ],
+        "completeness_ratio": 0.875
+      }
+    }
+  ]
+}

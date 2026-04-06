@@ -1,0 +1,136 @@
+{
+  "ticker": "GEHC",
+  "company_name": "GE HealthCare",
+  "cik": "0001932393",
+  "schema_version": "1.0",
+  "last_updated": "2026-04-06",
+  "annuals": [
+    {
+      "fiscal_year": 2022,
+      "fundamentals": {
+        "revenue": null,
+        "net_income": null,
+        "shareholders_equity": 9357000000.0,
+        "total_debt": 8249000000.0,
+        "eps_diluted": null,
+        "dividends_paid": null,
+        "operating_cash_flow": null,
+        "capital_expenditure": null,
+        "operating_income": null,
+        "shares_outstanding": null
+      },
+      "ratios": {
+        "roe": null,
+        "debt_to_equity": 0.881586,
+        "revenue_growth": null,
+        "eps_growth": null,
+        "free_cash_flow": null,
+        "payout_ratio": null,
+        "operating_margin": null
+      },
+      "completeness": {
+        "present_field_count": 2,
+        "missing_field_count": 6,
+        "missing_field_names": [
+          "revenue",
+          "net_income",
+          "eps_diluted",
+          "dividends_paid",
+          "operating_cash_flow",
+          "capital_expenditure"
+        ],
+        "completeness_ratio": 0.25
+      }
+    },
+    {
+      "fiscal_year": 2023,
+      "fundamentals": {
+        "revenue": 19552000000.0,
+        "net_income": 1568000000.0,
+        "shareholders_equity": 7133000000.0,
+        "total_debt": 9442000000.0,
+        "eps_diluted": 3.03,
+        "dividends_paid": 41000000.0,
+        "operating_cash_flow": 2101000000.0,
+        "capital_expenditure": 387000000.0,
+        "operating_income": 2435000000.0,
+        "shares_outstanding": 458000000.0
+      },
+      "ratios": {
+        "roe": 0.190176,
+        "debt_to_equity": 1.323707,
+        "revenue_growth": null,
+        "eps_growth": null,
+        "free_cash_flow": 1714000000.0,
+        "payout_ratio": 0.026148,
+        "operating_margin": 0.12454
+      },
+      "completeness": {
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
+      }
+    },
+    {
+      "fiscal_year": 2024,
+      "fundamentals": {
+        "revenue": 19672000000.0,
+        "net_income": 1993000000.0,
+        "shareholders_equity": 8446000000.0,
+        "total_debt": 8951000000.0,
+        "eps_diluted": 4.34,
+        "dividends_paid": 55000000.0,
+        "operating_cash_flow": 1955000000.0,
+        "capital_expenditure": 401000000.0,
+        "operating_income": 2625000000.0,
+        "shares_outstanding": 459000000.0
+      },
+      "ratios": {
+        "roe": 0.255857,
+        "debt_to_equity": 1.059792,
+        "revenue_growth": 0.006137,
+        "eps_growth": 0.432343,
+        "free_cash_flow": 1554000000.0,
+        "payout_ratio": 0.027597,
+        "operating_margin": 0.133438
+      },
+      "completeness": {
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
+      }
+    },
+    {
+      "fiscal_year": 2025,
+      "fundamentals": {
+        "revenue": 20625000000.0,
+        "net_income": 2084000000.0,
+        "shareholders_equity": 10379000000.0,
+        "total_debt": 10003000000.0,
+        "eps_diluted": 4.55,
+        "dividends_paid": 64000000.0,
+        "operating_cash_flow": 1987000000.0,
+        "capital_expenditure": 482000000.0,
+        "operating_income": 2763000000.0,
+        "shares_outstanding": 458000000.0
+      },
+      "ratios": {
+        "roe": 0.221408,
+        "debt_to_equity": 0.963773,
+        "revenue_growth": 0.048444,
+        "eps_growth": 0.048387,
+        "free_cash_flow": 1505000000.0,
+        "payout_ratio": 0.03071,
+        "operating_margin": 0.133964
+      },
+      "completeness": {
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
+      }
+    }
+  ]
+}

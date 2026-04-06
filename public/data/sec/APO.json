@@ -1,0 +1,137 @@
+{
+  "ticker": "APO",
+  "company_name": "Apollo Global Management",
+  "cik": "0001858681",
+  "schema_version": "1.0",
+  "last_updated": "2026-04-06",
+  "annuals": [
+    {
+      "fiscal_year": 2022,
+      "fundamentals": {
+        "revenue": 10968000000.0,
+        "net_income": -3213000000.0,
+        "shareholders_equity": 397000000.0,
+        "total_debt": 6472000000.0,
+        "eps_diluted": -5.57,
+        "dividends_paid": 916000000.0,
+        "operating_cash_flow": 3789000000.0,
+        "capital_expenditure": null,
+        "operating_income": -5815000000.0,
+        "shares_outstanding": 584691775.0
+      },
+      "ratios": {
+        "roe": -8.093199,
+        "debt_to_equity": 16.302267,
+        "revenue_growth": null,
+        "eps_growth": null,
+        "free_cash_flow": null,
+        "payout_ratio": null,
+        "operating_margin": -0.530179
+      },
+      "completeness": {
+        "present_field_count": 7,
+        "missing_field_count": 1,
+        "missing_field_names": [
+          "capital_expenditure"
+        ],
+        "completeness_ratio": 0.875
+      }
+    },
+    {
+      "fiscal_year": 2023,
+      "fundamentals": {
+        "revenue": 32644000000.0,
+        "net_income": 5047000000.0,
+        "shareholders_equity": 14044000000.0,
+        "total_debt": 8092000000.0,
+        "eps_diluted": 8.28,
+        "dividends_paid": 961000000.0,
+        "operating_cash_flow": 6322000000.0,
+        "capital_expenditure": null,
+        "operating_income": 5586000000.0,
+        "shares_outstanding": 588846447.0
+      },
+      "ratios": {
+        "roe": 0.698982,
+        "debt_to_equity": 0.576189,
+        "revenue_growth": 1.976295,
+        "eps_growth": null,
+        "free_cash_flow": null,
+        "payout_ratio": 0.19041,
+        "operating_margin": 0.171119
+      },
+      "completeness": {
+        "present_field_count": 7,
+        "missing_field_count": 1,
+        "missing_field_names": [
+          "capital_expenditure"
+        ],
+        "completeness_ratio": 0.875
+      }
+    },
+    {
+      "fiscal_year": 2024,
+      "fundamentals": {
+        "revenue": 26114000000.0,
+        "net_income": 4577000000.0,
+        "shareholders_equity": 17253000000.0,
+        "total_debt": 10588000000.0,
+        "eps_diluted": 7.33,
+        "dividends_paid": 1092000000.0,
+        "operating_cash_flow": 3253000000.0,
+        "capital_expenditure": null,
+        "operating_income": 7435000000.0,
+        "shares_outstanding": 604035992.0
+      },
+      "ratios": {
+        "roe": 0.292488,
+        "debt_to_equity": 0.61369,
+        "revenue_growth": -0.200037,
+        "eps_growth": -0.114734,
+        "free_cash_flow": null,
+        "payout_ratio": 0.238584,
+        "operating_margin": 0.284713
+      },
+      "completeness": {
+        "present_field_count": 7,
+        "missing_field_count": 1,
+        "missing_field_names": [
+          "capital_expenditure"
+        ],
+        "completeness_ratio": 0.875
+      }
+    },
+    {
+      "fiscal_year": 2025,
+      "fundamentals": {
+        "revenue": 32049000000.0,
+        "net_income": 3492000000.0,
+        "shareholders_equity": 23341000000.0,
+        "total_debt": 13364000000.0,
+        "eps_diluted": 5.54,
+        "dividends_paid": 1201000000.0,
+        "operating_cash_flow": 7246000000.0,
+        "capital_expenditure": null,
+        "operating_income": 6677000000.0,
+        "shares_outstanding": 593657223.0
+      },
+      "ratios": {
+        "roe": 0.172045,
+        "debt_to_equity": 0.572555,
+        "revenue_growth": 0.227273,
+        "eps_growth": -0.244202,
+        "free_cash_flow": null,
+        "payout_ratio": 0.343929,
+        "operating_margin": 0.208337
+      },
+      "completeness": {
+        "present_field_count": 7,
+        "missing_field_count": 1,
+        "missing_field_names": [
+          "capital_expenditure"
+        ],
+        "completeness_ratio": 0.875
+      }
+    }
+  ]
+}

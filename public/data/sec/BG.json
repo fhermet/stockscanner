@@ -1,0 +1,99 @@
+{
+  "ticker": "BG",
+  "company_name": "Bunge Global",
+  "cik": "0001996862",
+  "schema_version": "1.0",
+  "last_updated": "2026-04-06",
+  "annuals": [
+    {
+      "fiscal_year": 2023,
+      "fundamentals": {
+        "revenue": 17831000000.0,
+        "net_income": 2243000000.0,
+        "shareholders_equity": 10851000000.0,
+        "total_debt": 4085000000.0,
+        "eps_diluted": 14.87,
+        "dividends_paid": 383000000.0,
+        "operating_cash_flow": 3308000000.0,
+        "capital_expenditure": 1122000000.0,
+        "operating_income": 3051000000.0,
+        "shares_outstanding": 150787917.0
+      },
+      "ratios": {
+        "roe": 0.206709,
+        "debt_to_equity": 0.376463,
+        "revenue_growth": null,
+        "eps_growth": null,
+        "free_cash_flow": 2186000000.0,
+        "payout_ratio": 0.170753,
+        "operating_margin": 0.171106
+      },
+      "completeness": {
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
+      }
+    },
+    {
+      "fiscal_year": 2024,
+      "fundamentals": {
+        "revenue": 15550000000.0,
+        "net_income": 1137000000.0,
+        "shareholders_equity": 9913000000.0,
+        "total_debt": 5363000000.0,
+        "eps_diluted": 7.99,
+        "dividends_paid": 378000000.0,
+        "operating_cash_flow": 1900000000.0,
+        "capital_expenditure": 1376000000.0,
+        "operating_income": 1524000000.0,
+        "shares_outstanding": 142223221.0
+      },
+      "ratios": {
+        "roe": 0.109516,
+        "debt_to_equity": 0.541007,
+        "revenue_growth": -0.127923,
+        "eps_growth": -0.462677,
+        "free_cash_flow": 524000000.0,
+        "payout_ratio": 0.332454,
+        "operating_margin": 0.098006
+      },
+      "completeness": {
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
+      }
+    },
+    {
+      "fiscal_year": 2025,
+      "fundamentals": {
+        "revenue": 16944000000.0,
+        "net_income": 816000000.0,
+        "shareholders_equity": 15904000000.0,
+        "total_debt": 10168000000.0,
+        "eps_diluted": 4.91,
+        "dividends_paid": 459000000.0,
+        "operating_cash_flow": 844000000.0,
+        "capital_expenditure": 1723000000.0,
+        "operating_income": 1134000000.0,
+        "shares_outstanding": 166466940.0
+      },
+      "ratios": {
+        "roe": 0.063214,
+        "debt_to_equity": 0.639336,
+        "revenue_growth": 0.089646,
+        "eps_growth": -0.385482,
+        "free_cash_flow": -879000000.0,
+        "payout_ratio": 0.5625,
+        "operating_margin": 0.066926
+      },
+      "completeness": {
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
+      }
+    }
+  ]
+}
