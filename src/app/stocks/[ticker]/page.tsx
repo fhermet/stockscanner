@@ -17,6 +17,7 @@ import DataSourceBadge from "@/components/ui/data-source-badge";
 import WatchlistButton from "@/components/watchlist-button";
 import ScoreHistoryPanel from "@/components/score-history-panel";
 import FundamentalsHistoryPanel from "@/components/fundamentals-history-panel";
+import StrategyHistoryPanel from "@/components/strategy-history-panel";
 import { formatMarketCap, formatPrice } from "@/lib/format";
 
 interface PageProps {
@@ -161,6 +162,9 @@ export default async function StockDetailPage({
 
           {/* Fundamentals history (SEC/EDGAR) */}
           <FundamentalsHistoryPanel ticker={stock.ticker} />
+
+          {/* Historical strategy scores (SEC/EDGAR) */}
+          <StrategyHistoryPanel ticker={stock.ticker} />
 
           {/* Explanation */}
           <section className="rounded-xl border border-slate-200 bg-white p-6">
