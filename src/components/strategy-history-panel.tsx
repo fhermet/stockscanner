@@ -1,15 +1,10 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 
-import type { FundamentalsHistoryResponse } from "@/lib/types/sec-fundamentals";
 import type { StrategyId } from "@/lib/types";
-import {
-  computeHistoricalScores,
-  getStrategyCoverage,
-  type HistoricalScorePoint,
-  type HistoricalStrategyScore,
-} from "@/lib/scoring/sec-historical-score";
+import type { HistoricalScorePoint } from "@/lib/scoring/sec-historical-score";
+import type { HistoricalScoresResponse } from "@/app/api/stocks/[ticker]/historical-scores/route";
 
 interface StrategyHistoryPanelProps {
   readonly ticker: string;
@@ -100,8 +95,15 @@ function StrategyRow({
   readonly strategyId: StrategyId;
   readonly points: readonly HistoricalScorePoint[];
 }) {
-  const coverageInfo = getStrategyCoverage(strategyId);
   const color = STRATEGY_COLORS[strategyId];
+
+  // Get coverage info from the actual last point's data
+  const lastPoint = points[points.length - 1];
+  const stratScore = lastPoint?.scores.find((s) => s.strategyId === strategyId);
+  const coveragePercent = stratScore ? Math.round(stratScore.coverage * 100) : 0;
+  const isComplete = coveragePercent === 100;
+  const excluded = stratScore?.excludedSubScores ?? [];
+  const label = stratScore?.strategyLabel ?? strategyId;
 
   const scores = points.map((p) => {
     const strategyScore = p.scores.find((s) => s.strategyId === strategyId);
@@ -127,10 +129,12 @@ function StrategyRow({
         />
         <div className="flex-1 min-w-0">
           <p className="text-sm font-medium text-slate-800">
-            {coverageInfo.label}
+            {label}
           </p>
           <p className="text-xs text-slate-400">
-            Couverture : {coverageInfo.coverage} du score original
+            {isComplete
+              ? "Score complet (fondamentaux + prix)"
+              : `Couverture : ${coveragePercent}% du score original`}
           </p>
         </div>
         <MiniSparkline values={scores} color={color} />
@@ -229,10 +233,10 @@ function StrategyRow({
           </div>
 
           {/* Excluded sub-scores */}
-          {coverageInfo.excluded.length > 0 && (
+          {excluded.length > 0 && (
             <div className="mt-2 text-xs text-slate-400">
               <span className="font-medium">Non inclus : </span>
-              {coverageInfo.excluded.join(" · ")}
+              {excluded.join(" · ")}
             </div>
           )}
         </div>
@@ -244,7 +248,7 @@ function StrategyRow({
 export default function StrategyHistoryPanel({
   ticker,
 }: StrategyHistoryPanelProps) {
-  const [response, setResponse] = useState<FundamentalsHistoryResponse | null>(
+  const [response, setResponse] = useState<HistoricalScoresResponse | null>(
     null
   );
   const [loading, setLoading] = useState(true);
@@ -255,19 +259,19 @@ export default function StrategyHistoryPanel({
     async function fetchData() {
       try {
         const res = await fetch(
-          `/api/stocks/${encodeURIComponent(ticker)}/fundamentals-history`
+          `/api/stocks/${encodeURIComponent(ticker)}/historical-scores`
         );
         if (!res.ok) {
-          setResponse({ available: false, data: null });
+          setResponse(null);
           return;
         }
-        const json: FundamentalsHistoryResponse = await res.json();
+        const json: HistoricalScoresResponse = await res.json();
         if (!cancelled) {
           setResponse(json);
         }
       } catch {
         if (!cancelled) {
-          setResponse({ available: false, data: null });
+          setResponse(null);
         }
       } finally {
         if (!cancelled) {
@@ -281,11 +285,6 @@ export default function StrategyHistoryPanel({
       cancelled = true;
     };
   }, [ticker]);
-
-  const historicalPoints = useMemo(() => {
-    if (!response?.available || !response.data) return null;
-    return computeHistoricalScores(response.data);
-  }, [response]);
 
   if (loading) {
     return (
@@ -301,13 +300,11 @@ export default function StrategyHistoryPanel({
     );
   }
 
-  if (!response?.available || !response.data || !historicalPoints) {
-    return null; // Don't show the block if no SEC data
+  if (!response?.available || response.points.length < 2) {
+    return null;
   }
 
-  if (historicalPoints.length < 2) {
-    return null; // Need at least 2 years for a meaningful history
-  }
+  const { points, meta } = response;
 
   return (
     <section className="rounded-xl border border-slate-200 bg-white p-6">
@@ -317,9 +314,16 @@ export default function StrategyHistoryPanel({
         </h2>
       </div>
       <p className="text-xs text-slate-400 mb-4">
-        Scores calculés à partir des fondamentaux historiques SEC/EDGAR.
-        Les métriques de marché (cours, capitalisation) ne sont pas disponibles
-        historiquement — certains sous-scores sont exclus.
+        Scores calculés à partir des fondamentaux historiques{" "}
+        {meta.priceYears > 0
+          ? "et des prix de marché (SEC/EDGAR + Yahoo Finance)."
+          : "(SEC/EDGAR uniquement — données de marché indisponibles)."}
+        {" "}
+        {meta.priceYears > 0 && meta.priceYears < meta.secYears && (
+          <span>
+            Prix disponibles pour {meta.priceYears}/{meta.secYears} années.
+          </span>
+        )}
       </p>
 
       <div className="divide-y divide-slate-100">
@@ -327,7 +331,7 @@ export default function StrategyHistoryPanel({
           <StrategyRow
             key={strategyId}
             strategyId={strategyId}
-            points={historicalPoints}
+            points={points}
           />
         ))}
       </div>
