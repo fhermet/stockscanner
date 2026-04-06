@@ -7,6 +7,15 @@ import {
   type TickerSummary,
 } from "../compare-history";
 import type { HistoricalScorePoint } from "@/lib/scoring/sec-historical-score";
+import type { VolatilityInfo } from "@/lib/scoring/score-volatility";
+
+const STABLE_VOL: VolatilityInfo = {
+  level: "stable",
+  label: "Stable",
+  stdDev: 2,
+  avgAbsDelta: 2,
+  description: "Score régulier.",
+};
 
 function makePoint(
   year: number,
@@ -210,6 +219,7 @@ describe("generateInsights", () => {
         avgScore: 70,
         bestYear: 2024,
         worstYear: 2018,
+        volatility: STABLE_VOL,
       },
       {
         ticker: "AAPL",
@@ -223,6 +233,7 @@ describe("generateInsights", () => {
         avgScore: 62,
         bestYear: 2024,
         worstYear: 2018,
+        volatility: STABLE_VOL,
       },
     ];
 
@@ -249,6 +260,7 @@ describe("generateInsights", () => {
         avgScore: 70,
         bestYear: 2024,
         worstYear: 2020,
+        volatility: STABLE_VOL,
       },
       {
         ticker: "AAPL",
@@ -262,6 +274,7 @@ describe("generateInsights", () => {
         avgScore: 68,
         bestYear: 2024,
         worstYear: 2020,
+        volatility: STABLE_VOL,
       },
     ];
 
@@ -286,6 +299,7 @@ describe("generateInsights", () => {
         avgScore: 72,
         bestYear: 2024,
         worstYear: 2024,
+        volatility: STABLE_VOL,
       },
     ];
     const insights = generateInsights(summaries, "Warren Buffett", [2024]);

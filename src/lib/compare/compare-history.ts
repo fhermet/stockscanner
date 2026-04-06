@@ -8,6 +8,13 @@ import type {
   HistoricalScorePoint,
   HistoricalStrategyScore,
 } from "@/lib/scoring/sec-historical-score";
+import { smoothScores, detectAnomalies } from "@/lib/scoring/score-smoothing";
+import {
+  computeVolatility,
+  getStrategyNature,
+  type VolatilityInfo,
+  type StrategyNature,
+} from "@/lib/scoring/score-volatility";
 
 // --- Types ---
 
@@ -20,7 +27,9 @@ export interface TickerHistory {
 
 export interface CompareYearRow {
   readonly year: number;
-  readonly scores: ReadonlyMap<string, number | null>; // ticker → score
+  readonly scores: ReadonlyMap<string, number | null>; // ticker → raw score
+  readonly smoothedScores: ReadonlyMap<string, number | null>; // ticker → smoothed
+  readonly anomalies: ReadonlyMap<string, boolean>; // ticker → is anomaly
 }
 
 export interface TickerSummary {
@@ -35,6 +44,7 @@ export interface TickerSummary {
   readonly avgScore: number;
   readonly bestYear: number | null;
   readonly worstYear: number | null;
+  readonly volatility: VolatilityInfo;
 }
 
 export interface CompareHistoryResult {
@@ -46,6 +56,7 @@ export interface CompareHistoryResult {
   readonly summaries: readonly TickerSummary[];
   readonly insights: readonly string[];
   readonly isPartial: boolean;
+  readonly strategyNature: StrategyNature;
 }
 
 // --- Aggregation ---
@@ -80,21 +91,52 @@ export function aggregateCompareHistory(
     tickerScoreMaps.set(h.ticker, scoreMap);
   }
 
-  // Build year rows
-  const rows: CompareYearRow[] = years.map((year) => {
+  // Build raw score series per ticker, then smooth
+  const rawSeriesPerTicker = new Map<string, readonly (number | null)[]>();
+  const smoothedSeriesPerTicker = new Map<string, readonly (number | null)[]>();
+
+  for (const h of histories) {
+    const scoreMap = tickerScoreMaps.get(h.ticker)!;
+    const rawSeries = years.map((y) => scoreMap.get(y)?.total ?? null);
+    rawSeriesPerTicker.set(h.ticker, rawSeries);
+
+    const smoothed = smoothScores(rawSeries, years);
+    smoothedSeriesPerTicker.set(
+      h.ticker,
+      smoothed.map((s) => s.smoothed),
+    );
+  }
+
+  // Build year rows with raw + smoothed + anomalies
+  const rows: CompareYearRow[] = years.map((year, i) => {
     const scores = new Map<string, number | null>();
+    const smoothedScores = new Map<string, number | null>();
+    const anomalies = new Map<string, boolean>();
+
     for (const h of histories) {
-      const scoreMap = tickerScoreMaps.get(h.ticker);
-      const strat = scoreMap?.get(year);
-      scores.set(h.ticker, strat?.total ?? null);
+      const raw = rawSeriesPerTicker.get(h.ticker)!;
+      const smoothed = smoothedSeriesPerTicker.get(h.ticker)!;
+      scores.set(h.ticker, raw[i]);
+      smoothedScores.set(h.ticker, smoothed[i]);
+
+      // Anomaly detection
+      const prev = i > 0 ? raw[i - 1] : null;
+      const curr = raw[i];
+      const delta = curr !== null && prev !== null ? Math.abs(curr - prev) : 0;
+      anomalies.set(h.ticker, delta > 25);
     }
-    return { year, scores };
+    return { year, scores, smoothedScores, anomalies };
   });
 
-  // Build summaries
+  // Build summaries (with volatility)
   const tickers = histories.map((h) => h.ticker);
   const summaries = histories.map((h) =>
-    buildSummary(h, tickerScoreMaps.get(h.ticker)!, years),
+    buildSummary(
+      h,
+      tickerScoreMaps.get(h.ticker)!,
+      years,
+      rawSeriesPerTicker.get(h.ticker)!,
+    ),
   );
 
   // Get strategy label from first available score
@@ -116,7 +158,7 @@ export function aggregateCompareHistory(
     ),
   );
 
-  const insights = generateInsights(summaries, strategyLabel, years);
+  const insights = generateInsights(summaries, strategyLabel, years, strategyId);
 
   return {
     strategyId,
@@ -127,6 +169,7 @@ export function aggregateCompareHistory(
     summaries,
     insights,
     isPartial,
+    strategyNature: getStrategyNature(strategyId),
   };
 }
 
@@ -136,6 +179,7 @@ function buildSummary(
   history: TickerHistory,
   scoreMap: Map<number, HistoricalStrategyScore>,
   allYears: readonly number[],
+  rawSeries: readonly (number | null)[],
 ): TickerSummary {
   const scores: { year: number; score: number }[] = [];
   for (const [year, strat] of scoreMap) {
@@ -156,6 +200,7 @@ function buildSummary(
       avgScore: 0,
       bestYear: null,
       worstYear: null,
+      volatility: computeVolatility([]),
     };
   }
 
@@ -199,6 +244,7 @@ function buildSummary(
     avgScore,
     bestYear: best.year,
     worstYear: worst.year,
+    volatility: computeVolatility(rawSeries),
   };
 }
 
@@ -208,6 +254,7 @@ export function generateInsights(
   summaries: readonly TickerSummary[],
   strategyLabel: string,
   years: readonly number[],
+  strategyId?: StrategyId,
 ): string[] {
   const insights: string[] = [];
   const withScores = summaries.filter((s) => s.latestScore !== null);
@@ -277,6 +324,55 @@ export function generateInsights(
     );
   }
 
+  // 5. Volatility warnings
+  const volatileOnes = withScores.filter(
+    (s) => s.volatility.level === "volatile",
+  );
+  if (volatileOnes.length > 0) {
+    const names = volatileOnes.map((s) => s.ticker).join(", ");
+    insights.push(
+      `${names} ${volatileOnes.length > 1 ? "présentent" : "présente"} un profil volatil sur cette stratégie (écart-type > 12 pts).`,
+    );
+  }
+
+  // 6. Steady improver (all deltas positive over last 4+ years)
+  for (const s of withScores) {
+    if (
+      s.trend === "up" &&
+      s.totalDelta !== null &&
+      s.totalDelta > 10 &&
+      s.volatility.level !== "volatile"
+    ) {
+      insights.push(
+        `${s.ticker} montre une amélioration régulière (+${s.totalDelta} pts sur la période).`,
+      );
+      break;
+    }
+  }
+
+  // 7. Progressive degradation
+  for (const s of withScores) {
+    if (
+      s.trend === "down" &&
+      s.totalDelta !== null &&
+      s.totalDelta < -10 &&
+      s.volatility.level !== "volatile"
+    ) {
+      insights.push(
+        `${s.ticker} montre une dégradation progressive (${s.totalDelta} pts sur la période).`,
+      );
+      break;
+    }
+  }
+
+  // 8. Strategy nature warning
+  if (strategyId) {
+    const nature = getStrategyNature(strategyId);
+    if (nature.expectedVolatility === "volatile") {
+      insights.push(nature.explanation);
+    }
+  }
+
   return insights;
 }
 
@@ -292,5 +388,6 @@ function emptyResult(strategyId: StrategyId): CompareHistoryResult {
     summaries: [],
     insights: [],
     isPartial: false,
+    strategyNature: getStrategyNature(strategyId),
   };
 }
