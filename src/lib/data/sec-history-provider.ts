@@ -11,10 +11,14 @@ import type { SecIndex, SecTickerData } from "@/lib/types/sec-fundamentals";
 const SEC_DATA_DIR = path.join(process.cwd(), "public", "data", "sec");
 
 let cachedIndex: SecIndex | null = null;
+const tickerCache = new Map<string, SecTickerData>();
+let allLoaded = false;
 
 /** Reset the in-memory index cache (used in tests). */
 export function resetCache(): void {
   cachedIndex = null;
+  tickerCache.clear();
+  allLoaded = false;
 }
 
 async function loadIndex(): Promise<SecIndex | null> {
@@ -45,6 +49,12 @@ export async function getSecHistory(
   ticker: string
 ): Promise<SecTickerData | null> {
   const normalizedTicker = ticker.toUpperCase();
+
+  // Serve from memory cache if available
+  const cached = tickerCache.get(normalizedTicker);
+  if (cached) return cached;
+  if (allLoaded) return null; // Already loaded everything, ticker not found
+
   const hasData = await hasSecData(normalizedTicker);
   if (!hasData) {
     return null;
@@ -53,10 +63,33 @@ export async function getSecHistory(
   try {
     const filePath = path.join(SEC_DATA_DIR, `${normalizedTicker}.json`);
     const raw = await fs.readFile(filePath, "utf-8");
-    return JSON.parse(raw) as SecTickerData;
+    const data = JSON.parse(raw) as SecTickerData;
+    tickerCache.set(normalizedTicker, data);
+    return data;
   } catch {
     return null;
   }
+}
+
+/**
+ * Pre-load all SEC data into memory for fast lookups.
+ * Call once before batch-fetching stocks to avoid per-ticker I/O.
+ */
+export async function preloadSecData(): Promise<void> {
+  if (allLoaded) return;
+  const index = await loadIndex();
+  if (!index) { allLoaded = true; return; }
+
+  const results = await Promise.allSettled(
+    index.tickers.map(async (ticker) => {
+      try {
+        const filePath = path.join(SEC_DATA_DIR, `${ticker}.json`);
+        const raw = await fs.readFile(filePath, "utf-8");
+        tickerCache.set(ticker, JSON.parse(raw) as SecTickerData);
+      } catch { /* skip unreadable files */ }
+    })
+  );
+  allLoaded = true;
 }
 
 export async function getAvailableTickers(): Promise<readonly string[]> {

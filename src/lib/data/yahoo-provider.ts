@@ -3,7 +3,7 @@ import { Stock, StockFilters } from "../types";
 import { DataProvider } from "./provider";
 import { createLogger } from "../logger";
 import { ALL_TICKERS } from "../tickers";
-import { getSecHistory } from "./sec-history-provider";
+import { getSecHistory, preloadSecData } from "./sec-history-provider";
 import type { SecAnnual } from "@/lib/types/sec-fundamentals";
 
 const log = createLogger("yahoo-provider");
@@ -178,6 +178,9 @@ async function fetchStock(ticker: string): Promise<Stock | undefined> {
  *  → 60 per wave, ~6 waves, ~15-20s cold load
  */
 async function fetchAll(tickers: readonly string[]): Promise<Stock[]> {
+  // Pre-load all SEC data into memory before batch fetching
+  await preloadSecData();
+
   // Deduplicate tickers before fetching
   const uniqueTickers = [...new Set(tickers)];
 
