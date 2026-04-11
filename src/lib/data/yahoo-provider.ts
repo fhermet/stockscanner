@@ -125,9 +125,21 @@ const SECTOR_MAP: Record<string, string> = {
   Energy: "Energie",
   "Real Estate": "Immobilier",
   Utilities: "Services publics",
-  "Communication Services": "Technologie",
   "Basic Materials": "Materiaux",
+  // "Communication Services" is split based on industry — see mapSector()
 };
+
+/**
+ * Map Yahoo sector+industry to our sector taxonomy.
+ * "Communication Services" needs special handling: it contains both
+ * tech companies (GOOG, META, NFLX) and telecom operators (VZ, T, TMUS).
+ */
+function mapSector(rawSector: string, rawIndustry: string): string {
+  if (rawSector === "Communication Services") {
+    return rawIndustry === "Telecom Services" ? "Telecom" : "Technologie";
+  }
+  return SECTOR_MAP[rawSector] ?? (rawSector || "Autre");
+}
 
 const COUNTRY_MAP: Record<string, string> = {
   "United States": "USA",
@@ -173,6 +185,7 @@ async function fetchStock(ticker: string): Promise<Stock | undefined> {
     const per = perYahoo !== null ? parseFloat(perYahoo.toFixed(1)) : null;
 
     const rawSector: string = profile?.sector ?? "";
+    const rawIndustry: string = profile?.industry ?? "";
     const rawCountry: string = profile?.country ?? "";
 
     // --- SEC: primary source for all fundamental metrics ---
@@ -294,7 +307,7 @@ async function fetchStock(ticker: string): Promise<Stock | undefined> {
     return {
       ticker: price.symbol ?? ticker,
       name: price.shortName ?? price.longName ?? ticker,
-      sector: SECTOR_MAP[rawSector] ?? (rawSector || "Autre"),
+      sector: mapSector(rawSector, rawIndustry),
       country: COUNTRY_MAP[rawCountry] ?? (rawCountry || "Inconnu"),
       exchange: price.exchangeName ?? "N/A",
       currency: (price.currency as string) ?? "USD",
