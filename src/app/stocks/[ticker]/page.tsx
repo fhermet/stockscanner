@@ -105,7 +105,7 @@ export default async function StockDetailPage({
       <ScoreHistoryPanel
         ticker={stock.ticker}
         strategyId={strategyId}
-        currentScore={score.total}
+        currentScore={score.total ?? 0}
         currentSubScores={score.subScores}
       />
     </>
@@ -323,7 +323,7 @@ export default async function StockDetailPage({
           <MetricCard
             label="Rendement dividende"
             value={
-              stock.dividendYield > 0
+              stock.dividendYield !== null && stock.dividendYield > 0
                 ? `${stock.dividendYield}%`
                 : "Aucun"
             }
@@ -331,7 +331,7 @@ export default async function StockDetailPage({
           <MetricCard
             label="Payout Ratio"
             value={
-              stock.payoutRatio > 0
+              stock.payoutRatio !== null && stock.payoutRatio > 0
                 ? `${stock.payoutRatio}%`
                 : "N/A"
             }

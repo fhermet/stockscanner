@@ -35,19 +35,22 @@ export function computeSubScoreDiffs(
   current: readonly SubScore[],
   previousMap: Record<string, number>
 ): SubScoreDiff[] {
-  return current.map((sub) => {
-    const prev = previousMap[sub.name] ?? sub.value;
-    const delta = sub.value - prev;
-    return {
-      name: sub.name,
-      label: SUBSCORE_LABELS[sub.name] ?? sub.name,
-      current: sub.value,
-      previous: prev,
-      delta,
-      weight: sub.weight,
-      contribution: Math.round(delta * sub.weight),
-    };
-  });
+  return current
+    .filter((sub) => sub.value !== null)
+    .map((sub) => {
+      const value = sub.value as number;
+      const prev = previousMap[sub.name] ?? value;
+      const delta = value - prev;
+      return {
+        name: sub.name,
+        label: SUBSCORE_LABELS[sub.name] ?? sub.name,
+        current: value,
+        previous: prev,
+        delta,
+        weight: sub.weight,
+        contribution: Math.round(delta * sub.weight),
+      };
+    });
 }
 
 export function generateScoreChangeExplanation(

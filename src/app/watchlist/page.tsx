@@ -45,15 +45,15 @@ export default function WatchlistPage() {
         if (!res.ok) { failed.push(ticker); continue; }
         const data = await res.json();
         const scored: ScoredStock = { stock: data.stock, score: data.score };
-        const delta = getDelta(ticker, strategyId, scored.score.total);
+        const delta = getDelta(ticker, strategyId, scored.score.total ?? 0);
 
-        saveScore(ticker, strategyId, scored.score.total);
+        saveScore(ticker, strategyId, scored.score.total ?? 0);
 
         results.push({
           ticker: scored.stock.ticker,
           name: scored.stock.name,
           sector: scored.stock.sector,
-          score: scored.score.total,
+          score: scored.score.total ?? 0,
           delta,
           price: scored.stock.price,
           currency: scored.stock.currency,

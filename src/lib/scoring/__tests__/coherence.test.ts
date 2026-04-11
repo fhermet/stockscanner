@@ -106,8 +106,8 @@ describe("scoring coherence: quality tech stocks", () => {
 
 describe("scoring coherence: dividend stocks", () => {
   it("T scores higher on Dividend than on Growth", () => {
-    const div = scoreStock(T_STOCK, "dividend").total;
-    const growth = scoreStock(T_STOCK, "growth").total;
+    const div = scoreStock(T_STOCK, "dividend").total!;
+    const growth = scoreStock(T_STOCK, "growth").total!;
     expect(div).toBeGreaterThan(growth);
   });
 
@@ -129,23 +129,23 @@ describe("scoring coherence: cross-strategy ranking", () => {
   it("MSFT beats T on quality sub-score, T beats MSFT on valuation", () => {
     const msft = scoreStock(MSFT, "buffett");
     const att = scoreStock(T_STOCK, "buffett");
-    const msftQuality = msft.subScores.find((s) => s.name === "quality")!.value;
-    const attQuality = att.subScores.find((s) => s.name === "quality")!.value;
-    const msftVal = msft.subScores.find((s) => s.name === "valuation")!.value;
-    const attVal = att.subScores.find((s) => s.name === "valuation")!.value;
+    const msftQuality = msft.subScores.find((s) => s.name === "quality")!.value!;
+    const attQuality = att.subScores.find((s) => s.name === "quality")!.value!;
+    const msftVal = msft.subScores.find((s) => s.name === "valuation")!.value!;
+    const attVal = att.subScores.find((s) => s.name === "valuation")!.value!;
     expect(msftQuality).toBeGreaterThan(attQuality);
     expect(attVal).toBeGreaterThan(msftVal);
   });
 
   it("high-growth beats low-growth on Growth", () => {
-    const nvda = scoreStock(NVDA, "growth").total;
-    const ko = scoreStock(KO, "growth").total;
+    const nvda = scoreStock(NVDA, "growth").total!;
+    const ko = scoreStock(KO, "growth").total!;
     expect(nvda).toBeGreaterThan(ko);
   });
 
   it("dividend stock beats non-dividend on Dividend", () => {
-    const att = scoreStock(T_STOCK, "dividend").total;
-    const nvda = scoreStock(NVDA, "dividend").total;
+    const att = scoreStock(T_STOCK, "dividend").total!;
+    const nvda = scoreStock(NVDA, "dividend").total!;
     expect(att).toBeGreaterThan(nvda);
   });
 });
@@ -155,8 +155,10 @@ describe("scoring coherence: partial data", () => {
     const strategies = ["buffett", "lynch", "growth", "dividend"] as const;
     for (const id of strategies) {
       const score = scoreStock(PARTIAL, id);
-      expect(score.total).toBeGreaterThanOrEqual(0);
-      expect(score.total).toBeLessThanOrEqual(100);
+      if (score.total !== null) {
+        expect(score.total).toBeGreaterThanOrEqual(0);
+        expect(score.total).toBeLessThanOrEqual(100);
+      }
       // partial data should not get "high" on dividend (no yield/payout)
       if (id === "dividend") {
         expect(score.dataCompleteness.missing.length).toBeGreaterThan(0);
@@ -171,11 +173,15 @@ describe("scoring coherence: partial data", () => {
     };
     for (const id of ["buffett", "lynch", "growth", "dividend"] as const) {
       const score = scoreStock(extreme, id);
-      expect(score.total).toBeGreaterThanOrEqual(0);
-      expect(score.total).toBeLessThanOrEqual(100);
+      if (score.total !== null) {
+        expect(score.total).toBeGreaterThanOrEqual(0);
+        expect(score.total).toBeLessThanOrEqual(100);
+      }
       for (const sub of score.subScores) {
-        expect(sub.value).toBeGreaterThanOrEqual(0);
-        expect(sub.value).toBeLessThanOrEqual(100);
+        if (sub.value !== null) {
+          expect(sub.value).toBeGreaterThanOrEqual(0);
+          expect(sub.value).toBeLessThanOrEqual(100);
+        }
       }
     }
   });

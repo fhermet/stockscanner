@@ -68,14 +68,14 @@ describe("scoreMetric", () => {
   });
 
   it("scores PER inversely (low = good)", () => {
-    const lowPER = scoreMetric("per", 12);
-    const highPER = scoreMetric("per", 45);
+    const lowPER = scoreMetric("per", 12)!;
+    const highPER = scoreMetric("per", 45)!;
     expect(lowPER).toBeGreaterThan(highPER);
   });
 
   it("scores debtToEquity inversely", () => {
-    const lowDebt = scoreMetric("debtToEquity", 0.2);
-    const highDebt = scoreMetric("debtToEquity", 2.5);
+    const lowDebt = scoreMetric("debtToEquity", 0.2)!;
+    const highDebt = scoreMetric("debtToEquity", 2.5)!;
     expect(lowDebt).toBeGreaterThan(highDebt);
   });
 });

@@ -229,7 +229,7 @@ function CompareContent() {
           <div className="rounded-xl border border-slate-200 bg-white p-6">
             <h2 className="text-lg font-bold text-slate-900 mb-4">Scores</h2>
             <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
-              {[...stocks].sort((a, b) => b.score.total - a.score.total).map((s, i) => {
+              {[...stocks].sort((a, b) => (b.score.total ?? 0) - (a.score.total ?? 0)).map((s, i) => {
                 const conf = CONFIDENCE_LABELS[s.score.confidence] ?? CONFIDENCE_LABELS.high;
                 const isWinner = !comparison.isTie && i === 0;
                 return (
