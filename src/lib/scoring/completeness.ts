@@ -3,7 +3,7 @@ import { Stock, DataCompleteness, ScoreConfidence, StrategyId } from "../types";
 /**
  * Metriques essentielles par strategie.
  * Chaque metrique a un nom et un test pour verifier si la donnee est presente.
- * On considere 0 comme "present mais nul", et NaN/undefined comme "absent".
+ * On considere null comme "absent" — une valeur nulle (ex: per=0) est consideree presente.
  */
 
 interface MetricCheck {
@@ -19,30 +19,30 @@ const COMMON_METRICS: MetricCheck[] = [
 
 const STRATEGY_METRICS: Record<StrategyId, MetricCheck[]> = {
   buffett: [
-    { name: "PER", test: (s) => s.per > 0 },
-    { name: "ROE", test: (s) => isFinite(s.roe) && s.roe !== 0 },
-    { name: "marge operationnelle", test: (s) => isFinite(s.operatingMargin) },
-    { name: "dette/capitaux", test: (s) => isFinite(s.debtToEquity) && s.debtToEquity >= 0 },
-    { name: "free cash flow", test: (s) => isFinite(s.freeCashFlow) },
+    { name: "PER", test: (s) => s.per !== null },
+    { name: "ROE", test: (s) => s.roe !== null },
+    { name: "marge operationnelle", test: (s) => s.operatingMargin !== null },
+    { name: "dette/capitaux", test: (s) => s.debtToEquity !== null },
+    { name: "free cash flow", test: (s) => s.freeCashFlow !== null },
   ],
   lynch: [
-    { name: "PEG", test: (s) => s.peg > 0 },
-    { name: "croissance EPS", test: (s) => isFinite(s.epsGrowth) },
-    { name: "croissance CA", test: (s) => isFinite(s.revenueGrowth) },
-    { name: "marge operationnelle", test: (s) => isFinite(s.operatingMargin) },
-    { name: "dette/capitaux", test: (s) => isFinite(s.debtToEquity) && s.debtToEquity >= 0 },
+    { name: "PEG", test: (s) => s.peg !== null },
+    { name: "croissance EPS", test: (s) => s.epsGrowth !== null },
+    { name: "croissance CA", test: (s) => s.revenueGrowth !== null },
+    { name: "marge operationnelle", test: (s) => s.operatingMargin !== null },
+    { name: "dette/capitaux", test: (s) => s.debtToEquity !== null },
   ],
   growth: [
-    { name: "croissance CA", test: (s) => isFinite(s.revenueGrowth) },
-    { name: "croissance EPS", test: (s) => isFinite(s.epsGrowth) },
-    { name: "marge operationnelle", test: (s) => isFinite(s.operatingMargin) },
-    { name: "ROE", test: (s) => isFinite(s.roe) && s.roe !== 0 },
+    { name: "croissance CA", test: (s) => s.revenueGrowth !== null },
+    { name: "croissance EPS", test: (s) => s.epsGrowth !== null },
+    { name: "marge operationnelle", test: (s) => s.operatingMargin !== null },
+    { name: "ROE", test: (s) => s.roe !== null },
   ],
   dividend: [
-    { name: "rendement dividende", test: (s) => s.dividendYield > 0 },
-    { name: "payout ratio", test: (s) => s.payoutRatio > 0 },
-    { name: "free cash flow", test: (s) => isFinite(s.freeCashFlow) },
-    { name: "dette/capitaux", test: (s) => isFinite(s.debtToEquity) && s.debtToEquity >= 0 },
+    { name: "rendement dividende", test: (s) => s.dividendYield !== null },
+    { name: "payout ratio", test: (s) => s.payoutRatio !== null },
+    { name: "free cash flow", test: (s) => s.freeCashFlow !== null },
+    { name: "dette/capitaux", test: (s) => s.debtToEquity !== null },
     { name: "historique dividende", test: (s) => s.history.length >= 2 },
   ],
 };
