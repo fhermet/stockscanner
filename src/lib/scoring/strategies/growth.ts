@@ -17,44 +17,30 @@ const growthScorer: StrategyScorer = {
   score(stock: Stock): SubScore[] {
     const revScore = scoreMetric("revenueGrowth", stock.revenueGrowth);
     const epsScore = scoreMetric("epsGrowth", stock.epsGrowth);
-    const momentumValue = weightedAverage([
-      { score: revScore, weight: 0.5 },
-      { score: epsScore, weight: 0.5 },
-    ]);
+    const momentumValue = (revScore !== null && epsScore !== null)
+      ? weightedAverage([
+          { score: revScore, weight: 0.5 },
+          { score: epsScore, weight: 0.5 },
+        ])
+      : null;
 
     const marginScore = scoreMetric("operatingMargin", stock.operatingMargin);
     const roeScore = scoreMetric("roe", stock.roe);
-    const profitValue = weightedAverage([
-      { score: marginScore, weight: 0.5 },
-      { score: roeScore, weight: 0.5 },
-    ]);
+    const profitValue = (marginScore !== null && roeScore !== null)
+      ? weightedAverage([
+          { score: marginScore, weight: 0.5 },
+          { score: roeScore, weight: 0.5 },
+        ])
+      : null;
 
     // Scalabilite inversee : petite cap = plus de potentiel
-    const scaleScore = normalize(stock.marketCap, {
-      min: 3000,
-      max: 10,
-    });
+    const scaleScore = normalize(stock.marketCap, { min: 3000, max: 10 });
     const scalabilityValue = scaleScore;
 
     return [
-      {
-        name: "momentum",
-        value: momentumValue,
-        weight: 0.5,
-        label: "Momentum de croissance",
-      },
-      {
-        name: "profitability",
-        value: profitValue,
-        weight: 0.25,
-        label: "Rentabilite",
-      },
-      {
-        name: "scalability",
-        value: scalabilityValue,
-        weight: 0.25,
-        label: "Potentiel de croissance",
-      },
+      { name: "momentum", value: momentumValue, weight: 0.5, label: "Momentum de croissance" },
+      { name: "profitability", value: profitValue, weight: 0.25, label: "Rentabilite" },
+      { name: "scalability", value: scalabilityValue, weight: 0.25, label: "Potentiel de croissance" },
     ];
   },
 };

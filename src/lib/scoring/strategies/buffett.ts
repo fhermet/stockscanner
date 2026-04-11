@@ -21,53 +21,49 @@ const buffettScorer: StrategyScorer = {
   score(stock: Stock): SubScore[] {
     // Qualite
     const roeRaw = scoreMetric("roe", stock.roe);
-    const roeScore = adjustForSector(roeRaw, stock, "roe", stock.roe);
+    const roeScore = roeRaw !== null ? adjustForSector(roeRaw, stock, "roe", stock.roe!) : null;
 
     const marginRaw = scoreMetric("operatingMargin", stock.operatingMargin);
-    const marginScore = adjustForSector(
-      marginRaw, stock, "operatingMargin", stock.operatingMargin
-    );
+    const marginScore = marginRaw !== null
+      ? adjustForSector(marginRaw, stock, "operatingMargin", stock.operatingMargin!)
+      : null;
 
-    const fcfYield = stock.marketCap > 0
+    const fcfYield = stock.marketCap > 0 && stock.freeCashFlow !== null
       ? (stock.freeCashFlow / stock.marketCap) * 100
-      : 0;
-    const fcfYieldScore = scoreMetric("fcfYield", fcfYield);
+      : null;
+    const fcfYieldScore = fcfYield !== null ? scoreMetric("fcfYield", fcfYield) : null;
 
-    const qualityValue = weightedAverage([
-      { score: roeScore, weight: 0.4 },
-      { score: marginScore, weight: 0.35 },
-      { score: fcfYieldScore, weight: 0.25 },
-    ]);
+    const qualityValue = (roeScore !== null && marginScore !== null && fcfYieldScore !== null)
+      ? weightedAverage([
+          { score: roeScore, weight: 0.4 },
+          { score: marginScore, weight: 0.35 },
+          { score: fcfYieldScore, weight: 0.25 },
+        ])
+      : null;
 
     // Solidite
     const debtScore = scoreMetric("debtToEquity", stock.debtToEquity);
-    const fcfPosScore = stock.freeCashFlow > 0 ? 100 : 10;
+    const fcfPosScore = stock.freeCashFlow !== null
+      ? (stock.freeCashFlow > 0 ? 100 : 10)
+      : null;
 
-    const strengthValue = weightedAverage([
-      { score: debtScore, weight: 0.6 },
-      { score: fcfPosScore, weight: 0.4 },
-    ]);
+    const strengthValue = (debtScore !== null && fcfPosScore !== null)
+      ? weightedAverage([
+          { score: debtScore, weight: 0.6 },
+          { score: fcfPosScore, weight: 0.4 },
+        ])
+      : null;
 
     // Valorisation
     const perRaw = scoreMetric("per", stock.per);
-    const valuationValue = adjustForSector(
-      perRaw, stock, "per", stock.per, true
-    );
+    const valuationValue = perRaw !== null
+      ? adjustForSector(perRaw, stock, "per", stock.per!, true)
+      : null;
 
     return [
       { name: "quality", value: qualityValue, weight: 0.4, label: "Qualite" },
-      {
-        name: "strength",
-        value: strengthValue,
-        weight: 0.3,
-        label: "Solidite financiere",
-      },
-      {
-        name: "valuation",
-        value: valuationValue,
-        weight: 0.3,
-        label: "Valorisation",
-      },
+      { name: "strength", value: strengthValue, weight: 0.3, label: "Solidite financiere" },
+      { name: "valuation", value: valuationValue, weight: 0.3, label: "Valorisation" },
     ];
   },
 };

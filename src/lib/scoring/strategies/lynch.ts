@@ -17,19 +17,23 @@ const lynchScorer: StrategyScorer = {
   score(stock: Stock): SubScore[] {
     const epsScore = scoreMetric("epsGrowth", stock.epsGrowth);
     const revScore = scoreMetric("revenueGrowth", stock.revenueGrowth);
-    const growthValue = weightedAverage([
-      { score: epsScore, weight: 0.6 },
-      { score: revScore, weight: 0.4 },
-    ]);
+    const growthValue = (epsScore !== null && revScore !== null)
+      ? weightedAverage([
+          { score: epsScore, weight: 0.6 },
+          { score: revScore, weight: 0.4 },
+        ])
+      : null;
 
     const valueValue = scoreMetric("peg", stock.peg);
 
     const marginScore = scoreMetric("operatingMargin", stock.operatingMargin);
     const debtScore = scoreMetric("debtToEquity", stock.debtToEquity);
-    const qualityValue = weightedAverage([
-      { score: marginScore, weight: 0.5 },
-      { score: debtScore, weight: 0.5 },
-    ]);
+    const qualityValue = (marginScore !== null && debtScore !== null)
+      ? weightedAverage([
+          { score: marginScore, weight: 0.5 },
+          { score: debtScore, weight: 0.5 },
+        ])
+      : null;
 
     return [
       { name: "growth", value: growthValue, weight: 0.4, label: "Croissance" },
