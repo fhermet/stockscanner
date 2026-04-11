@@ -221,10 +221,20 @@ async function fetchStock(ticker: string): Promise<Stock | undefined> {
       const f = latest.fundamentals;
 
       if (r.roe !== null) {
-        roe = parseFloat((r.roe * 100).toFixed(1));
+        // ROE > 100% with very small equity is an artifact, not a signal.
+        // Colgate (CL) has equity=54M with NI=2.1B → ROE=3950%. Not meaningful.
+        const roePercent = r.roe * 100;
+        const equityTooSmall = f.net_income !== null && f.shareholders_equity !== null
+          && f.shareholders_equity > 0
+          && f.shareholders_equity < Math.abs(f.net_income) * 0.1;
+        roe = equityTooSmall ? null : parseFloat(roePercent.toFixed(1));
       }
       if (r.debt_to_equity !== null) {
-        debtToEquity = parseFloat(r.debt_to_equity.toFixed(2));
+        // Same logic: D/E > 10 with tiny equity is not meaningful
+        const deTooExtreme = f.shareholders_equity !== null && f.shareholders_equity > 0
+          && f.net_income !== null
+          && f.shareholders_equity < Math.abs(f.net_income) * 0.1;
+        debtToEquity = deTooExtreme ? null : parseFloat(r.debt_to_equity.toFixed(2));
       }
       if (r.operating_margin !== null) {
         operatingMargin = parseFloat((r.operating_margin * 100).toFixed(1));
