@@ -98,8 +98,16 @@ async function fetchStock(ticker: string): Promise<Stock | undefined> {
     const perRaw = nullableNum(detail?.trailingPE);
     const per = perRaw !== null ? parseFloat(perRaw.toFixed(1)) : null;
 
+    const epsGrowthRaw = nullableNum(financial?.earningsGrowth);
+    const epsGrowth = epsGrowthRaw !== null ? parseFloat((epsGrowthRaw * 100).toFixed(1)) : null;
+
     const pegRaw = nullableNum(stats?.pegRatio);
-    const peg = pegRaw !== null ? parseFloat(pegRaw.toFixed(2)) : null;
+    // Fallback: compute PEG from P/E and EPS growth when Yahoo doesn't provide it
+    const pegComputed = (pegRaw === null && per !== null && epsGrowthRaw !== null && epsGrowthRaw > 0)
+      ? per / (epsGrowthRaw * 100)
+      : null;
+    const pegValue = pegRaw ?? pegComputed;
+    const peg = pegValue !== null ? parseFloat(pegValue.toFixed(2)) : null;
 
     const roeRaw = nullableNum(financial?.returnOnEquity);
     const roe = roeRaw !== null ? parseFloat((roeRaw * 100).toFixed(1)) : null;
@@ -115,9 +123,6 @@ async function fetchStock(ticker: string): Promise<Stock | undefined> {
 
     const revGrowthRaw = nullableNum(financial?.revenueGrowth);
     const revenueGrowth = revGrowthRaw !== null ? parseFloat((revGrowthRaw * 100).toFixed(1)) : null;
-
-    const epsGrowthRaw = nullableNum(financial?.earningsGrowth);
-    const epsGrowth = epsGrowthRaw !== null ? parseFloat((epsGrowthRaw * 100).toFixed(1)) : null;
 
     const divYieldRaw = nullableNum(detail?.dividendYield);
     const dividendYield = divYieldRaw !== null ? parseFloat((divYieldRaw * 100).toFixed(2)) : null;
