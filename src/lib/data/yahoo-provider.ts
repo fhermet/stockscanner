@@ -38,8 +38,14 @@ function nullableNum(value: unknown): number | null {
 
 function computeDPS(annual: SecAnnual): number {
   const divPaid = annual.fundamentals.dividends_paid;
-  const shares = annual.fundamentals.shares_outstanding;
+  let shares = annual.fundamentals.shares_outstanding;
   if (divPaid === null || divPaid <= 0 || shares === null || shares <= 0) return 0;
+  // Guard: some SEC filings report shares in millions instead of units.
+  // Detect by checking if net_income / shares is absurdly high (> $10K per share).
+  const ni = annual.fundamentals.net_income;
+  if (ni !== null && Math.abs(ni) > 1e6 && shares < 100000 && Math.abs(ni / shares) > 10000) {
+    shares = shares * 1_000_000;
+  }
   return parseFloat((divPaid / shares).toFixed(4));
 }
 
@@ -229,8 +235,13 @@ async function fetchStock(ticker: string): Promise<Stock | undefined> {
       // Dividend yield from SEC DPS / current price
       if (currentPrice > 0) {
         const divPaid = f.dividends_paid ?? 0;
-        const shares = f.shares_outstanding;
+        let shares = f.shares_outstanding;
         if (shares !== null && shares > 0) {
+          // Guard: detect shares reported in millions
+          const ni = f.net_income;
+          if (ni !== null && Math.abs(ni) > 1e6 && shares < 100000 && Math.abs(ni / shares) > 10000) {
+            shares = shares * 1_000_000;
+          }
           const dps = divPaid > 0 ? divPaid / shares : 0;
           dividendYield = parseFloat(((dps / currentPrice) * 100).toFixed(2));
         }
