@@ -5,6 +5,7 @@ import { createLogger } from "../logger";
 import { ALL_TICKERS } from "../tickers";
 import { getSecHistory, preloadSecData } from "./sec-history-provider";
 import type { SecAnnual } from "@/lib/types/sec-fundamentals";
+import type { YearlyData } from "../types";
 
 const log = createLogger("yahoo-provider");
 
@@ -40,6 +41,72 @@ function computeDPS(annual: SecAnnual): number {
   const shares = annual.fundamentals.shares_outstanding;
   if (divPaid === null || divPaid <= 0 || shares === null || shares <= 0) return 0;
   return parseFloat((divPaid / shares).toFixed(4));
+}
+
+interface SplitEvent {
+  readonly date: Date;
+  readonly ratio: number; // e.g. 7 for a 7:1 split
+}
+
+/**
+ * Fetch stock split history from Yahoo Finance.
+ * Returns split events sorted by date (oldest first).
+ */
+async function fetchSplits(ticker: string): Promise<readonly SplitEvent[]> {
+  try {
+    const result = await yf.chart(ticker, {
+      period1: new Date("2000-01-01"),
+      period2: new Date(),
+      interval: "1mo",
+      events: "splits",
+    });
+    const splits = (result.events?.splits ?? []) as Array<{
+      date: Date | string;
+      numerator: number;
+      denominator: number;
+    }>;
+    return splits
+      .filter((s) => s.numerator > 0 && s.denominator > 0)
+      .map((s) => ({
+        date: new Date(s.date),
+        ratio: s.numerator / s.denominator,
+      }))
+      .sort((a, b) => a.date.getTime() - b.date.getTime());
+  } catch {
+    return [];
+  }
+}
+
+/**
+ * Adjust SEC historical per-share metrics (EPS, DPS) for stock splits.
+ * Applies cumulative split factors so all values are in current-share terms.
+ */
+function adjustHistoryForSplits(
+  history: YearlyData[],
+  splits: readonly SplitEvent[],
+): YearlyData[] {
+  if (splits.length === 0) return history;
+
+  // Compute cumulative split factor for each year
+  // A split in June 2014 (ratio 7) means all data before 2014 must be divided by 7
+  // We work backwards: the most recent year has factor 1.0
+  return history.map((entry) => {
+    let factor = 1;
+    for (const split of splits) {
+      // If the fiscal year ends before the split date, the per-share data is pre-split
+      const fiscalYearEnd = new Date(entry.year, 11, 31); // Dec 31 of fiscal year
+      if (fiscalYearEnd < split.date) {
+        factor *= split.ratio;
+      }
+    }
+    if (factor === 1) return entry;
+    return {
+      year: entry.year,
+      revenue: entry.revenue,
+      eps: parseFloat((entry.eps / factor).toFixed(4)),
+      dividendPerShare: parseFloat((entry.dividendPerShare / factor).toFixed(4)),
+    };
+  });
 }
 
 const SECTOR_MAP: Record<string, string> = {
@@ -147,8 +214,8 @@ async function fetchStock(ticker: string): Promise<Stock | undefined> {
     let secFallbackPayout = payoutRatio;
 
     if (secData && secData.annuals.length > 0) {
-      // Build history
-      history = secData.annuals
+      // Build history and adjust for stock splits
+      const rawHistory: YearlyData[] = secData.annuals
         .filter((a) => a.fundamentals.eps_diluted !== null)
         .map((a) => ({
           year: a.fiscal_year,
@@ -156,6 +223,8 @@ async function fetchStock(ticker: string): Promise<Stock | undefined> {
           eps: a.fundamentals.eps_diluted!,
           dividendPerShare: computeDPS(a),
         }));
+      const splits = await fetchSplits(ticker);
+      history = adjustHistoryForSplits(rawHistory, splits);
 
       // Use latest SEC annual as fallback for missing Yahoo metrics
       const latest = secData.annuals[secData.annuals.length - 1];
