@@ -122,7 +122,7 @@ function ScannerContent() {
       setFilters((prev) => {
         const next = { ...prev, ...update };
         if ("strategyId" in update || "indexCountry" in update || "indexId" in update) {
-          router.push(buildUrl(next), { scroll: false });
+          queueMicrotask(() => router.push(buildUrl(next), { scroll: false }));
         }
         return next;
       });
