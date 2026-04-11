@@ -17,6 +17,24 @@ describe("computeWeightedTotal", () => {
   });
 });
 
+describe("computeWeightedTotal with null sub-scores", () => {
+  it("returns null if any sub-score value is null", () => {
+    const result = computeWeightedTotal([
+      { name: "a", value: 80, weight: 0.5, label: "A" },
+      { name: "b", value: null, weight: 0.5, label: "B" },
+    ]);
+    expect(result).toBeNull();
+  });
+
+  it("returns number when all sub-scores are present", () => {
+    const result = computeWeightedTotal([
+      { name: "a", value: 80, weight: 0.5, label: "A" },
+      { name: "b", value: 60, weight: 0.5, label: "B" },
+    ]);
+    expect(result).toBe(70);
+  });
+});
+
 describe("weightedAverage", () => {
   it("computes correctly with equal weights", () => {
     const result = weightedAverage([
