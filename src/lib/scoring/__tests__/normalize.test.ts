@@ -79,3 +79,18 @@ describe("scoreMetric", () => {
     expect(lowDebt).toBeGreaterThan(highDebt);
   });
 });
+
+describe("scoreMetric with null", () => {
+  it("returns null when value is null", () => {
+    expect(scoreMetric("roe", null)).toBeNull();
+    expect(scoreMetric("per", null)).toBeNull();
+    expect(scoreMetric("peg", null)).toBeNull();
+    expect(scoreMetric("dividendYield", null)).toBeNull();
+  });
+
+  it("still scores valid numbers correctly", () => {
+    expect(scoreMetric("roe", 20)).toBe(50);
+    expect(scoreMetric("roe", 40)).toBe(100);
+    expect(scoreMetric("roe", 0)).toBe(0);
+  });
+});
