@@ -1,7 +1,7 @@
 import { Stock, SubScore } from "../../types";
 import { StrategyScorer, registerStrategy } from "../engine";
 import { scoreMetric, normalize } from "../normalize";
-import { weightedAverage } from "../utils";
+import { weightedAverageSkipNull } from "../utils";
 
 /**
  * Strategie Growth : croissance agressive
@@ -17,21 +17,17 @@ const growthScorer: StrategyScorer = {
   score(stock: Stock): SubScore[] {
     const revScore = scoreMetric("revenueGrowth", stock.revenueGrowth);
     const epsScore = scoreMetric("epsGrowth", stock.epsGrowth);
-    const momentumValue = (revScore !== null && epsScore !== null)
-      ? weightedAverage([
-          { score: revScore, weight: 0.5 },
-          { score: epsScore, weight: 0.5 },
-        ])
-      : null;
+    const momentumValue = weightedAverageSkipNull([
+      { score: revScore, weight: 0.5 },
+      { score: epsScore, weight: 0.5 },
+    ]);
 
     const marginScore = scoreMetric("operatingMargin", stock.operatingMargin);
     const roeScore = scoreMetric("roe", stock.roe);
-    const profitValue = (marginScore !== null && roeScore !== null)
-      ? weightedAverage([
-          { score: marginScore, weight: 0.5 },
-          { score: roeScore, weight: 0.5 },
-        ])
-      : null;
+    const profitValue = weightedAverageSkipNull([
+      { score: marginScore, weight: 0.5 },
+      { score: roeScore, weight: 0.5 },
+    ]);
 
     // Scalabilite inversee : petite cap = plus de potentiel
     const scaleScore = normalize(stock.marketCap, { min: 3000, max: 10 });

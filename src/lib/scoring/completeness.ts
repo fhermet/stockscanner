@@ -4,11 +4,19 @@ import { Stock, DataCompleteness, ScoreConfidence, StrategyId } from "../types";
  * Metriques essentielles par strategie.
  * Chaque metrique a un nom et un test pour verifier si la donnee est presente.
  * On considere null comme "absent" — une valeur nulle (ex: per=0) est consideree presente.
+ *
+ * Certaines metriques ne s'appliquent pas a certains secteurs (ex: FCF
+ * n'a pas de sens pour les banques dont l'operating cash flow inclut les
+ * mouvements de depots et prets).
  */
+
+const FINANCE_SECTORS = new Set(["Finance"]);
 
 interface MetricCheck {
   readonly name: string;
   readonly test: (stock: Stock) => boolean;
+  /** If set, this metric is skipped for stocks in these sectors */
+  readonly skipSectors?: ReadonlySet<string>;
 }
 
 const COMMON_METRICS: MetricCheck[] = [
@@ -23,7 +31,7 @@ const STRATEGY_METRICS: Record<StrategyId, MetricCheck[]> = {
     { name: "ROE", test: (s) => s.roe !== null },
     { name: "marge operationnelle", test: (s) => s.operatingMargin !== null },
     { name: "dette/capitaux", test: (s) => s.debtToEquity !== null },
-    { name: "free cash flow", test: (s) => s.freeCashFlow !== null },
+    { name: "free cash flow", test: (s) => s.freeCashFlow !== null, skipSectors: FINANCE_SECTORS },
   ],
   lynch: [
     { name: "PEG", test: (s) => s.peg !== null },
@@ -41,7 +49,7 @@ const STRATEGY_METRICS: Record<StrategyId, MetricCheck[]> = {
   dividend: [
     { name: "rendement dividende", test: (s) => s.dividendYield !== null },
     { name: "payout ratio", test: (s) => s.payoutRatio !== null },
-    { name: "free cash flow", test: (s) => s.freeCashFlow !== null },
+    { name: "free cash flow", test: (s) => s.freeCashFlow !== null, skipSectors: FINANCE_SECTORS },
     { name: "dette/capitaux", test: (s) => s.debtToEquity !== null },
     { name: "historique dividende", test: (s) => s.history.length >= 2 },
   ],
@@ -51,7 +59,11 @@ export function computeDataCompleteness(
   stock: Stock,
   strategyId: StrategyId
 ): DataCompleteness {
-  const checks = [...COMMON_METRICS, ...(STRATEGY_METRICS[strategyId] ?? [])];
+  const allChecks = [...COMMON_METRICS, ...(STRATEGY_METRICS[strategyId] ?? [])];
+  // Filter out metrics that don't apply to this stock's sector
+  const checks = allChecks.filter(
+    (check) => !check.skipSectors || !check.skipSectors.has(stock.sector),
+  );
 
   const available: string[] = [];
   const missing: string[] = [];

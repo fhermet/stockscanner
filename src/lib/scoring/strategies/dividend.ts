@@ -1,7 +1,7 @@
 import { Stock, SubScore } from "../../types";
 import { StrategyScorer, registerStrategy } from "../engine";
 import { scoreMetric, normalizeOptimalRange } from "../normalize";
-import { weightedAverage } from "../utils";
+import { weightedAverageSkipNull } from "../utils";
 
 /**
  * Strategie Dividende : rendement + soutenabilite + stabilite
@@ -10,6 +10,8 @@ import { weightedAverage } from "../utils";
  *   - Rendement (30%) : dividend yield
  *   - Soutenabilite (35%) : payout ratio (zone optimale), FCF coverage
  *   - Stabilite (35%) : dette, croissance historique du dividende
+ *
+ * FCF coverage is skipped for financial sector stocks.
  */
 
 function scoreDividendGrowth(history: Stock["history"]): number | null {
@@ -51,21 +53,17 @@ const dividendScorer: StrategyScorer = {
       ? normalizeOptimalRange(stock.payoutRatio, 30, 60, 0, 100)
       : null;
     const fcfScore = scoreFCFCoverage(stock.freeCashFlow, stock.marketCap, stock.dividendYield);
-    const sustainabilityValue = (payoutScore !== null && fcfScore !== null)
-      ? weightedAverage([
-          { score: payoutScore, weight: 0.5 },
-          { score: fcfScore, weight: 0.5 },
-        ])
-      : null;
+    const sustainabilityValue = weightedAverageSkipNull([
+      { score: payoutScore, weight: 0.5 },
+      { score: fcfScore, weight: 0.5 },
+    ]);
 
     const debtScore = scoreMetric("debtToEquity", stock.debtToEquity);
     const divGrowthScore = scoreDividendGrowth(stock.history);
-    const stabilityValue = (debtScore !== null && divGrowthScore !== null)
-      ? weightedAverage([
-          { score: debtScore, weight: 0.4 },
-          { score: divGrowthScore, weight: 0.6 },
-        ])
-      : null;
+    const stabilityValue = weightedAverageSkipNull([
+      { score: debtScore, weight: 0.4 },
+      { score: divGrowthScore, weight: 0.6 },
+    ]);
 
     return [
       { name: "yield", value: yieldValue, weight: 0.3, label: "Rendement" },

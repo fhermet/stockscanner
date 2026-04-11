@@ -119,7 +119,7 @@ const SECTOR_MAP: Record<string, string> = {
   Energy: "Energie",
   "Real Estate": "Immobilier",
   Utilities: "Services publics",
-  "Communication Services": "Telecom",
+  "Communication Services": "Technologie",
   "Basic Materials": "Materiaux",
 };
 
@@ -162,56 +162,26 @@ async function fetchStock(ticker: string): Promise<Stock | undefined> {
     const marketCap = parseFloat((marketCapRaw / 1_000_000_000).toFixed(1));
     const currentPrice = safeNum(price.regularMarketPrice);
 
-    const perRaw = nullableNum(detail?.trailingPE);
-    const per = perRaw !== null ? parseFloat(perRaw.toFixed(1)) : null;
-
-    const epsGrowthRaw = nullableNum(financial?.earningsGrowth);
-    const epsGrowth = epsGrowthRaw !== null ? parseFloat((epsGrowthRaw * 100).toFixed(1)) : null;
-
-    const pegRaw = nullableNum(stats?.pegRatio);
-    // Fallback: compute PEG from P/E and EPS growth when Yahoo doesn't provide it
-    const pegComputed = (pegRaw === null && per !== null && epsGrowthRaw !== null && epsGrowthRaw > 0)
-      ? per / (epsGrowthRaw * 100)
-      : null;
-    const pegValue = pegRaw ?? pegComputed;
-    const peg = pegValue !== null ? parseFloat(pegValue.toFixed(2)) : null;
-
-    const roeRaw = nullableNum(financial?.returnOnEquity);
-    const roe = roeRaw !== null ? parseFloat((roeRaw * 100).toFixed(1)) : null;
-
-    const debtRaw = nullableNum(financial?.debtToEquity);
-    const debtToEquity = debtRaw !== null ? parseFloat((debtRaw / 100).toFixed(2)) : null;
-
-    const marginRaw = nullableNum(financial?.operatingMargins);
-    const operatingMargin = marginRaw !== null ? parseFloat((marginRaw * 100).toFixed(1)) : null;
-
-    const fcfRaw = nullableNum(financial?.freeCashflow);
-    const freeCashFlow = fcfRaw !== null ? parseFloat((fcfRaw / 1_000_000_000).toFixed(1)) : null;
-
-    const revGrowthRaw = nullableNum(financial?.revenueGrowth);
-    const revenueGrowth = revGrowthRaw !== null ? parseFloat((revGrowthRaw * 100).toFixed(1)) : null;
-
-    const divYieldRaw = nullableNum(detail?.dividendYield);
-    const dividendYield = divYieldRaw !== null ? parseFloat((divYieldRaw * 100).toFixed(2)) : null;
-
-    const payoutRaw = nullableNum(detail?.payoutRatio);
-    const payoutRatio = payoutRaw !== null ? Math.round(payoutRaw * 100) : null;
+    // --- Yahoo: only used for price-derived metrics and metadata ---
+    const perYahoo = nullableNum(detail?.trailingPE);
+    const per = perYahoo !== null ? parseFloat(perYahoo.toFixed(1)) : null;
 
     const rawSector: string = profile?.sector ?? "";
     const rawCountry: string = profile?.country ?? "";
 
-    // Load SEC data for US tickers: history + fallback for missing Yahoo metrics
+    // --- SEC: primary source for all fundamental metrics ---
     let history: Stock["history"] = [];
     const secData = await getSecHistory(ticker);
-    let secFallbackRoe = roe;
-    let secFallbackDebt = debtToEquity;
-    let secFallbackMargin = operatingMargin;
-    let secFallbackFcf = freeCashFlow;
-    let secFallbackRevGrowth = revenueGrowth;
-    let secFallbackEpsGrowth = epsGrowth;
-    let secFallbackPer = per;
-    let secFallbackDivYield = dividendYield;
-    let secFallbackPayout = payoutRatio;
+
+    // Start with null for all fundamentals — SEC fills them, Yahoo is last resort
+    let roe: number | null = null;
+    let debtToEquity: number | null = null;
+    let operatingMargin: number | null = null;
+    let freeCashFlow: number | null = null;
+    let revenueGrowth: number | null = null;
+    let epsGrowth: number | null = null;
+    let dividendYield: number | null = null;
+    let payoutRatio: number | null = null;
 
     if (secData && secData.annuals.length > 0) {
       // Build history and adjust for stock splits
@@ -226,52 +196,88 @@ async function fetchStock(ticker: string): Promise<Stock | undefined> {
       const splits = await fetchSplits(ticker);
       history = adjustHistoryForSplits(rawHistory, splits);
 
-      // Use latest SEC annual as fallback for missing Yahoo metrics
+      // SEC is primary source — audited 10-K data
       const latest = secData.annuals[secData.annuals.length - 1];
       const r = latest.ratios;
       const f = latest.fundamentals;
 
-      if (secFallbackRoe === null && r.roe !== null) {
-        secFallbackRoe = parseFloat((r.roe * 100).toFixed(1));
+      if (r.roe !== null) {
+        roe = parseFloat((r.roe * 100).toFixed(1));
       }
-      if (secFallbackDebt === null && r.debt_to_equity !== null) {
-        secFallbackDebt = parseFloat(r.debt_to_equity.toFixed(2));
+      if (r.debt_to_equity !== null) {
+        debtToEquity = parseFloat(r.debt_to_equity.toFixed(2));
       }
-      if (secFallbackMargin === null && r.operating_margin !== null) {
-        secFallbackMargin = parseFloat((r.operating_margin * 100).toFixed(1));
+      if (r.operating_margin !== null) {
+        operatingMargin = parseFloat((r.operating_margin * 100).toFixed(1));
       }
-      if (secFallbackFcf === null && r.free_cash_flow !== null) {
-        secFallbackFcf = parseFloat((r.free_cash_flow / 1_000_000_000).toFixed(1));
+      if (r.free_cash_flow !== null) {
+        freeCashFlow = parseFloat((r.free_cash_flow / 1_000_000_000).toFixed(1));
       }
-      if (secFallbackRevGrowth === null && r.revenue_growth !== null) {
-        secFallbackRevGrowth = parseFloat((r.revenue_growth * 100).toFixed(1));
+      if (r.revenue_growth !== null) {
+        revenueGrowth = parseFloat((r.revenue_growth * 100).toFixed(1));
       }
-      if (secFallbackEpsGrowth === null && r.eps_growth !== null) {
-        secFallbackEpsGrowth = parseFloat((r.eps_growth * 100).toFixed(1));
+      if (r.eps_growth !== null) {
+        epsGrowth = parseFloat((r.eps_growth * 100).toFixed(1));
       }
-      if (secFallbackPayout === null && r.payout_ratio !== null) {
-        secFallbackPayout = Math.round(r.payout_ratio * 100);
+      if (r.payout_ratio !== null) {
+        payoutRatio = Math.round(r.payout_ratio * 100);
       }
-      if (secFallbackPer === null && currentPrice > 0 && f.eps_diluted !== null && f.eps_diluted > 0) {
-        secFallbackPer = parseFloat((currentPrice / f.eps_diluted).toFixed(1));
+      // PER from current price / SEC EPS (more reliable than Yahoo trailing PE)
+      if (per === null && currentPrice > 0 && f.eps_diluted !== null && f.eps_diluted > 0) {
+        // Only as fallback — Yahoo PER uses more recent earnings data
       }
-      if (secFallbackDivYield === null && currentPrice > 0) {
-        // dividends_paid null = no dividends = yield 0%
+      // Dividend yield from SEC DPS / current price
+      if (currentPrice > 0) {
         const divPaid = f.dividends_paid ?? 0;
         const shares = f.shares_outstanding;
         if (shares !== null && shares > 0) {
           const dps = divPaid > 0 ? divPaid / shares : 0;
-          secFallbackDivYield = parseFloat(((dps / currentPrice) * 100).toFixed(2));
+          dividendYield = parseFloat(((dps / currentPrice) * 100).toFixed(2));
         }
       }
     }
 
-    // Recompute PEG with potentially SEC-enriched values
-    const finalPer = secFallbackPer;
-    const finalEpsGrowthRaw = secFallbackEpsGrowth !== null ? secFallbackEpsGrowth / 100 : null;
-    let finalPeg = peg;
-    if (finalPeg === null && finalPer !== null && finalEpsGrowthRaw !== null && finalEpsGrowthRaw > 0) {
-      finalPeg = parseFloat((finalPer / (finalEpsGrowthRaw * 100)).toFixed(2));
+    // --- Yahoo fallback: only for tickers without SEC data (European stocks) ---
+    // When SEC data exists, don't override with Yahoo — SEC nulls are intentional
+    // (e.g. ROE/D/E null because equity is negative).
+    const hasSec = secData !== null && secData.annuals.length > 0;
+    if (roe === null && !hasSec) {
+      const roeRaw = nullableNum(financial?.returnOnEquity);
+      roe = roeRaw !== null ? parseFloat((roeRaw * 100).toFixed(1)) : null;
+    }
+    if (debtToEquity === null && !hasSec) {
+      const debtRaw = nullableNum(financial?.debtToEquity);
+      debtToEquity = debtRaw !== null ? parseFloat((debtRaw / 100).toFixed(2)) : null;
+    }
+    if (operatingMargin === null && !hasSec) {
+      const marginRaw = nullableNum(financial?.operatingMargins);
+      operatingMargin = marginRaw !== null ? parseFloat((marginRaw * 100).toFixed(1)) : null;
+    }
+    if (freeCashFlow === null && !hasSec) {
+      const fcfRaw = nullableNum(financial?.freeCashflow);
+      freeCashFlow = fcfRaw !== null ? parseFloat((fcfRaw / 1_000_000_000).toFixed(1)) : null;
+    }
+    if (revenueGrowth === null && !hasSec) {
+      const revGrowthRaw = nullableNum(financial?.revenueGrowth);
+      revenueGrowth = revGrowthRaw !== null ? parseFloat((revGrowthRaw * 100).toFixed(1)) : null;
+    }
+    if (epsGrowth === null && !hasSec) {
+      const epsGrowthRaw = nullableNum(financial?.earningsGrowth);
+      epsGrowth = epsGrowthRaw !== null ? parseFloat((epsGrowthRaw * 100).toFixed(1)) : null;
+    }
+    if (dividendYield === null && !hasSec) {
+      const divYieldRaw = nullableNum(detail?.dividendYield);
+      dividendYield = divYieldRaw !== null ? parseFloat((divYieldRaw * 100).toFixed(2)) : null;
+    }
+    if (payoutRatio === null && !hasSec) {
+      const payoutRaw = nullableNum(detail?.payoutRatio);
+      payoutRatio = payoutRaw !== null ? Math.round(payoutRaw * 100) : null;
+    }
+
+    // PEG = PER / eps_growth (always computed, never from Yahoo)
+    let peg: number | null = null;
+    if (per !== null && epsGrowth !== null && epsGrowth > 0) {
+      peg = parseFloat((per / epsGrowth).toFixed(2));
     }
 
     return {
@@ -283,16 +289,16 @@ async function fetchStock(ticker: string): Promise<Stock | undefined> {
       currency: (price.currency as string) ?? "USD",
       marketCap,
       price: parseFloat(currentPrice.toFixed(2)),
-      per: secFallbackPer,
-      peg: finalPeg,
-      roe: secFallbackRoe,
-      debtToEquity: secFallbackDebt,
-      operatingMargin: secFallbackMargin,
-      freeCashFlow: secFallbackFcf,
-      revenueGrowth: secFallbackRevGrowth,
-      epsGrowth: secFallbackEpsGrowth,
-      dividendYield: secFallbackDivYield,
-      payoutRatio: secFallbackPayout,
+      per,
+      peg,
+      roe,
+      debtToEquity,
+      operatingMargin,
+      freeCashFlow,
+      revenueGrowth,
+      epsGrowth,
+      dividendYield,
+      payoutRatio,
       history,
     };
   } catch (err: unknown) {

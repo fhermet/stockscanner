@@ -1,7 +1,7 @@
 import { Stock, SubScore } from "../../types";
 import { StrategyScorer, registerStrategy } from "../engine";
 import { scoreMetric } from "../normalize";
-import { weightedAverage } from "../utils";
+import { weightedAverageSkipNull } from "../utils";
 
 /**
  * Strategie Peter Lynch : Growth At Reasonable Price (GARP)
@@ -17,23 +17,19 @@ const lynchScorer: StrategyScorer = {
   score(stock: Stock): SubScore[] {
     const epsScore = scoreMetric("epsGrowth", stock.epsGrowth);
     const revScore = scoreMetric("revenueGrowth", stock.revenueGrowth);
-    const growthValue = (epsScore !== null && revScore !== null)
-      ? weightedAverage([
-          { score: epsScore, weight: 0.6 },
-          { score: revScore, weight: 0.4 },
-        ])
-      : null;
+    const growthValue = weightedAverageSkipNull([
+      { score: epsScore, weight: 0.6 },
+      { score: revScore, weight: 0.4 },
+    ]);
 
     const valueValue = scoreMetric("peg", stock.peg);
 
     const marginScore = scoreMetric("operatingMargin", stock.operatingMargin);
     const debtScore = scoreMetric("debtToEquity", stock.debtToEquity);
-    const qualityValue = (marginScore !== null && debtScore !== null)
-      ? weightedAverage([
-          { score: marginScore, weight: 0.5 },
-          { score: debtScore, weight: 0.5 },
-        ])
-      : null;
+    const qualityValue = weightedAverageSkipNull([
+      { score: marginScore, weight: 0.5 },
+      { score: debtScore, weight: 0.5 },
+    ]);
 
     return [
       { name: "growth", value: growthValue, weight: 0.4, label: "Croissance" },

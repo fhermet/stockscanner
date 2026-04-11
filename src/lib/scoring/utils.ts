@@ -43,6 +43,18 @@ export function adjustForSector(
 }
 
 /**
+ * Weighted average that excludes null scores and redistributes their
+ * weight to the remaining items. Returns null only if ALL scores are null.
+ */
+export function weightedAverageSkipNull(
+  items: readonly { score: number | null; weight: number }[]
+): number | null {
+  const available = items.filter((i): i is { score: number; weight: number } => i.score !== null);
+  if (available.length === 0) return null;
+  return weightedAverage(available);
+}
+
+/**
  * Redistribue les poids quand certaines metriques sont absentes.
  * Prend un tableau d'items avec un flag `available`.
  * Les poids des items indisponibles sont redistribues proportionnellement.

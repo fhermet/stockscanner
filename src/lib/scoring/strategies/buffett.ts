@@ -1,7 +1,7 @@
 import { Stock, SubScore } from "../../types";
 import { StrategyScorer, registerStrategy } from "../engine";
 import { scoreMetric } from "../normalize";
-import { weightedAverage, adjustForSector } from "../utils";
+import { weightedAverageSkipNull, adjustForSector } from "../utils";
 
 /**
  * Strategie Buffett : Qualite + Solidite + Valorisation
@@ -14,6 +14,9 @@ import { weightedAverage, adjustForSector } from "../utils";
  * Ajustement sectoriel : ROE, marge et PER sont compares aux
  * medianes du secteur pour eviter de penaliser des secteurs
  * structurellement differents (ex: banque vs tech).
+ *
+ * FCF metrics are skipped (null) for financial sector stocks
+ * where operating cash flow includes deposit/lending movements.
  */
 const buffettScorer: StrategyScorer = {
   id: "buffett",
@@ -33,13 +36,11 @@ const buffettScorer: StrategyScorer = {
       : null;
     const fcfYieldScore = fcfYield !== null ? scoreMetric("fcfYield", fcfYield) : null;
 
-    const qualityValue = (roeScore !== null && marginScore !== null && fcfYieldScore !== null)
-      ? weightedAverage([
-          { score: roeScore, weight: 0.4 },
-          { score: marginScore, weight: 0.35 },
-          { score: fcfYieldScore, weight: 0.25 },
-        ])
-      : null;
+    const qualityValue = weightedAverageSkipNull([
+      { score: roeScore, weight: 0.4 },
+      { score: marginScore, weight: 0.35 },
+      { score: fcfYieldScore, weight: 0.25 },
+    ]);
 
     // Solidite
     const debtScore = scoreMetric("debtToEquity", stock.debtToEquity);
@@ -47,12 +48,10 @@ const buffettScorer: StrategyScorer = {
       ? (stock.freeCashFlow > 0 ? 100 : 10)
       : null;
 
-    const strengthValue = (debtScore !== null && fcfPosScore !== null)
-      ? weightedAverage([
-          { score: debtScore, weight: 0.6 },
-          { score: fcfPosScore, weight: 0.4 },
-        ])
-      : null;
+    const strengthValue = weightedAverageSkipNull([
+      { score: debtScore, weight: 0.6 },
+      { score: fcfPosScore, weight: 0.4 },
+    ]);
 
     // Valorisation
     const perRaw = scoreMetric("per", stock.per);
