@@ -1,5 +1,5 @@
 interface ScoreGaugeProps {
-  readonly score: number;
+  readonly score: number | null;
   readonly label: string;
   readonly size?: "sm" | "md";
 }
@@ -25,16 +25,18 @@ export default function ScoreGauge({
           {label}
         </span>
         <span
-          className={`font-semibold text-slate-900 ${size === "sm" ? "text-xs" : "text-sm"}`}
+          className={`font-semibold ${size === "sm" ? "text-xs" : "text-sm"} ${score === null ? "text-slate-400" : "text-slate-900"}`}
         >
-          {score}
+          {score === null ? "N/A" : score}
         </span>
       </div>
       <div className="h-2 rounded-full bg-slate-100">
-        <div
-          className={`score-bar ${getBarColor(score)}`}
-          style={{ width: `${Math.min(score, 100)}%` }}
-        />
+        {score !== null && (
+          <div
+            className={`score-bar ${getBarColor(score)}`}
+            style={{ width: `${Math.min(score, 100)}%` }}
+          />
+        )}
       </div>
     </div>
   );
