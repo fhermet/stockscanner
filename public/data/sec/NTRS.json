@@ -8,7 +8,7 @@
     {
       "fiscal_year": 2009,
       "fundamentals": {
-        "revenue": null,
+        "revenue": 1406000000.0,
         "net_income": 864200000.0,
         "shareholders_equity": 6312100000.0,
         "total_debt": 2837800000.0,
@@ -26,15 +26,13 @@
         "eps_growth": null,
         "free_cash_flow": 882100000.0,
         "payout_ratio": 0.301203,
-        "operating_margin": null
+        "operating_margin": 0.892745
       },
       "completeness": {
-        "present_field_count": 7,
-        "missing_field_count": 1,
-        "missing_field_names": [
-          "revenue"
-        ],
-        "completeness_ratio": 0.875
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
       }
     },
     {
@@ -54,7 +52,7 @@
       "ratios": {
         "roe": 0.101884,
         "debt_to_equity": 0.399587,
-        "revenue_growth": null,
+        "revenue_growth": 1.594381,
         "eps_growth": -0.132911,
         "free_cash_flow": 699700000.0,
         "payout_ratio": 0.408066,

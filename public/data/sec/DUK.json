@@ -248,7 +248,7 @@
     {
       "fiscal_year": 2017,
       "fundamentals": {
-        "revenue": null,
+        "revenue": 23565000000.0,
         "net_income": 3059000000.0,
         "shareholders_equity": 41739000000.0,
         "total_debt": 54442000000.0,
@@ -262,19 +262,17 @@
       "ratios": {
         "roe": 0.073914,
         "debt_to_equity": 1.304344,
-        "revenue_growth": null,
+        "revenue_growth": 0.036143,
         "eps_growth": 0.401929,
         "free_cash_flow": -1418000000.0,
         "payout_ratio": 0.800915,
-        "operating_margin": null
+        "operating_margin": 0.245321
       },
       "completeness": {
-        "present_field_count": 7,
-        "missing_field_count": 1,
-        "missing_field_names": [
-          "revenue"
-        ],
-        "completeness_ratio": 0.875
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
       }
     },
     {
@@ -294,7 +292,7 @@
       "ratios": {
         "roe": 0.062322,
         "debt_to_equity": 1.322295,
-        "revenue_growth": null,
+        "revenue_growth": 0.008148,
         "eps_growth": -0.137615,
         "free_cash_flow": -2203000000.0,
         "payout_ratio": 0.926857,

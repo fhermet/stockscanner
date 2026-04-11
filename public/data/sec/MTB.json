@@ -8,7 +8,7 @@
     {
       "fiscal_year": 2009,
       "fundamentals": {
-        "revenue": null,
+        "revenue": 2725197000.0,
         "net_income": 379891000.0,
         "shareholders_equity": 7752907000.0,
         "total_debt": 10240016000.0,
@@ -26,22 +26,21 @@
         "eps_growth": null,
         "free_cash_flow": null,
         "payout_ratio": 0.857367,
-        "operating_margin": null
+        "operating_margin": 0.190552
       },
       "completeness": {
-        "present_field_count": 6,
-        "missing_field_count": 2,
+        "present_field_count": 7,
+        "missing_field_count": 1,
         "missing_field_names": [
-          "revenue",
           "capital_expenditure"
         ],
-        "completeness_ratio": 0.75
+        "completeness_ratio": 0.875
       }
     },
     {
       "fiscal_year": 2010,
       "fundamentals": {
-        "revenue": null,
+        "revenue": 2729795000.0,
         "net_income": 736161000.0,
         "shareholders_equity": 8357695000.0,
         "total_debt": 7840151000.0,
@@ -55,26 +54,25 @@
       "ratios": {
         "roe": 0.091388,
         "debt_to_equity": 0.938076,
-        "revenue_growth": null,
+        "revenue_growth": 0.001687,
         "eps_growth": 0.968858,
         "free_cash_flow": null,
         "payout_ratio": 0.455475,
         "operating_margin": null
       },
       "completeness": {
-        "present_field_count": 6,
-        "missing_field_count": 2,
+        "present_field_count": 7,
+        "missing_field_count": 1,
         "missing_field_names": [
-          "revenue",
           "capital_expenditure"
         ],
-        "completeness_ratio": 0.75
+        "completeness_ratio": 0.875
       }
     },
     {
       "fiscal_year": 2011,
       "fundamentals": {
-        "revenue": 3972668000.0,
+        "revenue": 2792087000.0,
         "net_income": 859479000.0,
         "shareholders_equity": 9271209000.0,
         "total_debt": 6686226000.0,
@@ -88,11 +86,11 @@
       "ratios": {
         "roe": 0.097508,
         "debt_to_equity": 0.721182,
-        "revenue_growth": null,
+        "revenue_growth": 0.022819,
         "eps_growth": 0.115993,
         "free_cash_flow": 1702246000.0,
         "payout_ratio": 0.407374,
-        "operating_margin": 0.308256
+        "operating_margin": 0.438597
       },
       "completeness": {
         "present_field_count": 8,
@@ -104,7 +102,7 @@
     {
       "fiscal_year": 2012,
       "fundamentals": {
-        "revenue": null,
+        "revenue": 2941685000.0,
         "net_income": 1029498000.0,
         "shareholders_equity": 10202593000.0,
         "total_debt": 4607758000.0,
@@ -118,20 +116,19 @@
       "ratios": {
         "roe": 0.105732,
         "debt_to_equity": 0.451626,
-        "revenue_growth": null,
+        "revenue_growth": 0.053579,
         "eps_growth": 0.187402,
         "free_cash_flow": null,
         "payout_ratio": 0.347467,
-        "operating_margin": null
+        "operating_margin": 0.527768
       },
       "completeness": {
-        "present_field_count": 6,
-        "missing_field_count": 2,
+        "present_field_count": 7,
+        "missing_field_count": 1,
         "missing_field_names": [
-          "revenue",
           "capital_expenditure"
         ],
-        "completeness_ratio": 0.75
+        "completeness_ratio": 0.875
       }
     },
     {
@@ -151,7 +148,7 @@
       "ratios": {
         "roe": 0.105865,
         "debt_to_equity": 0.451891,
-        "revenue_growth": null,
+        "revenue_growth": 0.542801,
         "eps_growth": 0.087533,
         "free_cash_flow": 802324000.0,
         "payout_ratio": 0.320909,

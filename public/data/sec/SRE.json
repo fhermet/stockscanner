@@ -75,39 +75,31 @@
     {
       "fiscal_year": 2011,
       "fundamentals": {
-        "revenue": 2434000000.0,
-        "net_income": null,
-        "shareholders_equity": null,
-        "total_debt": null,
-        "eps_diluted": null,
-        "dividends_paid": null,
-        "operating_cash_flow": null,
-        "capital_expenditure": null,
-        "operating_income": null,
-        "shares_outstanding": null
+        "revenue": 10036000000.0,
+        "net_income": 1357000000.0,
+        "shareholders_equity": 9838000000.0,
+        "total_debt": 10078000000.0,
+        "eps_diluted": 5.62,
+        "dividends_paid": 440000000.0,
+        "operating_cash_flow": 1867000000.0,
+        "capital_expenditure": 2844000000.0,
+        "operating_income": 1721000000.0,
+        "shares_outstanding": 241523000.0
       },
       "ratios": {
-        "roe": null,
-        "debt_to_equity": null,
-        "revenue_growth": -0.729646,
-        "eps_growth": null,
-        "free_cash_flow": null,
-        "payout_ratio": null,
-        "operating_margin": null
+        "roe": 0.143864,
+        "debt_to_equity": 1.024395,
+        "revenue_growth": 0.11474,
+        "eps_growth": 0.885906,
+        "free_cash_flow": -977000000.0,
+        "payout_ratio": 0.324245,
+        "operating_margin": 0.171483
       },
       "completeness": {
-        "present_field_count": 1,
-        "missing_field_count": 7,
-        "missing_field_names": [
-          "net_income",
-          "shareholders_equity",
-          "total_debt",
-          "eps_diluted",
-          "dividends_paid",
-          "operating_cash_flow",
-          "capital_expenditure"
-        ],
-        "completeness_ratio": 0.125
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
       }
     },
     {
@@ -125,10 +117,10 @@
         "shares_outstanding": 246693000.0
       },
       "ratios": {
-        "roe": 0.083544,
+        "roe": 0.085388,
         "debt_to_equity": 1.130228,
-        "revenue_growth": 2.963435,
-        "eps_growth": null,
+        "revenue_growth": -0.03876,
+        "eps_growth": -0.380783,
         "free_cash_flow": -938000000.0,
         "payout_ratio": 0.640279,
         "operating_margin": 0.097751
