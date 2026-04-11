@@ -13,7 +13,7 @@
         "shareholders_equity": 4718000000.0,
         "total_debt": 2321000000.0,
         "eps_diluted": 1.91,
-        "dividends_paid": null,
+        "dividends_paid": 0.0,
         "operating_cash_flow": 440000000.0,
         "capital_expenditure": 42000000.0,
         "operating_income": 631000000.0,
@@ -29,12 +29,10 @@
         "operating_margin": 0.197373
       },
       "completeness": {
-        "present_field_count": 7,
-        "missing_field_count": 1,
-        "missing_field_names": [
-          "dividends_paid"
-        ],
-        "completeness_ratio": 0.875
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
       }
     },
     {
@@ -45,7 +43,7 @@
         "shareholders_equity": 4976000000.0,
         "total_debt": 2117000000.0,
         "eps_diluted": 2.15,
-        "dividends_paid": null,
+        "dividends_paid": 0.0,
         "operating_cash_flow": 669000000.0,
         "capital_expenditure": 88000000.0,
         "operating_income": 696000000.0,
@@ -61,12 +59,10 @@
         "operating_margin": 0.202443
       },
       "completeness": {
-        "present_field_count": 7,
-        "missing_field_count": 1,
-        "missing_field_names": [
-          "dividends_paid"
-        ],
-        "completeness_ratio": 0.875
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
       }
     },
     {
@@ -165,7 +161,7 @@
         "revenue": 3403000000.0,
         "net_income": 428000000.0,
         "shareholders_equity": 5609000000.0,
-        "total_debt": null,
+        "total_debt": 0.0,
         "eps_diluted": 2.5,
         "dividends_paid": 149000000.0,
         "operating_cash_flow": 685000000.0,
@@ -183,12 +179,10 @@
         "operating_margin": 0.211578
       },
       "completeness": {
-        "present_field_count": 7,
-        "missing_field_count": 1,
-        "missing_field_names": [
-          "total_debt"
-        ],
-        "completeness_ratio": 0.875
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
       }
     },
     {

@@ -11,9 +11,9 @@
         "revenue": 0.0,
         "net_income": 0.0,
         "shareholders_equity": 0.0,
-        "total_debt": null,
+        "total_debt": 0.0,
         "eps_diluted": null,
-        "dividends_paid": null,
+        "dividends_paid": 0.0,
         "operating_cash_flow": 0.0,
         "capital_expenditure": null,
         "operating_income": 0.0,
@@ -29,15 +29,13 @@
         "operating_margin": null
       },
       "completeness": {
-        "present_field_count": 4,
-        "missing_field_count": 4,
+        "present_field_count": 6,
+        "missing_field_count": 2,
         "missing_field_names": [
-          "total_debt",
           "eps_diluted",
-          "dividends_paid",
           "capital_expenditure"
         ],
-        "completeness_ratio": 0.5
+        "completeness_ratio": 0.75
       }
     },
     {
@@ -48,7 +46,7 @@
         "shareholders_equity": 22954100000.0,
         "total_debt": 23947000000.0,
         "eps_diluted": -1.11,
-        "dividends_paid": null,
+        "dividends_paid": 0.0,
         "operating_cash_flow": 1231800000.0,
         "capital_expenditure": 243000000.0,
         "operating_income": -210800000.0,
@@ -64,12 +62,10 @@
         "operating_margin": -0.017834
       },
       "completeness": {
-        "present_field_count": 7,
-        "missing_field_count": 1,
-        "missing_field_names": [
-          "dividends_paid"
-        ],
-        "completeness_ratio": 0.875
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
       }
     },
     {
@@ -80,7 +76,7 @@
         "shareholders_equity": 20492700000.0,
         "total_debt": 20949000000.0,
         "eps_diluted": -1.05,
-        "dividends_paid": null,
+        "dividends_paid": 0.0,
         "operating_cash_flow": 3016900000.0,
         "capital_expenditure": 457200000.0,
         "operating_income": -34000000.0,
@@ -96,12 +92,10 @@
         "operating_margin": -0.001909
       },
       "completeness": {
-        "present_field_count": 7,
-        "missing_field_count": 1,
-        "missing_field_names": [
-          "dividends_paid"
-        ],
-        "completeness_ratio": 0.875
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
       }
     },
     {
@@ -112,7 +106,7 @@
         "shareholders_equity": 21072300000.0,
         "total_debt": 18714000000.0,
         "eps_diluted": 1.71,
-        "dividends_paid": null,
+        "dividends_paid": 0.0,
         "operating_cash_flow": 2952600000.0,
         "capital_expenditure": 406000000.0,
         "operating_income": 1614900000.0,
@@ -128,12 +122,10 @@
         "operating_margin": 0.099574
       },
       "completeness": {
-        "present_field_count": 7,
-        "missing_field_count": 1,
-        "missing_field_names": [
-          "dividends_paid"
-        ],
-        "completeness_ratio": 0.875
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
       }
     },
     {
@@ -144,7 +136,7 @@
         "shareholders_equity": 20467400000.0,
         "total_debt": 17614000000.0,
         "eps_diluted": 0.05,
-        "dividends_paid": null,
+        "dividends_paid": 0.0,
         "operating_cash_flow": 2799600000.0,
         "capital_expenditure": 377000000.0,
         "operating_income": 766200000.0,
@@ -160,12 +152,10 @@
         "operating_margin": 0.049791
       },
       "completeness": {
-        "present_field_count": 7,
-        "missing_field_count": 1,
-        "missing_field_names": [
-          "dividends_paid"
-        ],
-        "completeness_ratio": 0.875
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
       }
     },
     {
@@ -176,7 +166,7 @@
         "shareholders_equity": 18635500000.0,
         "total_debt": 13580000000.0,
         "eps_diluted": -0.53,
-        "dividends_paid": null,
+        "dividends_paid": 0.0,
         "operating_cash_flow": 2302900000.0,
         "capital_expenditure": 326000000.0,
         "operating_income": 10100000.0,
@@ -192,12 +182,10 @@
         "operating_margin": 0.000687
       },
       "completeness": {
-        "present_field_count": 7,
-        "missing_field_count": 1,
-        "missing_field_names": [
-          "dividends_paid"
-        ],
-        "completeness_ratio": 0.875
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
       }
     },
     {
@@ -208,7 +196,7 @@
         "shareholders_equity": 14711300000.0,
         "total_debt": 13977000000.0,
         "eps_diluted": -3.0,
-        "dividends_paid": null,
+        "dividends_paid": 0.0,
         "operating_cash_flow": 2315900000.0,
         "capital_expenditure": 378800000.0,
         "operating_income": -2663100000.0,
@@ -224,12 +212,10 @@
         "operating_margin": -0.186879
       },
       "completeness": {
-        "present_field_count": 7,
-        "missing_field_count": 1,
-        "missing_field_names": [
-          "dividends_paid"
-        ],
-        "completeness_ratio": 0.875
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
       }
     }
   ]

@@ -13,7 +13,7 @@
         "shareholders_equity": 9007000000.0,
         "total_debt": 7460000000.0,
         "eps_diluted": null,
-        "dividends_paid": null,
+        "dividends_paid": 0.0,
         "operating_cash_flow": null,
         "capital_expenditure": null,
         "operating_income": null,
@@ -29,17 +29,16 @@
         "operating_margin": null
       },
       "completeness": {
-        "present_field_count": 2,
-        "missing_field_count": 6,
+        "present_field_count": 3,
+        "missing_field_count": 5,
         "missing_field_names": [
           "revenue",
           "net_income",
           "eps_diluted",
-          "dividends_paid",
           "operating_cash_flow",
           "capital_expenditure"
         ],
-        "completeness_ratio": 0.25
+        "completeness_ratio": 0.375
       }
     },
     {

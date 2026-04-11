@@ -11,7 +11,7 @@
         "revenue": 1104700000.0,
         "net_income": 65300000.0,
         "shareholders_equity": 625700000.0,
-        "total_debt": null,
+        "total_debt": 0.0,
         "eps_diluted": 1.89,
         "dividends_paid": 21700000.0,
         "operating_cash_flow": 138300000.0,
@@ -29,12 +29,10 @@
         "operating_margin": 0.082104
       },
       "completeness": {
-        "present_field_count": 7,
-        "missing_field_count": 1,
-        "missing_field_names": [
-          "total_debt"
-        ],
-        "completeness_ratio": 0.875
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
       }
     },
     {
@@ -43,7 +41,7 @@
         "revenue": 1192300000.0,
         "net_income": 75500000.0,
         "shareholders_equity": 654900000.0,
-        "total_debt": null,
+        "total_debt": 0.0,
         "eps_diluted": 2.16,
         "dividends_paid": 23200000.0,
         "operating_cash_flow": 130700000.0,
@@ -61,12 +59,10 @@
         "operating_margin": 0.091923
       },
       "completeness": {
-        "present_field_count": 7,
-        "missing_field_count": 1,
-        "missing_field_names": [
-          "total_debt"
-        ],
-        "completeness_ratio": 0.875
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
       }
     },
     {
@@ -285,7 +281,7 @@
         "revenue": 1839900000.0,
         "net_income": 241700000.0,
         "shareholders_equity": 1573200000.0,
-        "total_debt": null,
+        "total_debt": 0.0,
         "eps_diluted": 3.21,
         "dividends_paid": 45100000.0,
         "operating_cash_flow": 367200000.0,
@@ -303,12 +299,10 @@
         "operating_margin": 0.161204
       },
       "completeness": {
-        "present_field_count": 7,
-        "missing_field_count": 1,
-        "missing_field_names": [
-          "total_debt"
-        ],
-        "completeness_ratio": 0.875
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
       }
     },
     {
