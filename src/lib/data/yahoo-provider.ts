@@ -3,6 +3,8 @@ import { Stock, StockFilters } from "../types";
 import { DataProvider } from "./provider";
 import { createLogger } from "../logger";
 import { ALL_TICKERS } from "../tickers";
+import { getSecHistory } from "./sec-history-provider";
+import type { SecAnnual } from "@/lib/types/sec-fundamentals";
 
 const log = createLogger("yahoo-provider");
 
@@ -26,6 +28,18 @@ const yf = new YahooFinance({
 function safeNum(value: unknown, fallback = 0): number {
   if (typeof value === "number" && isFinite(value)) return value;
   return fallback;
+}
+
+function nullableNum(value: unknown): number | null {
+  if (typeof value === "number" && isFinite(value)) return value;
+  return null;
+}
+
+function computeDPS(annual: SecAnnual): number {
+  const divPaid = annual.fundamentals.dividends_paid;
+  const shares = annual.fundamentals.shares_outstanding;
+  if (divPaid === null || divPaid <= 0 || shares === null || shares <= 0) return 0;
+  return parseFloat((divPaid / shares).toFixed(4));
 }
 
 const SECTOR_MAP: Record<string, string> = {
@@ -81,31 +95,52 @@ async function fetchStock(ticker: string): Promise<Stock | undefined> {
     const marketCap = parseFloat((marketCapRaw / 1_000_000_000).toFixed(1));
     const currentPrice = safeNum(price.regularMarketPrice);
 
-    const per = parseFloat(safeNum(detail?.trailingPE).toFixed(1));
-    const peg = parseFloat(safeNum(stats?.pegRatio).toFixed(2));
-    const roe = parseFloat((safeNum(financial?.returnOnEquity) * 100).toFixed(1));
-    const debtToEquity = parseFloat(
-      (safeNum(financial?.debtToEquity) / 100).toFixed(2)
-    );
-    const operatingMargin = parseFloat(
-      (safeNum(financial?.operatingMargins) * 100).toFixed(1)
-    );
-    const freeCashFlow = parseFloat(
-      (safeNum(financial?.freeCashflow) / 1_000_000_000).toFixed(1)
-    );
-    const revenueGrowth = parseFloat(
-      (safeNum(financial?.revenueGrowth) * 100).toFixed(1)
-    );
-    const epsGrowth = parseFloat(
-      (safeNum(financial?.earningsGrowth) * 100).toFixed(1)
-    );
-    const dividendYield = parseFloat(
-      (safeNum(detail?.dividendYield) * 100).toFixed(2)
-    );
-    const payoutRatio = Math.round(safeNum(detail?.payoutRatio) * 100);
+    const perRaw = nullableNum(detail?.trailingPE);
+    const per = perRaw !== null ? parseFloat(perRaw.toFixed(1)) : null;
+
+    const pegRaw = nullableNum(stats?.pegRatio);
+    const peg = pegRaw !== null ? parseFloat(pegRaw.toFixed(2)) : null;
+
+    const roeRaw = nullableNum(financial?.returnOnEquity);
+    const roe = roeRaw !== null ? parseFloat((roeRaw * 100).toFixed(1)) : null;
+
+    const debtRaw = nullableNum(financial?.debtToEquity);
+    const debtToEquity = debtRaw !== null ? parseFloat((debtRaw / 100).toFixed(2)) : null;
+
+    const marginRaw = nullableNum(financial?.operatingMargins);
+    const operatingMargin = marginRaw !== null ? parseFloat((marginRaw * 100).toFixed(1)) : null;
+
+    const fcfRaw = nullableNum(financial?.freeCashflow);
+    const freeCashFlow = fcfRaw !== null ? parseFloat((fcfRaw / 1_000_000_000).toFixed(1)) : null;
+
+    const revGrowthRaw = nullableNum(financial?.revenueGrowth);
+    const revenueGrowth = revGrowthRaw !== null ? parseFloat((revGrowthRaw * 100).toFixed(1)) : null;
+
+    const epsGrowthRaw = nullableNum(financial?.earningsGrowth);
+    const epsGrowth = epsGrowthRaw !== null ? parseFloat((epsGrowthRaw * 100).toFixed(1)) : null;
+
+    const divYieldRaw = nullableNum(detail?.dividendYield);
+    const dividendYield = divYieldRaw !== null ? parseFloat((divYieldRaw * 100).toFixed(2)) : null;
+
+    const payoutRaw = nullableNum(detail?.payoutRatio);
+    const payoutRatio = payoutRaw !== null ? Math.round(payoutRaw * 100) : null;
 
     const rawSector: string = profile?.sector ?? "";
     const rawCountry: string = profile?.country ?? "";
+
+    // Enrich history from SEC data for US tickers
+    let history: Stock["history"] = [];
+    const secData = await getSecHistory(ticker);
+    if (secData) {
+      history = secData.annuals
+        .filter((a) => a.fundamentals.eps_diluted !== null)
+        .map((a) => ({
+          year: a.fiscal_year,
+          revenue: (a.fundamentals.revenue ?? 0) / 1_000_000,
+          eps: a.fundamentals.eps_diluted!,
+          dividendPerShare: computeDPS(a),
+        }));
+    }
 
     return {
       ticker: price.symbol ?? ticker,
@@ -126,7 +161,7 @@ async function fetchStock(ticker: string): Promise<Stock | undefined> {
       epsGrowth,
       dividendYield,
       payoutRatio,
-      history: [],
+      history,
     };
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : "unknown";
