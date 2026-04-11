@@ -186,9 +186,14 @@ async function fetchStock(ticker: string): Promise<Stock | undefined> {
       if (secFallbackPer === null && currentPrice > 0 && f.eps_diluted !== null && f.eps_diluted > 0) {
         secFallbackPer = parseFloat((currentPrice / f.eps_diluted).toFixed(1));
       }
-      if (secFallbackDivYield === null && currentPrice > 0 && f.dividends_paid !== null && f.dividends_paid > 0 && f.shares_outstanding !== null && f.shares_outstanding > 0) {
-        const dps = f.dividends_paid / f.shares_outstanding;
-        secFallbackDivYield = parseFloat(((dps / currentPrice) * 100).toFixed(2));
+      if (secFallbackDivYield === null && currentPrice > 0) {
+        // dividends_paid null = no dividends = yield 0%
+        const divPaid = f.dividends_paid ?? 0;
+        const shares = f.shares_outstanding;
+        if (shares !== null && shares > 0) {
+          const dps = divPaid > 0 ? divPaid / shares : 0;
+          secFallbackDivYield = parseFloat(((dps / currentPrice) * 100).toFixed(2));
+        }
       }
     }
 
