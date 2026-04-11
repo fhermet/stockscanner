@@ -133,10 +133,21 @@ async function fetchStock(ticker: string): Promise<Stock | undefined> {
     const rawSector: string = profile?.sector ?? "";
     const rawCountry: string = profile?.country ?? "";
 
-    // Enrich history from SEC data for US tickers
+    // Load SEC data for US tickers: history + fallback for missing Yahoo metrics
     let history: Stock["history"] = [];
     const secData = await getSecHistory(ticker);
-    if (secData) {
+    let secFallbackRoe = roe;
+    let secFallbackDebt = debtToEquity;
+    let secFallbackMargin = operatingMargin;
+    let secFallbackFcf = freeCashFlow;
+    let secFallbackRevGrowth = revenueGrowth;
+    let secFallbackEpsGrowth = epsGrowth;
+    let secFallbackPer = per;
+    let secFallbackDivYield = dividendYield;
+    let secFallbackPayout = payoutRatio;
+
+    if (secData && secData.annuals.length > 0) {
+      // Build history
       history = secData.annuals
         .filter((a) => a.fundamentals.eps_diluted !== null)
         .map((a) => ({
@@ -145,6 +156,48 @@ async function fetchStock(ticker: string): Promise<Stock | undefined> {
           eps: a.fundamentals.eps_diluted!,
           dividendPerShare: computeDPS(a),
         }));
+
+      // Use latest SEC annual as fallback for missing Yahoo metrics
+      const latest = secData.annuals[secData.annuals.length - 1];
+      const r = latest.ratios;
+      const f = latest.fundamentals;
+
+      if (secFallbackRoe === null && r.roe !== null) {
+        secFallbackRoe = parseFloat((r.roe * 100).toFixed(1));
+      }
+      if (secFallbackDebt === null && r.debt_to_equity !== null) {
+        secFallbackDebt = parseFloat(r.debt_to_equity.toFixed(2));
+      }
+      if (secFallbackMargin === null && r.operating_margin !== null) {
+        secFallbackMargin = parseFloat((r.operating_margin * 100).toFixed(1));
+      }
+      if (secFallbackFcf === null && r.free_cash_flow !== null) {
+        secFallbackFcf = parseFloat((r.free_cash_flow / 1_000_000_000).toFixed(1));
+      }
+      if (secFallbackRevGrowth === null && r.revenue_growth !== null) {
+        secFallbackRevGrowth = parseFloat((r.revenue_growth * 100).toFixed(1));
+      }
+      if (secFallbackEpsGrowth === null && r.eps_growth !== null) {
+        secFallbackEpsGrowth = parseFloat((r.eps_growth * 100).toFixed(1));
+      }
+      if (secFallbackPayout === null && r.payout_ratio !== null) {
+        secFallbackPayout = Math.round(r.payout_ratio * 100);
+      }
+      if (secFallbackPer === null && currentPrice > 0 && f.eps_diluted !== null && f.eps_diluted > 0) {
+        secFallbackPer = parseFloat((currentPrice / f.eps_diluted).toFixed(1));
+      }
+      if (secFallbackDivYield === null && currentPrice > 0 && f.dividends_paid !== null && f.dividends_paid > 0 && f.shares_outstanding !== null && f.shares_outstanding > 0) {
+        const dps = f.dividends_paid / f.shares_outstanding;
+        secFallbackDivYield = parseFloat(((dps / currentPrice) * 100).toFixed(2));
+      }
+    }
+
+    // Recompute PEG with potentially SEC-enriched values
+    const finalPer = secFallbackPer;
+    const finalEpsGrowthRaw = secFallbackEpsGrowth !== null ? secFallbackEpsGrowth / 100 : null;
+    let finalPeg = peg;
+    if (finalPeg === null && finalPer !== null && finalEpsGrowthRaw !== null && finalEpsGrowthRaw > 0) {
+      finalPeg = parseFloat((finalPer / (finalEpsGrowthRaw * 100)).toFixed(2));
     }
 
     return {
@@ -156,16 +209,16 @@ async function fetchStock(ticker: string): Promise<Stock | undefined> {
       currency: (price.currency as string) ?? "USD",
       marketCap,
       price: parseFloat(currentPrice.toFixed(2)),
-      per,
-      peg,
-      roe,
-      debtToEquity,
-      operatingMargin,
-      freeCashFlow,
-      revenueGrowth,
-      epsGrowth,
-      dividendYield,
-      payoutRatio,
+      per: secFallbackPer,
+      peg: finalPeg,
+      roe: secFallbackRoe,
+      debtToEquity: secFallbackDebt,
+      operatingMargin: secFallbackMargin,
+      freeCashFlow: secFallbackFcf,
+      revenueGrowth: secFallbackRevGrowth,
+      epsGrowth: secFallbackEpsGrowth,
+      dividendYield: secFallbackDivYield,
+      payoutRatio: secFallbackPayout,
       history,
     };
   } catch (err: unknown) {
