@@ -166,25 +166,33 @@ function ScannerContent() {
 
         if (!d2.isQuick) {
           // Use refs to get latest values without stale closures
-          saveScoresRef.current(d2.stocks.map((s: ScoredStock) => ({
-            ticker: s.stock.ticker, strategyId: filters.strategyId,
-            score: s.score.total, subScores: s.score.subScores,
-          })));
-          evaluateRef.current(
-            d2.stocks.map((s: ScoredStock) => {
-              const d = getDeltaRef.current(s.stock.ticker, filters.strategyId, s.score.total);
-              const prev = getPrevRef.current(s.stock.ticker, filters.strategyId);
-              return {
+          saveScoresRef.current(
+            d2.stocks
+              .filter((s: ScoredStock) => s.score.total !== null)
+              .map((s: ScoredStock) => ({
                 ticker: s.stock.ticker,
-                name: s.stock.name,
-                score: s.score.total,
-                delta: d.delta,
                 strategyId: filters.strategyId,
-                changeExplanation: d.delta && prev?.subScores
-                  ? explainScoreChange(d.delta, s.score.subScores, prev.subScores)
-                  : undefined,
-              };
-            }),
+                score: s.score.total!,
+                subScores: s.score.subScores,
+              }))
+          );
+          evaluateRef.current(
+            d2.stocks
+              .filter((s: ScoredStock) => s.score.total !== null)
+              .map((s: ScoredStock) => {
+                const d = getDeltaRef.current(s.stock.ticker, filters.strategyId, s.score.total!);
+                const prev = getPrevRef.current(s.stock.ticker, filters.strategyId);
+                return {
+                  ticker: s.stock.ticker,
+                  name: s.stock.name,
+                  score: s.score.total!,
+                  delta: d.delta,
+                  strategyId: filters.strategyId,
+                  changeExplanation: d.delta && prev?.subScores
+                    ? explainScoreChange(d.delta, s.score.subScores, prev.subScores)
+                    : undefined,
+                };
+              }),
             { watchlistOnly: prefsRef.current.watchlistOnly, watchlistTickers: watchlistRef.current }
           );
         }

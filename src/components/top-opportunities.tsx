@@ -22,7 +22,10 @@ export default function TopOpportunities() {
     fetch(`/api/stocks?strategy=${activeStrategy}`)
       .then((r) => r.json())
       .then((data) => {
-        setStocks(data.stocks?.slice(0, 5) ?? []);
+        const scoredStocks = (data.stocks ?? []).filter(
+          (s: ScoredStock) => s.score.total !== null
+        );
+        setStocks(scoredStocks.slice(0, 5));
         setLoading(false);
       })
       .catch(() => setLoading(false));
