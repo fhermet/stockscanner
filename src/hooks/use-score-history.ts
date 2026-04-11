@@ -55,9 +55,11 @@ function subScoresMap(subScores?: readonly SubScore[]): Record<string, number> |
   if (!subScores || subScores.length === 0) return undefined;
   const map: Record<string, number> = {};
   for (const s of subScores) {
-    map[s.name] = s.value;
+    if (s.value !== null) {
+      map[s.name] = s.value;
+    }
   }
-  return map;
+  return Object.keys(map).length > 0 ? map : undefined;
 }
 
 export function useScoreHistory() {

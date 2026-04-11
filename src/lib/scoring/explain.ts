@@ -9,7 +9,7 @@ import { Stock, SubScore, Explanation, StrategyId } from "../types";
 
 interface MetricRule {
   readonly metric: string;
-  readonly getValue: (stock: Stock) => number;
+  readonly getValue: (stock: Stock) => number | null;
   readonly format: (value: number) => string;
   readonly thresholds: {
     readonly positive: { min: number; text: string };
@@ -141,8 +141,9 @@ const STRATEGY_RULES: Record<StrategyId, MetricRule[]> = {
   ],
 };
 
-function evaluateRule(stock: Stock, rule: MetricRule): Explanation {
+function evaluateRule(stock: Stock, rule: MetricRule): Explanation | null {
   const value = rule.getValue(stock);
+  if (value === null) return null;
   const formatted = rule.format(value);
 
   // Special handling for inverse metrics (debt, PEG, PER)
@@ -193,7 +194,9 @@ export function generateExplanations(
   const strategyRules = STRATEGY_RULES[strategyId] ?? [];
   const allRules = [...strategyRules, ...COMMON_RULES];
 
-  return allRules.map((rule) => evaluateRule(stock, rule));
+  return allRules
+    .map((rule) => evaluateRule(stock, rule))
+    .filter((e): e is Explanation => e !== null);
 }
 
 /**
@@ -205,10 +208,14 @@ export function generateExplanations(
  */
 export function generateSummary(
   stock: Stock,
-  total: number,
+  total: number | null,
   explanations: readonly Explanation[],
   strategyName: string
 ): string {
+  if (total === null) {
+    return `${stock.name} : donnees insuffisantes pour calculer un score ${strategyName}.`;
+  }
+
   const positives = explanations.filter((e) => e.type === "positive");
   const negatives = explanations.filter((e) => e.type === "negative");
 

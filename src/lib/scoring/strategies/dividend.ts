@@ -12,8 +12,8 @@ import { weightedAverage } from "../utils";
  *   - Stabilite (35%) : dette, croissance historique du dividende
  */
 
-function scoreDividendGrowth(history: Stock["history"]): number {
-  if (history.length < 2) return 50;
+function scoreDividendGrowth(history: Stock["history"]): number | null {
+  if (history.length < 2) return null;
   let growingYears = 0;
   for (let i = 1; i < history.length; i++) {
     if (history[i].dividendPerShare > history[i - 1].dividendPerShare) {
@@ -25,10 +25,11 @@ function scoreDividendGrowth(history: Stock["history"]): number {
 }
 
 function scoreFCFCoverage(
-  fcf: number,
+  fcf: number | null,
   marketCap: number,
-  divYield: number
-): number {
+  divYield: number | null
+): number | null {
+  if (fcf === null || divYield === null) return null;
   if (divYield <= 0) return 5;
   const dividendCost = marketCap * (divYield / 100);
   if (dividendCost <= 0) return 5;
@@ -46,44 +47,30 @@ const dividendScorer: StrategyScorer = {
   score(stock: Stock): SubScore[] {
     const yieldValue = scoreMetric("dividendYield", stock.dividendYield);
 
-    const payoutScore = normalizeOptimalRange(
-      stock.payoutRatio,
-      30,
-      60,
-      0,
-      100
-    );
-    const fcfScore = scoreFCFCoverage(
-      stock.freeCashFlow,
-      stock.marketCap,
-      stock.dividendYield
-    );
-    const sustainabilityValue = weightedAverage([
-      { score: payoutScore, weight: 0.5 },
-      { score: fcfScore, weight: 0.5 },
-    ]);
+    const payoutScore = stock.payoutRatio !== null
+      ? normalizeOptimalRange(stock.payoutRatio, 30, 60, 0, 100)
+      : null;
+    const fcfScore = scoreFCFCoverage(stock.freeCashFlow, stock.marketCap, stock.dividendYield);
+    const sustainabilityValue = (payoutScore !== null && fcfScore !== null)
+      ? weightedAverage([
+          { score: payoutScore, weight: 0.5 },
+          { score: fcfScore, weight: 0.5 },
+        ])
+      : null;
 
     const debtScore = scoreMetric("debtToEquity", stock.debtToEquity);
     const divGrowthScore = scoreDividendGrowth(stock.history);
-    const stabilityValue = weightedAverage([
-      { score: debtScore, weight: 0.4 },
-      { score: divGrowthScore, weight: 0.6 },
-    ]);
+    const stabilityValue = (debtScore !== null && divGrowthScore !== null)
+      ? weightedAverage([
+          { score: debtScore, weight: 0.4 },
+          { score: divGrowthScore, weight: 0.6 },
+        ])
+      : null;
 
     return [
       { name: "yield", value: yieldValue, weight: 0.3, label: "Rendement" },
-      {
-        name: "sustainability",
-        value: sustainabilityValue,
-        weight: 0.35,
-        label: "Soutenabilite",
-      },
-      {
-        name: "stability",
-        value: stabilityValue,
-        weight: 0.35,
-        label: "Stabilite",
-      },
+      { name: "sustainability", value: sustainabilityValue, weight: 0.35, label: "Soutenabilite" },
+      { name: "stability", value: stabilityValue, weight: 0.35, label: "Stabilite" },
     ];
   },
 };

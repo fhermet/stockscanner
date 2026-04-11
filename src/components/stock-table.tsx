@@ -93,7 +93,7 @@ export default function StockTable({ stocks, strategyId, onToggleCompare, isComp
                 {formatMarketCap(item.stock.marketCap, item.stock.currency)}
               </td>
               <td className="hidden sm:table-cell px-3 py-3 text-right text-sm text-slate-600">
-                {item.stock.per}
+                {item.stock.per !== null ? item.stock.per : "N/A"}
               </td>
               <td className="px-3 py-3 text-center">
                 <div className="flex items-center justify-center gap-1.5">

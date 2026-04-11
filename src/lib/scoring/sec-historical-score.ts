@@ -50,9 +50,9 @@ function scoreBuffettHistorical(annual: SecAnnual): HistoricalStrategyScore {
   const { ratios } = annual;
 
   // Quality (partial): ROE + margin available, FCF yield needs marketCap
-  const roeScore = ratios.roe !== null ? scoreMetric("roe", ratios.roe * 100) : 0;
+  const roeScore = ratios.roe !== null ? (scoreMetric("roe", ratios.roe * 100) ?? 0) : 0;
   const marginScore = ratios.operating_margin !== null
-    ? scoreMetric("operatingMargin", ratios.operating_margin * 100)
+    ? (scoreMetric("operatingMargin", ratios.operating_margin * 100) ?? 0)
     : 0;
   const qualityAvailable = ratios.roe !== null || ratios.operating_margin !== null;
 
@@ -65,7 +65,7 @@ function scoreBuffettHistorical(annual: SecAnnual): HistoricalStrategyScore {
 
   // Strength (full): debt/equity + FCF positive
   const debtScore = ratios.debt_to_equity !== null
-    ? scoreMetric("debtToEquity", ratios.debt_to_equity)
+    ? (scoreMetric("debtToEquity", ratios.debt_to_equity) ?? 0)
     : 0;
   const fcfPosScore = ratios.free_cash_flow !== null
     ? (ratios.free_cash_flow > 0 ? 100 : 10)
@@ -120,7 +120,7 @@ function scoreDividendHistorical(
 
   // Stability (full): debt/equity + dividend growth from history
   const debtScore = ratios.debt_to_equity !== null
-    ? scoreMetric("debtToEquity", ratios.debt_to_equity)
+    ? (scoreMetric("debtToEquity", ratios.debt_to_equity) ?? 0)
     : 0;
 
   const divGrowthScore = scoreDividendGrowthFromSec(annual.fiscal_year, allAnnuals);
@@ -163,10 +163,10 @@ function scoreGrowthHistorical(annual: SecAnnual): HistoricalStrategyScore {
 
   // Momentum (full): revenue growth + EPS growth
   const revScore = ratios.revenue_growth !== null
-    ? scoreMetric("revenueGrowth", ratios.revenue_growth * 100)
+    ? (scoreMetric("revenueGrowth", ratios.revenue_growth * 100) ?? 0)
     : 0;
   const epsScore = ratios.eps_growth !== null
-    ? scoreMetric("epsGrowth", ratios.eps_growth * 100)
+    ? (scoreMetric("epsGrowth", ratios.eps_growth * 100) ?? 0)
     : 0;
   const momentumItems: { score: number; weight: number }[] = [];
   if (ratios.revenue_growth !== null) momentumItems.push({ score: revScore, weight: 0.5 });
@@ -176,9 +176,9 @@ function scoreGrowthHistorical(annual: SecAnnual): HistoricalStrategyScore {
 
   // Profitability (full): margin + ROE
   const marginScore = ratios.operating_margin !== null
-    ? scoreMetric("operatingMargin", ratios.operating_margin * 100)
+    ? (scoreMetric("operatingMargin", ratios.operating_margin * 100) ?? 0)
     : 0;
-  const roeScore = ratios.roe !== null ? scoreMetric("roe", ratios.roe * 100) : 0;
+  const roeScore = ratios.roe !== null ? (scoreMetric("roe", ratios.roe * 100) ?? 0) : 0;
   const profitItems: { score: number; weight: number }[] = [];
   if (ratios.operating_margin !== null) profitItems.push({ score: marginScore, weight: 0.5 });
   if (ratios.roe !== null) profitItems.push({ score: roeScore, weight: 0.5 });
@@ -215,10 +215,10 @@ function scoreLynchHistorical(annual: SecAnnual): HistoricalStrategyScore {
 
   // Growth (full): EPS growth + revenue growth
   const epsScore = ratios.eps_growth !== null
-    ? scoreMetric("epsGrowth", ratios.eps_growth * 100)
+    ? (scoreMetric("epsGrowth", ratios.eps_growth * 100) ?? 0)
     : 0;
   const revScore = ratios.revenue_growth !== null
-    ? scoreMetric("revenueGrowth", ratios.revenue_growth * 100)
+    ? (scoreMetric("revenueGrowth", ratios.revenue_growth * 100) ?? 0)
     : 0;
   const growthItems: { score: number; weight: number }[] = [];
   if (ratios.eps_growth !== null) growthItems.push({ score: epsScore, weight: 0.6 });
@@ -230,10 +230,10 @@ function scoreLynchHistorical(annual: SecAnnual): HistoricalStrategyScore {
 
   // Quality (full): margin + debt/equity
   const marginScore = ratios.operating_margin !== null
-    ? scoreMetric("operatingMargin", ratios.operating_margin * 100)
+    ? (scoreMetric("operatingMargin", ratios.operating_margin * 100) ?? 0)
     : 0;
   const debtScore = ratios.debt_to_equity !== null
-    ? scoreMetric("debtToEquity", ratios.debt_to_equity)
+    ? (scoreMetric("debtToEquity", ratios.debt_to_equity) ?? 0)
     : 0;
   const qualityItems: { score: number; weight: number }[] = [];
   if (ratios.operating_margin !== null) qualityItems.push({ score: marginScore, weight: 0.5 });
@@ -343,9 +343,9 @@ export function getStrategyCoverage(strategyId: StrategyId): {
 
 function scoreBuffettFull(m: MergedAnnual): HistoricalStrategyScore {
   // Quality: ROE + margin + FCF yield
-  const roeScore = m.roe !== null ? scoreMetric("roe", m.roe * 100) : 0;
-  const marginScore = m.operatingMargin !== null ? scoreMetric("operatingMargin", m.operatingMargin * 100) : 0;
-  const fcfYieldScore = m.fcfYield !== null ? scoreMetric("fcfYield", m.fcfYield) : 0;
+  const roeScore = m.roe !== null ? (scoreMetric("roe", m.roe * 100) ?? 0) : 0;
+  const marginScore = m.operatingMargin !== null ? (scoreMetric("operatingMargin", m.operatingMargin * 100) ?? 0) : 0;
+  const fcfYieldScore = m.fcfYield !== null ? (scoreMetric("fcfYield", m.fcfYield) ?? 0) : 0;
 
   const qualityItems: { score: number; weight: number }[] = [];
   if (m.roe !== null) qualityItems.push({ score: roeScore, weight: 0.4 });
@@ -355,7 +355,7 @@ function scoreBuffettFull(m: MergedAnnual): HistoricalStrategyScore {
   const qualityValue = qualityAvailable ? weightedAverage(qualityItems) : 0;
 
   // Strength: debt/equity + FCF positive
-  const debtScore = m.debtToEquity !== null ? scoreMetric("debtToEquity", m.debtToEquity) : 0;
+  const debtScore = m.debtToEquity !== null ? (scoreMetric("debtToEquity", m.debtToEquity) ?? 0) : 0;
   const fcfPosScore = m.freeCashFlow !== null ? (m.freeCashFlow > 0 ? 100 : 10) : 0;
   const strengthItems: { score: number; weight: number }[] = [];
   if (m.debtToEquity !== null) strengthItems.push({ score: debtScore, weight: 0.6 });
@@ -364,7 +364,7 @@ function scoreBuffettFull(m: MergedAnnual): HistoricalStrategyScore {
   const strengthValue = strengthAvailable ? weightedAverage(strengthItems) : 0;
 
   // Valuation: PER
-  const perScore = m.per !== null ? scoreMetric("per", m.per) : 0;
+  const perScore = m.per !== null ? (scoreMetric("per", m.per) ?? 0) : 0;
   const valuationAvailable = m.per !== null;
 
   const subScores: HistoricalSubScore[] = [
@@ -394,7 +394,7 @@ function scoreBuffettFull(m: MergedAnnual): HistoricalStrategyScore {
 
 function scoreDividendFull(m: MergedAnnual, allAnnuals: readonly MergedAnnual[]): HistoricalStrategyScore {
   // Yield
-  const yieldScore = m.dividendYield !== null ? scoreMetric("dividendYield", m.dividendYield) : 0;
+  const yieldScore = m.dividendYield !== null ? (scoreMetric("dividendYield", m.dividendYield) ?? 0) : 0;
   const yieldAvailable = m.dividendYield !== null;
 
   // Sustainability: payout + FCF coverage
@@ -422,7 +422,7 @@ function scoreDividendFull(m: MergedAnnual, allAnnuals: readonly MergedAnnual[])
   const sustainValue = sustainAvailable ? weightedAverage(sustainItems) : 0;
 
   // Stability: debt + dividend growth
-  const debtScore = m.debtToEquity !== null ? scoreMetric("debtToEquity", m.debtToEquity) : 0;
+  const debtScore = m.debtToEquity !== null ? (scoreMetric("debtToEquity", m.debtToEquity) ?? 0) : 0;
   const divGrowth = scoreDividendGrowthFromMerged(m.fiscalYear, allAnnuals);
   const stabilityItems: { score: number; weight: number }[] = [];
   if (m.debtToEquity !== null) stabilityItems.push({ score: debtScore, weight: 0.4 });
@@ -457,8 +457,8 @@ function scoreDividendFull(m: MergedAnnual, allAnnuals: readonly MergedAnnual[])
 
 function scoreGrowthFull(m: MergedAnnual): HistoricalStrategyScore {
   // Momentum: revenue growth + EPS growth
-  const revScore = m.revenueGrowth !== null ? scoreMetric("revenueGrowth", m.revenueGrowth * 100) : 0;
-  const epsScore = m.epsGrowth !== null ? scoreMetric("epsGrowth", m.epsGrowth * 100) : 0;
+  const revScore = m.revenueGrowth !== null ? (scoreMetric("revenueGrowth", m.revenueGrowth * 100) ?? 0) : 0;
+  const epsScore = m.epsGrowth !== null ? (scoreMetric("epsGrowth", m.epsGrowth * 100) ?? 0) : 0;
   const momentumItems: { score: number; weight: number }[] = [];
   if (m.revenueGrowth !== null) momentumItems.push({ score: revScore, weight: 0.5 });
   if (m.epsGrowth !== null) momentumItems.push({ score: epsScore, weight: 0.5 });
@@ -466,8 +466,8 @@ function scoreGrowthFull(m: MergedAnnual): HistoricalStrategyScore {
   const momentumValue = momentumAvailable ? weightedAverage(momentumItems) : 0;
 
   // Profitability: margin + ROE
-  const marginScore = m.operatingMargin !== null ? scoreMetric("operatingMargin", m.operatingMargin * 100) : 0;
-  const roeScore = m.roe !== null ? scoreMetric("roe", m.roe * 100) : 0;
+  const marginScore = m.operatingMargin !== null ? (scoreMetric("operatingMargin", m.operatingMargin * 100) ?? 0) : 0;
+  const roeScore = m.roe !== null ? (scoreMetric("roe", m.roe * 100) ?? 0) : 0;
   const profitItems: { score: number; weight: number }[] = [];
   if (m.operatingMargin !== null) profitItems.push({ score: marginScore, weight: 0.5 });
   if (m.roe !== null) profitItems.push({ score: roeScore, weight: 0.5 });
@@ -505,8 +505,8 @@ function scoreGrowthFull(m: MergedAnnual): HistoricalStrategyScore {
 
 function scoreLynchFull(m: MergedAnnual): HistoricalStrategyScore {
   // Growth: EPS growth + revenue growth
-  const epsScore = m.epsGrowth !== null ? scoreMetric("epsGrowth", m.epsGrowth * 100) : 0;
-  const revScore = m.revenueGrowth !== null ? scoreMetric("revenueGrowth", m.revenueGrowth * 100) : 0;
+  const epsScore = m.epsGrowth !== null ? (scoreMetric("epsGrowth", m.epsGrowth * 100) ?? 0) : 0;
+  const revScore = m.revenueGrowth !== null ? (scoreMetric("revenueGrowth", m.revenueGrowth * 100) ?? 0) : 0;
   const growthItems: { score: number; weight: number }[] = [];
   if (m.epsGrowth !== null) growthItems.push({ score: epsScore, weight: 0.6 });
   if (m.revenueGrowth !== null) growthItems.push({ score: revScore, weight: 0.4 });
@@ -514,12 +514,12 @@ function scoreLynchFull(m: MergedAnnual): HistoricalStrategyScore {
   const growthValue = growthAvailable ? weightedAverage(growthItems) : 0;
 
   // Value: PEG
-  const pegScore = m.peg !== null ? scoreMetric("peg", m.peg) : 0;
+  const pegScore = m.peg !== null ? (scoreMetric("peg", m.peg) ?? 0) : 0;
   const valueAvailable = m.peg !== null;
 
   // Quality: margin + debt/equity
-  const marginScore = m.operatingMargin !== null ? scoreMetric("operatingMargin", m.operatingMargin * 100) : 0;
-  const debtScore = m.debtToEquity !== null ? scoreMetric("debtToEquity", m.debtToEquity) : 0;
+  const marginScore = m.operatingMargin !== null ? (scoreMetric("operatingMargin", m.operatingMargin * 100) ?? 0) : 0;
+  const debtScore = m.debtToEquity !== null ? (scoreMetric("debtToEquity", m.debtToEquity) ?? 0) : 0;
   const qualityItems: { score: number; weight: number }[] = [];
   if (m.operatingMargin !== null) qualityItems.push({ score: marginScore, weight: 0.5 });
   if (m.debtToEquity !== null) qualityItems.push({ score: debtScore, weight: 0.5 });

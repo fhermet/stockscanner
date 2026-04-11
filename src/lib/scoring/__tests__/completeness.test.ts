@@ -29,10 +29,10 @@ const COMPLETE_STOCK: Stock = {
 
 const PARTIAL_STOCK: Stock = {
   ...COMPLETE_STOCK,
-  per: 0,
-  roe: 0,
-  operatingMargin: 0,
-  debtToEquity: -1,
+  per: null,
+  roe: null,
+  operatingMargin: null,
+  debtToEquity: null,
 };
 
 describe("computeDataCompleteness", () => {
@@ -49,10 +49,40 @@ describe("computeDataCompleteness", () => {
   });
 
   it("checks dividend-specific metrics for dividend strategy", () => {
-    const noDividend: Stock = { ...COMPLETE_STOCK, dividendYield: 0, payoutRatio: 0 };
+    const noDividend: Stock = { ...COMPLETE_STOCK, dividendYield: null, payoutRatio: null };
     const result = computeDataCompleteness(noDividend, "dividend");
     expect(result.missing).toContain("rendement dividende");
     expect(result.missing).toContain("payout ratio");
+  });
+});
+
+describe("computeDataCompleteness with nullable fields", () => {
+  const NULL_STOCK: Stock = {
+    ...COMPLETE_STOCK,
+    per: null,
+    roe: null,
+    operatingMargin: null,
+    debtToEquity: null,
+  };
+
+  it("detects null fields as missing in buffett", () => {
+    const result = computeDataCompleteness(NULL_STOCK, "buffett");
+    expect(result.missing).toContain("PER");
+    expect(result.missing).toContain("ROE");
+    expect(result.missing).toContain("marge operationnelle");
+    expect(result.missing).toContain("dette/capitaux");
+  });
+
+  it("treats zero PER as present (real value, not missing)", () => {
+    const zeroPerStock: Stock = { ...COMPLETE_STOCK, per: 0 };
+    const result = computeDataCompleteness(zeroPerStock, "buffett");
+    expect(result.missing).not.toContain("PER");
+  });
+
+  it("detects null dividendYield as missing in dividend", () => {
+    const noDivYield: Stock = { ...COMPLETE_STOCK, dividendYield: null };
+    const result = computeDataCompleteness(noDivYield, "dividend");
+    expect(result.missing).toContain("rendement dividende");
   });
 });
 

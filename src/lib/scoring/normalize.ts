@@ -66,8 +66,9 @@ export const METRIC_RANGES = {
 
 export function scoreMetric(
   metric: keyof typeof METRIC_RANGES,
-  value: number
-): number {
+  value: number | null
+): number | null {
+  if (value === null) return null;
   const config = METRIC_RANGES[metric];
   if ("optMin" in config) {
     return normalizeOptimalRange(

@@ -4,9 +4,10 @@ import { getSectorBenchmark, sectorAdjustmentFactor } from "./sector-benchmarks"
 /**
  * Calcule le score total a partir de sous-scores ponderes.
  */
-export function computeWeightedTotal(subScores: readonly SubScore[]): number {
+export function computeWeightedTotal(subScores: readonly SubScore[]): number | null {
+  if (subScores.some((s) => s.value === null)) return null;
   return Math.round(
-    subScores.reduce((acc, s) => acc + s.value * s.weight, 0)
+    subScores.reduce((acc, s) => acc + (s.value as number) * s.weight, 0)
   );
 }
 

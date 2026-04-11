@@ -3,6 +3,8 @@ import { Stock, StockFilters } from "../types";
 import { DataProvider } from "./provider";
 import { createLogger } from "../logger";
 import { ALL_TICKERS } from "../tickers";
+import { getSecHistory, preloadSecData } from "./sec-history-provider";
+import type { SecAnnual } from "@/lib/types/sec-fundamentals";
 
 const log = createLogger("yahoo-provider");
 
@@ -26,6 +28,18 @@ const yf = new YahooFinance({
 function safeNum(value: unknown, fallback = 0): number {
   if (typeof value === "number" && isFinite(value)) return value;
   return fallback;
+}
+
+function nullableNum(value: unknown): number | null {
+  if (typeof value === "number" && isFinite(value)) return value;
+  return null;
+}
+
+function computeDPS(annual: SecAnnual): number {
+  const divPaid = annual.fundamentals.dividends_paid;
+  const shares = annual.fundamentals.shares_outstanding;
+  if (divPaid === null || divPaid <= 0 || shares === null || shares <= 0) return 0;
+  return parseFloat((divPaid / shares).toFixed(4));
 }
 
 const SECTOR_MAP: Record<string, string> = {
@@ -81,31 +95,110 @@ async function fetchStock(ticker: string): Promise<Stock | undefined> {
     const marketCap = parseFloat((marketCapRaw / 1_000_000_000).toFixed(1));
     const currentPrice = safeNum(price.regularMarketPrice);
 
-    const per = parseFloat(safeNum(detail?.trailingPE).toFixed(1));
-    const peg = parseFloat(safeNum(stats?.pegRatio).toFixed(2));
-    const roe = parseFloat((safeNum(financial?.returnOnEquity) * 100).toFixed(1));
-    const debtToEquity = parseFloat(
-      (safeNum(financial?.debtToEquity) / 100).toFixed(2)
-    );
-    const operatingMargin = parseFloat(
-      (safeNum(financial?.operatingMargins) * 100).toFixed(1)
-    );
-    const freeCashFlow = parseFloat(
-      (safeNum(financial?.freeCashflow) / 1_000_000_000).toFixed(1)
-    );
-    const revenueGrowth = parseFloat(
-      (safeNum(financial?.revenueGrowth) * 100).toFixed(1)
-    );
-    const epsGrowth = parseFloat(
-      (safeNum(financial?.earningsGrowth) * 100).toFixed(1)
-    );
-    const dividendYield = parseFloat(
-      (safeNum(detail?.dividendYield) * 100).toFixed(2)
-    );
-    const payoutRatio = Math.round(safeNum(detail?.payoutRatio) * 100);
+    const perRaw = nullableNum(detail?.trailingPE);
+    const per = perRaw !== null ? parseFloat(perRaw.toFixed(1)) : null;
+
+    const epsGrowthRaw = nullableNum(financial?.earningsGrowth);
+    const epsGrowth = epsGrowthRaw !== null ? parseFloat((epsGrowthRaw * 100).toFixed(1)) : null;
+
+    const pegRaw = nullableNum(stats?.pegRatio);
+    // Fallback: compute PEG from P/E and EPS growth when Yahoo doesn't provide it
+    const pegComputed = (pegRaw === null && per !== null && epsGrowthRaw !== null && epsGrowthRaw > 0)
+      ? per / (epsGrowthRaw * 100)
+      : null;
+    const pegValue = pegRaw ?? pegComputed;
+    const peg = pegValue !== null ? parseFloat(pegValue.toFixed(2)) : null;
+
+    const roeRaw = nullableNum(financial?.returnOnEquity);
+    const roe = roeRaw !== null ? parseFloat((roeRaw * 100).toFixed(1)) : null;
+
+    const debtRaw = nullableNum(financial?.debtToEquity);
+    const debtToEquity = debtRaw !== null ? parseFloat((debtRaw / 100).toFixed(2)) : null;
+
+    const marginRaw = nullableNum(financial?.operatingMargins);
+    const operatingMargin = marginRaw !== null ? parseFloat((marginRaw * 100).toFixed(1)) : null;
+
+    const fcfRaw = nullableNum(financial?.freeCashflow);
+    const freeCashFlow = fcfRaw !== null ? parseFloat((fcfRaw / 1_000_000_000).toFixed(1)) : null;
+
+    const revGrowthRaw = nullableNum(financial?.revenueGrowth);
+    const revenueGrowth = revGrowthRaw !== null ? parseFloat((revGrowthRaw * 100).toFixed(1)) : null;
+
+    const divYieldRaw = nullableNum(detail?.dividendYield);
+    const dividendYield = divYieldRaw !== null ? parseFloat((divYieldRaw * 100).toFixed(2)) : null;
+
+    const payoutRaw = nullableNum(detail?.payoutRatio);
+    const payoutRatio = payoutRaw !== null ? Math.round(payoutRaw * 100) : null;
 
     const rawSector: string = profile?.sector ?? "";
     const rawCountry: string = profile?.country ?? "";
+
+    // Load SEC data for US tickers: history + fallback for missing Yahoo metrics
+    let history: Stock["history"] = [];
+    const secData = await getSecHistory(ticker);
+    let secFallbackRoe = roe;
+    let secFallbackDebt = debtToEquity;
+    let secFallbackMargin = operatingMargin;
+    let secFallbackFcf = freeCashFlow;
+    let secFallbackRevGrowth = revenueGrowth;
+    let secFallbackEpsGrowth = epsGrowth;
+    let secFallbackPer = per;
+    let secFallbackDivYield = dividendYield;
+    let secFallbackPayout = payoutRatio;
+
+    if (secData && secData.annuals.length > 0) {
+      // Build history
+      history = secData.annuals
+        .filter((a) => a.fundamentals.eps_diluted !== null)
+        .map((a) => ({
+          year: a.fiscal_year,
+          revenue: (a.fundamentals.revenue ?? 0) / 1_000_000,
+          eps: a.fundamentals.eps_diluted!,
+          dividendPerShare: computeDPS(a),
+        }));
+
+      // Use latest SEC annual as fallback for missing Yahoo metrics
+      const latest = secData.annuals[secData.annuals.length - 1];
+      const r = latest.ratios;
+      const f = latest.fundamentals;
+
+      if (secFallbackRoe === null && r.roe !== null) {
+        secFallbackRoe = parseFloat((r.roe * 100).toFixed(1));
+      }
+      if (secFallbackDebt === null && r.debt_to_equity !== null) {
+        secFallbackDebt = parseFloat(r.debt_to_equity.toFixed(2));
+      }
+      if (secFallbackMargin === null && r.operating_margin !== null) {
+        secFallbackMargin = parseFloat((r.operating_margin * 100).toFixed(1));
+      }
+      if (secFallbackFcf === null && r.free_cash_flow !== null) {
+        secFallbackFcf = parseFloat((r.free_cash_flow / 1_000_000_000).toFixed(1));
+      }
+      if (secFallbackRevGrowth === null && r.revenue_growth !== null) {
+        secFallbackRevGrowth = parseFloat((r.revenue_growth * 100).toFixed(1));
+      }
+      if (secFallbackEpsGrowth === null && r.eps_growth !== null) {
+        secFallbackEpsGrowth = parseFloat((r.eps_growth * 100).toFixed(1));
+      }
+      if (secFallbackPayout === null && r.payout_ratio !== null) {
+        secFallbackPayout = Math.round(r.payout_ratio * 100);
+      }
+      if (secFallbackPer === null && currentPrice > 0 && f.eps_diluted !== null && f.eps_diluted > 0) {
+        secFallbackPer = parseFloat((currentPrice / f.eps_diluted).toFixed(1));
+      }
+      if (secFallbackDivYield === null && currentPrice > 0 && f.dividends_paid !== null && f.dividends_paid > 0 && f.shares_outstanding !== null && f.shares_outstanding > 0) {
+        const dps = f.dividends_paid / f.shares_outstanding;
+        secFallbackDivYield = parseFloat(((dps / currentPrice) * 100).toFixed(2));
+      }
+    }
+
+    // Recompute PEG with potentially SEC-enriched values
+    const finalPer = secFallbackPer;
+    const finalEpsGrowthRaw = secFallbackEpsGrowth !== null ? secFallbackEpsGrowth / 100 : null;
+    let finalPeg = peg;
+    if (finalPeg === null && finalPer !== null && finalEpsGrowthRaw !== null && finalEpsGrowthRaw > 0) {
+      finalPeg = parseFloat((finalPer / (finalEpsGrowthRaw * 100)).toFixed(2));
+    }
 
     return {
       ticker: price.symbol ?? ticker,
@@ -116,17 +209,17 @@ async function fetchStock(ticker: string): Promise<Stock | undefined> {
       currency: (price.currency as string) ?? "USD",
       marketCap,
       price: parseFloat(currentPrice.toFixed(2)),
-      per,
-      peg,
-      roe,
-      debtToEquity,
-      operatingMargin,
-      freeCashFlow,
-      revenueGrowth,
-      epsGrowth,
-      dividendYield,
-      payoutRatio,
-      history: [],
+      per: secFallbackPer,
+      peg: finalPeg,
+      roe: secFallbackRoe,
+      debtToEquity: secFallbackDebt,
+      operatingMargin: secFallbackMargin,
+      freeCashFlow: secFallbackFcf,
+      revenueGrowth: secFallbackRevGrowth,
+      epsGrowth: secFallbackEpsGrowth,
+      dividendYield: secFallbackDivYield,
+      payoutRatio: secFallbackPayout,
+      history,
     };
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : "unknown";
@@ -143,6 +236,9 @@ async function fetchStock(ticker: string): Promise<Stock | undefined> {
  *  → 60 per wave, ~6 waves, ~15-20s cold load
  */
 async function fetchAll(tickers: readonly string[]): Promise<Stock[]> {
+  // Pre-load all SEC data into memory before batch fetching
+  await preloadSecData();
+
   // Deduplicate tickers before fetching
   const uniqueTickers = [...new Set(tickers)];
 

@@ -22,7 +22,7 @@ export default function ScoreMovers({ stocks, strategyId }: ScoreMoversProps) {
     .map((s) => ({
       ticker: s.stock.ticker,
       name: s.stock.name,
-      delta: getDelta(s.stock.ticker, strategyId, s.score.total),
+      delta: getDelta(s.stock.ticker, strategyId, s.score.total ?? 0),
     }))
     .filter((m) => m.delta.delta !== null && Math.abs(m.delta.delta) >= 3)
     .sort((a, b) => Math.abs(b.delta.delta!) - Math.abs(a.delta.delta!))

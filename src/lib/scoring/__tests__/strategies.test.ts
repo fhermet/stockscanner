@@ -108,21 +108,21 @@ describe("scoring produces valid output", () => {
 
 describe("strategy differentiation", () => {
   it("MSFT scores well in both lynch and buffett", () => {
-    const lynchScore = scoreStock(MSFT, "lynch").total;
-    const buffettScore = scoreStock(MSFT, "buffett").total;
+    const lynchScore = scoreStock(MSFT, "lynch").total!;
+    const buffettScore = scoreStock(MSFT, "buffett").total!;
     expect(lynchScore).toBeGreaterThan(50);
     expect(buffettScore).toBeGreaterThan(50);
   });
 
   it("AT&T scores higher in dividend than growth", () => {
-    const growthScore = scoreStock(T_STOCK, "growth").total;
-    const dividendScore = scoreStock(T_STOCK, "dividend").total;
+    const growthScore = scoreStock(T_STOCK, "growth").total!;
+    const dividendScore = scoreStock(T_STOCK, "dividend").total!;
     expect(dividendScore).toBeGreaterThan(growthScore);
   });
 });
 
 describe("partial data handling", () => {
-  it("does not crash with zero values", () => {
+  it("returns null total for stocks with null metrics", () => {
     const empty: Stock = {
       ticker: "EMPTY",
       name: "Empty Corp",
@@ -132,25 +132,64 @@ describe("partial data handling", () => {
       currency: "USD",
       marketCap: 1,
       price: 1,
-      per: 0,
-      peg: 0,
-      roe: 0,
-      debtToEquity: 0,
-      operatingMargin: 0,
-      freeCashFlow: 0,
-      revenueGrowth: 0,
-      epsGrowth: 0,
-      dividendYield: 0,
-      payoutRatio: 0,
+      per: null,
+      peg: null,
+      roe: null,
+      debtToEquity: null,
+      operatingMargin: null,
+      freeCashFlow: null,
+      revenueGrowth: null,
+      epsGrowth: null,
+      dividendYield: null,
+      payoutRatio: null,
       history: [],
     };
 
     for (const strategyId of ["buffett", "lynch", "growth", "dividend"] as const) {
       const result = scoreStock(empty, strategyId);
-      expect(result.total).toBeGreaterThanOrEqual(0);
-      expect(result.total).toBeLessThanOrEqual(100);
-      expect(["high", "medium", "low"]).toContain(result.confidence);
-      expect(result.dataCompleteness).toBeDefined();
+      expect(result.total).toBeNull();
+      expect(result.dataCompleteness.missing.length).toBeGreaterThan(0);
     }
+  });
+});
+
+describe("N/A scoring for missing data", () => {
+  const MISSING_PER: Stock = {
+    ...MSFT,
+    per: null,
+  };
+
+  it("buffett returns null total when PER is missing", () => {
+    const result = scoreStock(MISSING_PER, "buffett");
+    expect(result.total).toBeNull();
+    expect(result.dataCompleteness.missing).toContain("PER");
+  });
+
+  const MISSING_PEG: Stock = {
+    ...MSFT,
+    peg: null,
+  };
+
+  it("lynch returns null total when PEG is missing", () => {
+    const result = scoreStock(MISSING_PEG, "lynch");
+    expect(result.total).toBeNull();
+    expect(result.dataCompleteness.missing).toContain("PEG");
+  });
+
+  const NO_HISTORY: Stock = {
+    ...MSFT,
+    history: [],
+  };
+
+  it("dividend returns null total when history is missing", () => {
+    const result = scoreStock(NO_HISTORY, "dividend");
+    expect(result.total).toBeNull();
+    expect(result.dataCompleteness.missing).toContain("historique dividende");
+  });
+
+  it("complete stock still produces numeric score", () => {
+    const result = scoreStock(MSFT, "buffett");
+    expect(result.total).toBeGreaterThanOrEqual(0);
+    expect(result.total).toBeLessThanOrEqual(100);
   });
 });

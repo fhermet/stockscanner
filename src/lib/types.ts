@@ -16,16 +16,16 @@ export interface Stock {
   readonly currency: string; // ISO 4217: USD, EUR, GBP, CHF, etc.
   readonly marketCap: number; // in billions (local currency)
   readonly price: number; // local currency
-  readonly per: number;
-  readonly peg: number;
-  readonly roe: number; // percentage
-  readonly debtToEquity: number; // ratio
-  readonly operatingMargin: number; // percentage
-  readonly freeCashFlow: number; // in billions
-  readonly revenueGrowth: number; // percentage YoY
-  readonly epsGrowth: number; // percentage YoY
-  readonly dividendYield: number; // percentage
-  readonly payoutRatio: number; // percentage
+  readonly per: number | null;
+  readonly peg: number | null;
+  readonly roe: number | null; // percentage
+  readonly debtToEquity: number | null; // ratio
+  readonly operatingMargin: number | null; // percentage
+  readonly freeCashFlow: number | null; // in billions
+  readonly revenueGrowth: number | null; // percentage YoY
+  readonly epsGrowth: number | null; // percentage YoY
+  readonly dividendYield: number | null; // percentage
+  readonly payoutRatio: number | null; // percentage
   readonly history: readonly YearlyData[];
 }
 
@@ -47,7 +47,7 @@ export interface Strategy {
 
 export interface SubScore {
   readonly name: string;
-  readonly value: number; // 0-100
+  readonly value: number | null; // 0-100
   readonly weight: number; // 0-1, sum = 1
   readonly label: string;
 }
@@ -69,7 +69,7 @@ export type ScoreConfidence = "high" | "medium" | "low";
 
 export interface StrategyScore {
   readonly strategyId: StrategyId;
-  readonly total: number; // 0-100
+  readonly total: number | null; // 0-100
   readonly subScores: readonly SubScore[];
   readonly explanations: readonly Explanation[];
   readonly confidence: ScoreConfidence;

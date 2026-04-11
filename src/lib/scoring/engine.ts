@@ -37,13 +37,18 @@ export function scoreStock(
   stock: Stock,
   strategyId: StrategyId
 ): StrategyScore {
-  const scorer = getScorer(strategyId);
-  const subScores = scorer.score(stock);
-  const total = computeWeightedTotal(subScores);
-  const explanations = generateExplanations(stock, subScores, strategyId);
   const dataCompleteness = computeDataCompleteness(stock, strategyId);
   const confidence = computeConfidence(dataCompleteness);
 
+  const scorer = getScorer(strategyId);
+  const subScores = scorer.score(stock);
+
+  if (dataCompleteness.missing.length > 0) {
+    return { strategyId, total: null, subScores, explanations: [], confidence, dataCompleteness };
+  }
+
+  const total = computeWeightedTotal(subScores);
+  const explanations = generateExplanations(stock, subScores, strategyId);
   return { strategyId, total, subScores, explanations, confidence, dataCompleteness };
 }
 
@@ -66,5 +71,10 @@ export async function scoreAndRankStocks(
     score: scoreStock(stock, strategyId),
   }));
 
-  return scored.sort((a, b) => b.score.total - a.score.total);
+  return scored.sort((a, b) => {
+    if (a.score.total === null && b.score.total === null) return 0;
+    if (a.score.total === null) return 1;
+    if (b.score.total === null) return -1;
+    return b.score.total - a.score.total;
+  });
 }

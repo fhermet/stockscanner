@@ -102,7 +102,8 @@ function compareSubScores(stocks: readonly ScoredStock[]): ComparedMetric[] {
 
 // --- Key metrics ---
 
-function metricOrNull(value: number, zeroIsNA = false): number | null {
+function metricOrNull(value: number | null, zeroIsNA = false): number | null {
+  if (value === null) return null;
   if (!isFinite(value)) return null;
   if (zeroIsNA && value === 0) return null;
   return value;
@@ -141,7 +142,7 @@ function generateSummary(
 ): string {
   if (stocks.length < 2) return "";
 
-  const sorted = [...stocks].sort((a, b) => b.score.total - a.score.total);
+  const sorted = [...stocks].sort((a, b) => (b.score.total ?? 0) - (a.score.total ?? 0));
   const first = sorted[0];
   const second = sorted[1];
   const loser = sorted[sorted.length - 1];
@@ -183,7 +184,7 @@ function generateSummary(
   }
 
   // Laggard
-  const gap = first.score.total - loser.score.total;
+  const gap = (first.score.total ?? 0) - (loser.score.total ?? 0);
   if (gap >= 15 && loser.stock.ticker !== first.stock.ticker) {
     parts.push(`${loser.stock.ticker} est en retrait (${loser.score.total}/100).`);
   }
@@ -208,14 +209,14 @@ export function compareStocks(
   stocks: readonly ScoredStock[],
   strategyId: StrategyId
 ): ComparisonResult {
-  const sorted = [...stocks].sort((a, b) => b.score.total - a.score.total);
+  const sorted = [...stocks].sort((a, b) => (b.score.total ?? 0) - (a.score.total ?? 0));
 
   const isTie =
     sorted.length >= 2 &&
-    Math.abs(sorted[0].score.total - sorted[1].score.total) < TIE_THRESHOLD;
+    Math.abs((sorted[0].score.total ?? 0) - (sorted[1].score.total ?? 0)) < TIE_THRESHOLD;
 
   const winner = sorted.length > 0
-    ? { ticker: sorted[0].stock.ticker, name: sorted[0].stock.name, score: sorted[0].score.total }
+    ? { ticker: sorted[0].stock.ticker, name: sorted[0].stock.name, score: sorted[0].score.total ?? 0 }
     : null;
 
   const subScoreComparison = compareSubScores(stocks);

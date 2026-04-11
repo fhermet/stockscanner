@@ -19,7 +19,9 @@ export default function Sparkline({
   width = 200,
   height = 48,
 }: SparklineProps) {
-  if (data.length < 2) {
+  const validData = data.filter((d) => d.score !== null);
+
+  if (validData.length < 2) {
     return (
       <p className="text-xs text-slate-400 italic">
         Pas assez de données pour afficher un graphique
@@ -27,7 +29,7 @@ export default function Sparkline({
     );
   }
 
-  const scores = data.map((d) => d.score);
+  const scores = validData.map((d) => d.score);
   const min = Math.min(...scores) - 5;
   const max = Math.max(...scores) + 5;
   const range = max - min || 1;

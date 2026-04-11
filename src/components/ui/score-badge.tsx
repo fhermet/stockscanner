@@ -1,5 +1,5 @@
 interface ScoreBadgeProps {
-  readonly score: number;
+  readonly score: number | null;
   readonly size?: "sm" | "md" | "lg";
 }
 
@@ -24,6 +24,16 @@ const sizeClasses = {
 } as const;
 
 export default function ScoreBadge({ score, size = "md" }: ScoreBadgeProps) {
+  if (score === null) {
+    return (
+      <span
+        className={`inline-flex items-center rounded-full ring-1 ring-inset font-medium bg-slate-100 text-slate-500 ring-slate-300/20 ${sizeClasses[size]}`}
+      >
+        N/A
+      </span>
+    );
+  }
+
   return (
     <span
       className={`inline-flex items-center gap-1 rounded-full ring-1 ring-inset font-medium ${getScoreColor(score)} ${sizeClasses[size]}`}
