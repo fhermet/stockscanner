@@ -182,7 +182,7 @@ async function fetchStock(ticker: string): Promise<Stock | undefined> {
 
     // --- Yahoo: only used for price-derived metrics and metadata ---
     const perYahoo = nullableNum(detail?.trailingPE);
-    const per = perYahoo !== null ? parseFloat(perYahoo.toFixed(1)) : null;
+    let per = perYahoo !== null ? parseFloat(perYahoo.toFixed(1)) : null;
 
     const rawSector: string = profile?.sector ?? "";
     const rawIndustry: string = profile?.industry ?? "";
@@ -322,6 +322,23 @@ async function fetchStock(ticker: string): Promise<Stock | undefined> {
     if (payoutRatio === null && !hasSec) {
       const payoutRaw = nullableNum(detail?.payoutRatio);
       payoutRatio = payoutRaw !== null ? Math.round(payoutRaw * 100) : null;
+    }
+
+    // --- Yahoo shares fallback for PER ---
+    // Some companies (V, BRK-B, ERIE) don't tag EPS or shares in XBRL.
+    // When SEC has net_income but no eps_diluted, use Yahoo's sharesOutstanding
+    // to compute EPS and PER.
+    if (per === null && currentPrice > 0 && hasSec) {
+      const latestFund = secData!.annuals[secData!.annuals.length - 1].fundamentals;
+      if (latestFund.net_income !== null && latestFund.net_income > 0 && latestFund.eps_diluted === null) {
+        const yahooShares = nullableNum(stats?.sharesOutstanding);
+        if (yahooShares !== null && yahooShares > 0) {
+          const computedEps = latestFund.net_income / yahooShares;
+          if (computedEps > 0) {
+            per = parseFloat((currentPrice / computedEps).toFixed(1));
+          }
+        }
+      }
     }
 
     // PEG = PER / eps_growth (always computed, never from Yahoo)

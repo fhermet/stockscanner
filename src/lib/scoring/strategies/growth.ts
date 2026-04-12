@@ -8,8 +8,12 @@ import { weightedAverageSkipNull } from "../utils";
  *
  * Ponderation :
  *   - Momentum de croissance (50%) : CA growth, EPS growth
- *   - Rentabilite (25%) : marge, ROE
+ *   - Rentabilite (25%) : marge, ROIC
  *   - Potentiel (25%) : taille (petite = plus de potentiel)
+ *
+ * ROIC remplace ROE car il mesure la rentabilite de tout le capital
+ * investi (equity + dette). Pas de distorsion pour les entreprises
+ * a equity negative (buybacks) ou tres faible.
  */
 const growthScorer: StrategyScorer = {
   id: "growth",
@@ -23,10 +27,10 @@ const growthScorer: StrategyScorer = {
     ]);
 
     const marginScore = scoreMetric("operatingMargin", stock.operatingMargin);
-    const roeScore = scoreMetric("roe", stock.roe);
+    const roicScore = scoreMetric("roic", stock.roic);
     const profitValue = weightedAverageSkipNull([
       { score: marginScore, weight: 0.5 },
-      { score: roeScore, weight: 0.5 },
+      { score: roicScore, weight: 0.5 },
     ]);
 
     // Scalabilite inversee : petite cap = plus de potentiel

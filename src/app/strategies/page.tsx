@@ -113,7 +113,7 @@ const STRATEGIES: readonly StrategyDetail[] = [
         weight: "25%",
         metrics: [
           { name: "Marge opérationnelle", weight: "50%", range: "0% → 40% (linéaire)" },
-          { name: "Dette / Capitaux propres", weight: "50%", range: "3 → 0 (inversé)" },
+          { name: "Dette / Cash-flow opérationnel", weight: "50%", range: "10 → 0 (inversé : bas = bon)", note: "Nombre d'années de cash-flow nécessaires pour rembourser la dette." },
         ],
       },
     ],
@@ -145,7 +145,7 @@ const STRATEGIES: readonly StrategyDetail[] = [
         weight: "25%",
         metrics: [
           { name: "Marge opérationnelle", weight: "50%", range: "0% → 40% (linéaire)" },
-          { name: "ROE", weight: "50%", range: "0% → 40% (linéaire)" },
+          { name: "ROIC (Return on Invested Capital)", weight: "50%", range: "0% → 30% (linéaire)", note: "Rentabilité de tout le capital investi. Pas de distorsion pour les entreprises à equity négative." },
         ],
       },
       {
@@ -192,7 +192,7 @@ const STRATEGIES: readonly StrategyDetail[] = [
         label: "Stabilité",
         weight: "35%",
         metrics: [
-          { name: "Dette / Capitaux propres", weight: "40%", range: "3 → 0 (inversé)" },
+          { name: "Dette / Cash-flow opérationnel", weight: "40%", range: "10 → 0 (inversé : bas = bon)", note: "Nombre d'années de cash-flow nécessaires pour rembourser la dette." },
           { name: "Croissance historique du dividende", weight: "60%", range: "% d'années avec dividende en hausse × 100", note: "Basé sur l'historique réel du dividende par action." },
         ],
       },

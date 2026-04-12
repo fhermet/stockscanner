@@ -92,7 +92,7 @@ const METRICS: readonly MetricDefinition[] = [
       "Mesure la rentabilité de tout le capital investi dans l'entreprise (fonds propres + dette), pas seulement les capitaux propres. C'est la métrique de rentabilité privilégiée par Warren Buffett car elle fonctionne même quand les capitaux propres sont négatifs (buybacks massifs comme chez McDonald's ou Starbucks).",
     example:
       "Résultat net : 8.56 Mds$, Capitaux propres : -1.8 Mds$, Dette : 40 Mds$ → Capital investi = 38.2 Mds$ → ROIC = 22.4%. McDonald's est très rentable malgré une equity négative.",
-    usedIn: ["Warren Buffett (Qualité, 40%)"],
+    usedIn: ["Warren Buffett (Qualité, 40%)", "Growth (Rentabilité, 25%)"],
     source: "SEC/EDGAR (net_income / (shareholders_equity + total_debt)).",
     warning:
       "Un ROIC supérieur à 15% est considéré excellent. Contrairement au ROE, le ROIC n'est pas gonflé artificiellement par un levier financier élevé.",
@@ -108,7 +108,7 @@ const METRICS: readonly MetricDefinition[] = [
       "Mesure la rentabilité des fonds investis par les actionnaires. Un ROE élevé signifie que l'entreprise génère beaucoup de profit par rapport à ses capitaux propres. Utilisé dans les stratégies Growth et Lynch.",
     example:
       "Résultat net : 88 Mds$, Capitaux propres : 206 Mds$ → ROE = 42.7%. Excellent pour une entreprise tech.",
-    usedIn: ["Growth (Rentabilité, 25%)"],
+    usedIn: [],
     source: "SEC/EDGAR (fundamentals_annual).",
     warning:
       "Un ROE très élevé peut résulter de capitaux propres faibles (effet de levier) ou négatifs (buybacks). Pour la stratégie Buffett, le ROIC est préféré car il évite ces distorsions.",
@@ -180,7 +180,11 @@ const METRICS: readonly MetricDefinition[] = [
       "Mesure le nombre d'années de cash-flow opérationnel nécessaires pour rembourser l'intégralité de la dette. C'est la métrique de solidité financière utilisée par la stratégie Buffett car elle fonctionne même quand les capitaux propres sont négatifs. Un ratio inférieur à 3 est sain, au-delà de 5 c'est préoccupant.",
     example:
       "Dette : 40 Mds$, Cash-flow opérationnel : 10.5 Mds$ → Debt/OCF = 3.8x. McDonald's peut rembourser sa dette en moins de 4 ans de cash-flow.",
-    usedIn: ["Warren Buffett (Solidité, 30%)"],
+    usedIn: [
+      "Warren Buffett (Solidité, 30%)",
+      "Peter Lynch (Qualité, 25%)",
+      "Dividende (Stabilité, 35%)",
+    ],
     source: "SEC/EDGAR (total_debt / operating_cash_flow).",
     warning:
       "Non applicable aux entreprises financières (banques, assurances) dont le cash-flow opérationnel inclut les mouvements de dépôts et prêts.",
@@ -196,13 +200,10 @@ const METRICS: readonly MetricDefinition[] = [
       "Mesure le levier financier de l'entreprise. Un ratio bas (< 0.5) signifie que l'entreprise est peu endettée. Un ratio élevé (> 1.5) signifie qu'elle est financée davantage par la dette que par les capitaux propres, ce qui augmente le risque.",
     example:
       "Dette : 60 Mds$, Capitaux propres : 206 Mds$ → D/E = 0.29. Très sain.",
-    usedIn: [
-      "Peter Lynch (Qualité, 25%)",
-      "Dividende (Stabilité, 35%)",
-    ],
+    usedIn: [],
     source: "SEC/EDGAR (total_debt / shareholders_equity).",
     warning:
-      "Non calculable quand les capitaux propres sont négatifs (buybacks massifs). La stratégie Buffett utilise Debt/OCF à la place pour éviter ce problème.",
+      "Non calculable quand les capitaux propres sont négatifs (buybacks massifs). Toutes les stratégies utilisent Debt/OCF à la place.",
   },
   // --- Cash flow ---
   {

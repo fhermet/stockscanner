@@ -9,7 +9,10 @@ import { weightedAverageSkipNull } from "../utils";
  * Ponderation :
  *   - Croissance (40%) : EPS growth, revenue growth
  *   - Valeur (35%) : PEG ratio
- *   - Qualite (25%) : marge, dette
+ *   - Qualite (25%) : marge, Debt/OCF
+ *
+ * Debt/OCF (dette / cash-flow operationnel) remplace D/E car il
+ * fonctionne meme quand les capitaux propres sont negatifs (buybacks).
  */
 const lynchScorer: StrategyScorer = {
   id: "lynch",
@@ -25,10 +28,10 @@ const lynchScorer: StrategyScorer = {
     const valueValue = scoreMetric("peg", stock.peg);
 
     const marginScore = scoreMetric("operatingMargin", stock.operatingMargin);
-    const debtScore = scoreMetric("debtToEquity", stock.debtToEquity);
+    const debtOcfScore = scoreMetric("debtToOcf", stock.debtToOcf);
     const qualityValue = weightedAverageSkipNull([
       { score: marginScore, weight: 0.5 },
-      { score: debtScore, weight: 0.5 },
+      { score: debtOcfScore, weight: 0.5 },
     ]);
 
     return [

@@ -9,7 +9,7 @@ import { weightedAverageSkipNull } from "../utils";
  * Ponderation :
  *   - Rendement (30%) : dividend yield
  *   - Soutenabilite (35%) : payout ratio (zone optimale), FCF coverage
- *   - Stabilite (35%) : dette, croissance historique du dividende
+ *   - Stabilite (35%) : Debt/OCF, croissance historique du dividende
  *
  * FCF coverage is skipped for financial sector stocks.
  */
@@ -58,10 +58,10 @@ const dividendScorer: StrategyScorer = {
       { score: fcfScore, weight: 0.5 },
     ]);
 
-    const debtScore = scoreMetric("debtToEquity", stock.debtToEquity);
+    const debtOcfScore = scoreMetric("debtToOcf", stock.debtToOcf);
     const divGrowthScore = scoreDividendGrowth(stock.history);
     const stabilityValue = weightedAverageSkipNull([
-      { score: debtScore, weight: 0.4 },
+      { score: debtOcfScore, weight: 0.4 },
       { score: divGrowthScore, weight: 0.6 },
     ]);
 

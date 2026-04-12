@@ -38,19 +38,19 @@ const STRATEGY_METRICS: Record<StrategyId, MetricCheck[]> = {
     { name: "croissance EPS", test: (s) => s.epsGrowth !== null },
     { name: "croissance CA", test: (s) => s.revenueGrowth !== null },
     { name: "marge operationnelle", test: (s) => s.operatingMargin !== null },
-    { name: "dette/capitaux", test: (s) => s.debtToEquity !== null },
+    { name: "dette/cash-flow", test: (s) => s.debtToOcf !== null, skipSectors: FINANCE_SECTORS },
   ],
   growth: [
     { name: "croissance CA", test: (s) => s.revenueGrowth !== null },
     { name: "croissance EPS", test: (s) => s.epsGrowth !== null },
     { name: "marge operationnelle", test: (s) => s.operatingMargin !== null },
-    { name: "ROE", test: (s) => s.roe !== null },
+    { name: "ROIC", test: (s) => s.roic !== null },
   ],
   dividend: [
     { name: "rendement dividende", test: (s) => s.dividendYield !== null },
     { name: "payout ratio", test: (s) => s.payoutRatio !== null },
     { name: "free cash flow", test: (s) => s.freeCashFlow !== null, skipSectors: FINANCE_SECTORS },
-    { name: "dette/capitaux", test: (s) => s.debtToEquity !== null },
+    { name: "dette/cash-flow", test: (s) => s.debtToOcf !== null, skipSectors: FINANCE_SECTORS },
     { name: "historique dividende", test: (s) => s.history.length >= 2 },
   ],
 };
