@@ -208,12 +208,15 @@ export default async function StockDetailPage({
           </div>
         )}
 
-        {score.dataCompleteness.missing.length > 0 && (
+        {(score.total === null || score.dataCompleteness.missing.length > 0) && (
           <div className="mt-5">
             <ConfidenceBadge
               confidence={score.confidence}
               completeness={score.dataCompleteness}
               showDetail
+              stock={stock}
+              strategyId={strategyId}
+              isNa={score.total === null}
             />
           </div>
         )}

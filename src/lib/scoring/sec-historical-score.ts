@@ -44,36 +44,68 @@ export interface HistoricalScorePoint {
   readonly scores: readonly HistoricalStrategyScore[];
 }
 
+// --- SEC fundamentals helpers ---
+
+function computeRoicFromFundamentals(f: SecAnnual['fundamentals']): number | null {
+  if (f.net_income === null) return null;
+  const equity = f.shareholders_equity ?? 0;
+  const debt = f.total_debt ?? 0;
+  const investedCapital = equity + debt;
+  if (investedCapital <= 0) return null;
+  return f.net_income / investedCapital; // as a ratio (0.22 = 22%)
+}
+
+function computeDebtToOcfFromFundamentals(f: SecAnnual['fundamentals']): number | null {
+  if (f.total_debt === null || f.operating_cash_flow === null || f.operating_cash_flow <= 0) return null;
+  return f.total_debt / f.operating_cash_flow;
+}
+
+function computeRoicFromMerged(m: MergedAnnual): number | null {
+  if (m.netIncome === null) return null;
+  const equity = m.shareholdersEquity ?? 0;
+  const debt = m.totalDebt ?? 0;
+  const investedCapital = equity + debt;
+  if (investedCapital <= 0) return null;
+  return m.netIncome / investedCapital;
+}
+
+function computeDebtToOcfFromMerged(m: MergedAnnual): number | null {
+  if (m.totalDebt === null || m.operatingCashFlow === null || m.operatingCashFlow <= 0) return null;
+  return m.totalDebt / m.operatingCashFlow;
+}
+
 // --- Scoring per strategy ---
 
 function scoreBuffettHistorical(annual: SecAnnual): HistoricalStrategyScore {
-  const { ratios } = annual;
+  const { ratios, fundamentals } = annual;
 
-  // Quality (partial): ROE + margin available, FCF yield needs marketCap
-  const roeScore = ratios.roe !== null ? (scoreMetric("roe", ratios.roe * 100) ?? 0) : 0;
+  // Quality (partial): ROIC + margin available, FCF yield needs marketCap
+  const roic = computeRoicFromFundamentals(fundamentals);
+  const roicScore = roic !== null ? (scoreMetric("roic", roic * 100) ?? 0) : 0;
   const marginScore = ratios.operating_margin !== null
     ? (scoreMetric("operatingMargin", ratios.operating_margin * 100) ?? 0)
     : 0;
-  const qualityAvailable = ratios.roe !== null || ratios.operating_margin !== null;
+  const qualityAvailable = roic !== null || ratios.operating_margin !== null;
 
   const qualityItems: { score: number; weight: number }[] = [];
-  if (ratios.roe !== null) qualityItems.push({ score: roeScore, weight: 0.4 });
+  if (roic !== null) qualityItems.push({ score: roicScore, weight: 0.4 });
   if (ratios.operating_margin !== null) qualityItems.push({ score: marginScore, weight: 0.35 });
   // FCF yield excluded (needs marketCap)
 
   const qualityValue = qualityItems.length > 0 ? weightedAverage(qualityItems) : 0;
 
-  // Strength (full): debt/equity + FCF positive
-  const debtScore = ratios.debt_to_equity !== null
-    ? (scoreMetric("debtToEquity", ratios.debt_to_equity) ?? 0)
+  // Strength (full): Debt/OCF + FCF positive
+  const debtToOcf = computeDebtToOcfFromFundamentals(fundamentals);
+  const debtScore = debtToOcf !== null
+    ? (scoreMetric("debtToOcf", debtToOcf) ?? 0)
     : 0;
   const fcfPosScore = ratios.free_cash_flow !== null
     ? (ratios.free_cash_flow > 0 ? 100 : 10)
     : 0;
-  const strengthAvailable = ratios.debt_to_equity !== null || ratios.free_cash_flow !== null;
+  const strengthAvailable = debtToOcf !== null || ratios.free_cash_flow !== null;
 
   const strengthItems: { score: number; weight: number }[] = [];
-  if (ratios.debt_to_equity !== null) strengthItems.push({ score: debtScore, weight: 0.6 });
+  if (debtToOcf !== null) strengthItems.push({ score: debtScore, weight: 0.6 });
   if (ratios.free_cash_flow !== null) strengthItems.push({ score: fcfPosScore, weight: 0.4 });
 
   const strengthValue = strengthItems.length > 0 ? weightedAverage(strengthItems) : 0;
@@ -118,17 +150,18 @@ function scoreDividendHistorical(
   const sustainabilityAvailable = ratios.payout_ratio !== null;
   const sustainabilityValue = sustainabilityAvailable ? payoutScore : 0;
 
-  // Stability (full): debt/equity + dividend growth from history
-  const debtScore = ratios.debt_to_equity !== null
-    ? (scoreMetric("debtToEquity", ratios.debt_to_equity) ?? 0)
+  // Stability (full): Debt/OCF + dividend growth from history
+  const debtToOcf = computeDebtToOcfFromFundamentals(fundamentals);
+  const debtScore = debtToOcf !== null
+    ? (scoreMetric("debtToOcf", debtToOcf) ?? 0)
     : 0;
 
   const divGrowthScore = scoreDividendGrowthFromSec(annual.fiscal_year, allAnnuals);
 
   const stabilityItems: { score: number; weight: number }[] = [];
-  if (ratios.debt_to_equity !== null) stabilityItems.push({ score: debtScore, weight: 0.4 });
+  if (debtToOcf !== null) stabilityItems.push({ score: debtScore, weight: 0.4 });
   stabilityItems.push({ score: divGrowthScore, weight: 0.6 });
-  const stabilityAvailable = ratios.debt_to_equity !== null;
+  const stabilityAvailable = debtToOcf !== null;
 
   const stabilityValue = weightedAverage(stabilityItems);
 
@@ -159,7 +192,7 @@ function scoreDividendHistorical(
 }
 
 function scoreGrowthHistorical(annual: SecAnnual): HistoricalStrategyScore {
-  const { ratios } = annual;
+  const { ratios, fundamentals } = annual;
 
   // Momentum (full): revenue growth + EPS growth
   const revScore = ratios.revenue_growth !== null
@@ -174,14 +207,15 @@ function scoreGrowthHistorical(annual: SecAnnual): HistoricalStrategyScore {
   const momentumAvailable = momentumItems.length > 0;
   const momentumValue = momentumAvailable ? weightedAverage(momentumItems) : 0;
 
-  // Profitability (full): margin + ROE
+  // Profitability (full): margin + ROIC
   const marginScore = ratios.operating_margin !== null
     ? (scoreMetric("operatingMargin", ratios.operating_margin * 100) ?? 0)
     : 0;
-  const roeScore = ratios.roe !== null ? (scoreMetric("roe", ratios.roe * 100) ?? 0) : 0;
+  const roic = computeRoicFromFundamentals(fundamentals);
+  const roicScore = roic !== null ? (scoreMetric("roic", roic * 100) ?? 0) : 0;
   const profitItems: { score: number; weight: number }[] = [];
   if (ratios.operating_margin !== null) profitItems.push({ score: marginScore, weight: 0.5 });
-  if (ratios.roe !== null) profitItems.push({ score: roeScore, weight: 0.5 });
+  if (roic !== null) profitItems.push({ score: roicScore, weight: 0.5 });
   const profitAvailable = profitItems.length > 0;
   const profitValue = profitAvailable ? weightedAverage(profitItems) : 0;
 
@@ -211,7 +245,7 @@ function scoreGrowthHistorical(annual: SecAnnual): HistoricalStrategyScore {
 }
 
 function scoreLynchHistorical(annual: SecAnnual): HistoricalStrategyScore {
-  const { ratios } = annual;
+  const { ratios, fundamentals } = annual;
 
   // Growth (full): EPS growth + revenue growth
   const epsScore = ratios.eps_growth !== null
@@ -228,16 +262,17 @@ function scoreLynchHistorical(annual: SecAnnual): HistoricalStrategyScore {
 
   // Value: excluded (PEG needs market price)
 
-  // Quality (full): margin + debt/equity
+  // Quality (full): margin + Debt/OCF
   const marginScore = ratios.operating_margin !== null
     ? (scoreMetric("operatingMargin", ratios.operating_margin * 100) ?? 0)
     : 0;
-  const debtScore = ratios.debt_to_equity !== null
-    ? (scoreMetric("debtToEquity", ratios.debt_to_equity) ?? 0)
+  const debtToOcf = computeDebtToOcfFromFundamentals(fundamentals);
+  const debtScore = debtToOcf !== null
+    ? (scoreMetric("debtToOcf", debtToOcf) ?? 0)
     : 0;
   const qualityItems: { score: number; weight: number }[] = [];
   if (ratios.operating_margin !== null) qualityItems.push({ score: marginScore, weight: 0.5 });
-  if (ratios.debt_to_equity !== null) qualityItems.push({ score: debtScore, weight: 0.5 });
+  if (debtToOcf !== null) qualityItems.push({ score: debtScore, weight: 0.5 });
   const qualityAvailable = qualityItems.length > 0;
   const qualityValue = qualityAvailable ? weightedAverage(qualityItems) : 0;
 
@@ -342,23 +377,25 @@ export function getStrategyCoverage(strategyId: StrategyId): {
 // =============================================================================
 
 function scoreBuffettFull(m: MergedAnnual): HistoricalStrategyScore {
-  // Quality: ROE + margin + FCF yield
-  const roeScore = m.roe !== null ? (scoreMetric("roe", m.roe * 100) ?? 0) : 0;
+  // Quality: ROIC + margin + FCF yield
+  const roic = computeRoicFromMerged(m);
+  const roicScore = roic !== null ? (scoreMetric("roic", roic * 100) ?? 0) : 0;
   const marginScore = m.operatingMargin !== null ? (scoreMetric("operatingMargin", m.operatingMargin * 100) ?? 0) : 0;
   const fcfYieldScore = m.fcfYield !== null ? (scoreMetric("fcfYield", m.fcfYield) ?? 0) : 0;
 
   const qualityItems: { score: number; weight: number }[] = [];
-  if (m.roe !== null) qualityItems.push({ score: roeScore, weight: 0.4 });
+  if (roic !== null) qualityItems.push({ score: roicScore, weight: 0.4 });
   if (m.operatingMargin !== null) qualityItems.push({ score: marginScore, weight: 0.35 });
   if (m.fcfYield !== null) qualityItems.push({ score: fcfYieldScore, weight: 0.25 });
   const qualityAvailable = qualityItems.length > 0;
   const qualityValue = qualityAvailable ? weightedAverage(qualityItems) : 0;
 
-  // Strength: debt/equity + FCF positive
-  const debtScore = m.debtToEquity !== null ? (scoreMetric("debtToEquity", m.debtToEquity) ?? 0) : 0;
+  // Strength: Debt/OCF + FCF positive
+  const debtToOcf = computeDebtToOcfFromMerged(m);
+  const debtScore = debtToOcf !== null ? (scoreMetric("debtToOcf", debtToOcf) ?? 0) : 0;
   const fcfPosScore = m.freeCashFlow !== null ? (m.freeCashFlow > 0 ? 100 : 10) : 0;
   const strengthItems: { score: number; weight: number }[] = [];
-  if (m.debtToEquity !== null) strengthItems.push({ score: debtScore, weight: 0.6 });
+  if (debtToOcf !== null) strengthItems.push({ score: debtScore, weight: 0.6 });
   if (m.freeCashFlow !== null) strengthItems.push({ score: fcfPosScore, weight: 0.4 });
   const strengthAvailable = strengthItems.length > 0;
   const strengthValue = strengthAvailable ? weightedAverage(strengthItems) : 0;
@@ -421,13 +458,14 @@ function scoreDividendFull(m: MergedAnnual, allAnnuals: readonly MergedAnnual[])
   const sustainAvailable = sustainItems.length > 0;
   const sustainValue = sustainAvailable ? weightedAverage(sustainItems) : 0;
 
-  // Stability: debt + dividend growth
-  const debtScore = m.debtToEquity !== null ? (scoreMetric("debtToEquity", m.debtToEquity) ?? 0) : 0;
+  // Stability: Debt/OCF + dividend growth
+  const debtToOcf = computeDebtToOcfFromMerged(m);
+  const debtScore = debtToOcf !== null ? (scoreMetric("debtToOcf", debtToOcf) ?? 0) : 0;
   const divGrowth = scoreDividendGrowthFromMerged(m.fiscalYear, allAnnuals);
   const stabilityItems: { score: number; weight: number }[] = [];
-  if (m.debtToEquity !== null) stabilityItems.push({ score: debtScore, weight: 0.4 });
+  if (debtToOcf !== null) stabilityItems.push({ score: debtScore, weight: 0.4 });
   stabilityItems.push({ score: divGrowth, weight: 0.6 });
-  const stabilityAvailable = m.debtToEquity !== null;
+  const stabilityAvailable = debtToOcf !== null;
   const stabilityValue = weightedAverage(stabilityItems);
 
   const subScores: HistoricalSubScore[] = [
@@ -465,12 +503,13 @@ function scoreGrowthFull(m: MergedAnnual): HistoricalStrategyScore {
   const momentumAvailable = momentumItems.length > 0;
   const momentumValue = momentumAvailable ? weightedAverage(momentumItems) : 0;
 
-  // Profitability: margin + ROE
+  // Profitability: margin + ROIC
   const marginScore = m.operatingMargin !== null ? (scoreMetric("operatingMargin", m.operatingMargin * 100) ?? 0) : 0;
-  const roeScore = m.roe !== null ? (scoreMetric("roe", m.roe * 100) ?? 0) : 0;
+  const roic = computeRoicFromMerged(m);
+  const roicScore = roic !== null ? (scoreMetric("roic", roic * 100) ?? 0) : 0;
   const profitItems: { score: number; weight: number }[] = [];
   if (m.operatingMargin !== null) profitItems.push({ score: marginScore, weight: 0.5 });
-  if (m.roe !== null) profitItems.push({ score: roeScore, weight: 0.5 });
+  if (roic !== null) profitItems.push({ score: roicScore, weight: 0.5 });
   const profitAvailable = profitItems.length > 0;
   const profitValue = profitAvailable ? weightedAverage(profitItems) : 0;
 
@@ -517,12 +556,13 @@ function scoreLynchFull(m: MergedAnnual): HistoricalStrategyScore {
   const pegScore = m.peg !== null ? (scoreMetric("peg", m.peg) ?? 0) : 0;
   const valueAvailable = m.peg !== null;
 
-  // Quality: margin + debt/equity
+  // Quality: margin + Debt/OCF
   const marginScore = m.operatingMargin !== null ? (scoreMetric("operatingMargin", m.operatingMargin * 100) ?? 0) : 0;
-  const debtScore = m.debtToEquity !== null ? (scoreMetric("debtToEquity", m.debtToEquity) ?? 0) : 0;
+  const debtToOcf = computeDebtToOcfFromMerged(m);
+  const debtScore = debtToOcf !== null ? (scoreMetric("debtToOcf", debtToOcf) ?? 0) : 0;
   const qualityItems: { score: number; weight: number }[] = [];
   if (m.operatingMargin !== null) qualityItems.push({ score: marginScore, weight: 0.5 });
-  if (m.debtToEquity !== null) qualityItems.push({ score: debtScore, weight: 0.5 });
+  if (debtToOcf !== null) qualityItems.push({ score: debtScore, weight: 0.5 });
   const qualityAvailable = qualityItems.length > 0;
   const qualityValue = qualityAvailable ? weightedAverage(qualityItems) : 0;
 

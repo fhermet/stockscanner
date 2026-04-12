@@ -114,8 +114,20 @@ describe("Buffett historical scoring", () => {
     expect(buffett.total).toBeGreaterThan(70);
   });
 
-  it("returns 0 when all ratios are null", () => {
+  it("returns 0 when all data is null", () => {
     const annual = makeAnnual({
+      fundamentals: {
+        revenue: null,
+        net_income: null,
+        shareholders_equity: null,
+        total_debt: null,
+        eps_diluted: null,
+        dividends_paid: null,
+        operating_cash_flow: null,
+        capital_expenditure: null,
+        operating_income: null,
+        shares_outstanding: null,
+      },
       ratios: {
         roe: null,
         debt_to_equity: null,
