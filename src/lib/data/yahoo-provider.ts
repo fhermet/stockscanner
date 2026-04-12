@@ -269,7 +269,7 @@ async function fetchStock(ticker: string): Promise<Stock | undefined> {
       }
       // PER from current price / SEC EPS (more reliable than Yahoo trailing PE)
       if (per === null && currentPrice > 0 && f.eps_diluted !== null && f.eps_diluted > 0) {
-        // Only as fallback — Yahoo PER uses more recent earnings data
+        per = parseFloat((currentPrice / f.eps_diluted).toFixed(1));
       }
       // Dividend yield from SEC DPS / current price
       if (currentPrice > 0) {
