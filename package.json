@@ -10,7 +10,9 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "generate:indices": "npx tsx scripts/generate-sp500-tickers.ts",
-    "refresh": "bash scripts/refresh-data.sh"
+    "refresh": "bash scripts/refresh-data.sh",
+    "test:e2e": "npx playwright test",
+    "test:e2e:headed": "npx playwright test --headed"
   },
   "dependencies": {
     "next": "^15.1.0",
@@ -20,6 +22,7 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.5",
+    "@playwright/test": "^1.59.1",
     "@types/node": "^22.10.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
