@@ -14,7 +14,9 @@ const COMPLETE_STOCK: Stock = {
   per: 20,
   peg: 1.5,
   roe: 25,
+  roic: 25,
   debtToEquity: 0.5,
+  debtToOcf: 1.5,
   operatingMargin: 20,
   freeCashFlow: 5,
   revenueGrowth: 10,
@@ -60,17 +62,17 @@ describe("computeDataCompleteness with nullable fields", () => {
   const NULL_STOCK: Stock = {
     ...COMPLETE_STOCK,
     per: null,
-    roe: null,
+    roic: null,
     operatingMargin: null,
-    debtToEquity: null,
+    debtToOcf: null,
   };
 
   it("detects null fields as missing in buffett", () => {
     const result = computeDataCompleteness(NULL_STOCK, "buffett");
     expect(result.missing).toContain("PER");
-    expect(result.missing).toContain("ROE");
+    expect(result.missing).toContain("ROIC");
     expect(result.missing).toContain("marge operationnelle");
-    expect(result.missing).toContain("dette/capitaux");
+    expect(result.missing).toContain("dette/cash-flow");
   });
 
   it("treats zero PER as present (real value, not missing)", () => {

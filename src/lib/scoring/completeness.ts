@@ -28,9 +28,9 @@ const COMMON_METRICS: MetricCheck[] = [
 const STRATEGY_METRICS: Record<StrategyId, MetricCheck[]> = {
   buffett: [
     { name: "PER", test: (s) => s.per !== null },
-    { name: "ROE", test: (s) => s.roe !== null },
+    { name: "ROIC", test: (s) => s.roic !== null },
     { name: "marge operationnelle", test: (s) => s.operatingMargin !== null },
-    { name: "dette/capitaux", test: (s) => s.debtToEquity !== null },
+    { name: "dette/cash-flow", test: (s) => s.debtToOcf !== null, skipSectors: FINANCE_SECTORS },
     { name: "free cash flow", test: (s) => s.freeCashFlow !== null, skipSectors: FINANCE_SECTORS },
   ],
   lynch: [

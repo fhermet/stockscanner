@@ -20,16 +20,6 @@ interface MetricRule {
 
 const COMMON_RULES: MetricRule[] = [
   {
-    metric: "ROE",
-    getValue: (s) => s.roe,
-    format: (v) => `${v}%`,
-    thresholds: {
-      positive: { min: 20, text: "ROE excellent ({value}) : forte rentabilite" },
-      neutral: { min: 10, text: "ROE correct ({value})" },
-      negative: { text: "ROE faible ({value})" },
-    },
-  },
-  {
     metric: "Marge op.",
     getValue: (s) => s.operatingMargin,
     format: (v) => `${v}%`,
@@ -37,16 +27,6 @@ const COMMON_RULES: MetricRule[] = [
       positive: { min: 20, text: "Marge operationnelle solide ({value})" },
       neutral: { min: 10, text: "Marge operationnelle correcte ({value})" },
       negative: { text: "Marge operationnelle faible ({value})" },
-    },
-  },
-  {
-    metric: "Dette/Capitaux",
-    getValue: (s) => s.debtToEquity,
-    format: (v) => `${v}`,
-    thresholds: {
-      positive: { min: -Infinity, text: "Endettement maitrise (D/E: {value})" },
-      neutral: { min: 1.01, text: "Endettement modere (D/E: {value})" },
-      negative: { text: "Endettement eleve (D/E: {value})" },
     },
   },
   {
@@ -63,6 +43,16 @@ const COMMON_RULES: MetricRule[] = [
 const STRATEGY_RULES: Record<StrategyId, MetricRule[]> = {
   buffett: [
     {
+      metric: "ROIC",
+      getValue: (s) => s.roic,
+      format: (v) => `${v}%`,
+      thresholds: {
+        positive: { min: 15, text: "ROIC excellent ({value}) : capital bien investi" },
+        neutral: { min: 8, text: "ROIC correct ({value})" },
+        negative: { text: "ROIC faible ({value}) : rentabilite du capital insuffisante" },
+      },
+    },
+    {
       metric: "PER",
       getValue: (s) => s.per,
       format: (v) => `${v}`,
@@ -70,6 +60,16 @@ const STRATEGY_RULES: Record<StrategyId, MetricRule[]> = {
         positive: { min: -Infinity, text: "Valorisation attractive (PER: {value})" },
         neutral: { min: 21, text: "Valorisation raisonnable (PER: {value})" },
         negative: { text: "Valorisation elevee (PER: {value})" },
+      },
+    },
+    {
+      metric: "Dette/Cash-flow",
+      getValue: (s) => s.debtToOcf,
+      format: (v) => `${v}x`,
+      thresholds: {
+        positive: { min: -Infinity, text: "Endettement maitrise ({value} annees de cash-flow)" },
+        neutral: { min: 4.01, text: "Endettement modere ({value} annees de cash-flow)" },
+        negative: { text: "Endettement eleve ({value} annees de cash-flow)" },
       },
     },
   ],
@@ -92,6 +92,16 @@ const STRATEGY_RULES: Record<StrategyId, MetricRule[]> = {
         positive: { min: 15, text: "Croissance des benefices forte ({value})" },
         neutral: { min: 5, text: "Croissance des benefices moderee ({value})" },
         negative: { text: "Croissance des benefices faible ({value})" },
+      },
+    },
+    {
+      metric: "Dette/Capitaux",
+      getValue: (s) => s.debtToEquity,
+      format: (v) => `${v}`,
+      thresholds: {
+        positive: { min: -Infinity, text: "Endettement maitrise (D/E: {value})" },
+        neutral: { min: 1.01, text: "Endettement modere (D/E: {value})" },
+        negative: { text: "Endettement eleve (D/E: {value})" },
       },
     },
   ],

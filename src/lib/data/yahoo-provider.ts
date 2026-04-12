@@ -194,7 +194,9 @@ async function fetchStock(ticker: string): Promise<Stock | undefined> {
 
     // Start with null for all fundamentals — SEC fills them, Yahoo is last resort
     let roe: number | null = null;
+    let roic: number | null = null;
     let debtToEquity: number | null = null;
+    let debtToOcf: number | null = null;
     let operatingMargin: number | null = null;
     let freeCashFlow: number | null = null;
     let revenueGrowth: number | null = null;
@@ -241,6 +243,20 @@ async function fetchStock(ticker: string): Promise<Stock | undefined> {
       }
       if (r.free_cash_flow !== null) {
         freeCashFlow = parseFloat((r.free_cash_flow / 1_000_000_000).toFixed(1));
+      }
+      // ROIC = Net Income / Invested Capital (equity + debt)
+      // Works even when equity is negative (MCD, SBUX, HD)
+      if (f.net_income !== null) {
+        const equity = f.shareholders_equity ?? 0;
+        const debt = f.total_debt ?? 0;
+        const investedCapital = equity + debt;
+        if (investedCapital > 0) {
+          roic = parseFloat(((f.net_income / investedCapital) * 100).toFixed(1));
+        }
+      }
+      // Debt/OCF = years of operating cash flow to repay all debt
+      if (f.total_debt !== null && f.operating_cash_flow !== null && f.operating_cash_flow > 0) {
+        debtToOcf = parseFloat((f.total_debt / f.operating_cash_flow).toFixed(1));
       }
       if (r.revenue_growth !== null) {
         revenueGrowth = parseFloat((r.revenue_growth * 100).toFixed(1));
@@ -326,7 +342,9 @@ async function fetchStock(ticker: string): Promise<Stock | undefined> {
       per,
       peg,
       roe,
+      roic,
       debtToEquity,
+      debtToOcf,
       operatingMargin,
       freeCashFlow,
       revenueGrowth,
