@@ -3,6 +3,8 @@ import { computeWeightedTotal } from "./utils";
 import { generateExplanations } from "./explain";
 import { computeDataCompleteness, computeConfidence } from "./completeness";
 import { applyBuffettPreFilters } from "./pre-filters";
+import { computeDynamicBenchmarks } from "./dynamic-benchmarks";
+import { setDynamicBenchmarks } from "./sector-benchmarks";
 
 /**
  * Interface que chaque strategie doit implementer.
@@ -82,6 +84,10 @@ export async function scoreAndRankStocks(
   stocks: readonly Stock[],
   strategyId: StrategyId
 ): Promise<ScoredStock[]> {
+  // Compute and activate dynamic sector benchmarks from the loaded universe
+  const dynamicBenchmarks = computeDynamicBenchmarks(stocks);
+  setDynamicBenchmarks(dynamicBenchmarks);
+
   const scored: ScoredStock[] = stocks.map((stock) => ({
     stock,
     score: scoreStock(stock, strategyId),

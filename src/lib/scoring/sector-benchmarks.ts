@@ -19,7 +19,11 @@ export interface SectorBenchmark {
   readonly priceToFcf: number;
 }
 
-export const SECTOR_BENCHMARKS: Record<string, SectorBenchmark> = {
+/**
+ * Static fallback benchmarks — used when dynamic computation is unavailable
+ * or when a sector has too few stocks for a reliable median.
+ */
+export const STATIC_SECTOR_BENCHMARKS: Record<string, SectorBenchmark> = {
   Technologie: {
     operatingMargin: 25,
     revenueGrowth: 12,
@@ -140,8 +144,36 @@ const DEFAULT_BENCHMARK: SectorBenchmark = {
   priceToFcf: 20,
 };
 
+// --- Dynamic benchmarks (computed from actual stock universe) ---
+
+let dynamicBenchmarks: Record<string, SectorBenchmark> | null = null;
+
+/**
+ * Set dynamic benchmarks computed from the loaded stock universe.
+ * Call this before scoring. Pass null to revert to static benchmarks.
+ */
+export function setDynamicBenchmarks(
+  benchmarks: Record<string, SectorBenchmark> | null,
+): void {
+  dynamicBenchmarks = benchmarks;
+}
+
+/**
+ * Get the current dynamic benchmarks (or null if not set).
+ * Useful for debugging / UI display.
+ */
+export function getDynamicBenchmarks(): Record<string, SectorBenchmark> | null {
+  return dynamicBenchmarks;
+}
+
+/**
+ * Returns the benchmark for a given sector.
+ * Priority: dynamic (computed from universe) → static (hardcoded) → default.
+ */
 export function getSectorBenchmark(sector: string): SectorBenchmark {
-  return SECTOR_BENCHMARKS[sector] ?? DEFAULT_BENCHMARK;
+  return dynamicBenchmarks?.[sector]
+    ?? STATIC_SECTOR_BENCHMARKS[sector]
+    ?? DEFAULT_BENCHMARK;
 }
 
 /**
