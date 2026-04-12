@@ -1,6 +1,6 @@
 /**
  * Auto-generated from SEC pipeline manifest
- * Last updated: 2026-04-11
+ * Last updated: 2026-04-12
  * Total: 93 tickers
  *
  * Run: npx tsx scripts/generate-sp500-tickers.ts

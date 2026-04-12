@@ -207,7 +207,6 @@ describe("mergeHistory", () => {
     const y2024 = merged.annuals[1];
 
     expect(y2024.revenue).toBe(245000000000);
-    expect(y2024.roe).toBe(0.43);
     expect(y2024.operatingMargin).toBe(0.45);
     expect(y2024.freeCashFlow).toBe(74000000000);
   });

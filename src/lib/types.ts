@@ -18,9 +18,7 @@ export interface Stock {
   readonly price: number; // local currency
   readonly per: number | null;
   readonly peg: number | null;
-  readonly roe: number | null; // percentage
   readonly roic: number | null; // percentage — Return on Invested Capital
-  readonly debtToEquity: number | null; // ratio
   readonly debtToOcf: number | null; // ratio — Total Debt / Operating Cash Flow
   readonly operatingMargin: number | null; // percentage
   readonly freeCashFlow: number | null; // in billions

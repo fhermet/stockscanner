@@ -27,8 +27,6 @@ export interface MergedAnnual {
   readonly sharesOutstanding: number | null;
 
   // SEC ratios (pass-through)
-  readonly roe: number | null;
-  readonly debtToEquity: number | null;
   readonly revenueGrowth: number | null;
   readonly epsGrowth: number | null;
   readonly freeCashFlow: number | null;
@@ -88,8 +86,6 @@ export function mergeHistory(
       operatingIncome: sec.fundamentals.operating_income,
       sharesOutstanding: sec.fundamentals.shares_outstanding,
 
-      roe: sec.ratios.roe,
-      debtToEquity: sec.ratios.debt_to_equity,
       revenueGrowth: sec.ratios.revenue_growth,
       epsGrowth: sec.ratios.eps_growth,
       freeCashFlow: sec.ratios.free_cash_flow,

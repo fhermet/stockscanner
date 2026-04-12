@@ -46,14 +46,6 @@ const METRICS: readonly MetricConfig[] = [
     color: "#8b5cf6",
   },
   {
-    key: "roe",
-    label: "ROE",
-    labelShort: "ROE",
-    format: (a) => formatPercent(a.ratios.roe),
-    values: (a) => a.ratios.roe,
-    color: "#6366f1",
-  },
-  {
     key: "operating_margin",
     label: "Marge opérationnelle",
     labelShort: "Marge op.",
@@ -76,14 +68,6 @@ const METRICS: readonly MetricConfig[] = [
     format: (a) => formatRatio(computeDebtToOcf(a)),
     values: (a) => computeDebtToOcf(a),
     color: "#f43f5e",
-  },
-  {
-    key: "debt_to_equity",
-    label: "Dette / Capitaux propres",
-    labelShort: "D/E",
-    format: (a) => formatRatio(a.ratios.debt_to_equity),
-    values: (a) => a.ratios.debt_to_equity,
-    color: "#ef4444",
   },
 ];
 

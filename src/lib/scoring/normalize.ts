@@ -52,11 +52,9 @@ export function normalizeOptimalRange(
 // --- Presets de normalisation par metrique ---
 
 export const METRIC_RANGES = {
-  roe: { min: 0, max: 40 },
   roic: { min: 0, max: 30 }, // 30%+ ROIC = world class (Buffett standard)
   operatingMargin: { min: 0, max: 40 },
   fcfYield: { min: 0, max: 10 },
-  debtToEquity: { min: 3, max: 0 }, // inverse: bas = bon
   debtToOcf: { min: 10, max: 0 }, // inverse: bas = bon (years to repay)
   per: { min: 50, max: 10 }, // inverse: bas = bon
   peg: { min: 4, max: 0.5 }, // inverse: bas = bon

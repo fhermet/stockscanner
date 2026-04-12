@@ -308,8 +308,6 @@ function makeMergedHistory(overrides: Partial<MergedHistory["annuals"][0]>[] = [
     capitalExpenditure: 44000000000,
     operatingIncome: 109000000000,
     sharesOutstanding: 7400000000,
-    roe: 0.43,
-    debtToEquity: 0.29,
     revenueGrowth: 0.16,
     epsGrowth: 0.22,
     freeCashFlow: 74000000000,

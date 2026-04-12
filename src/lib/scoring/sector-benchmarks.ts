@@ -5,14 +5,12 @@
  * Le scoring peut ajuster un score brut en tenant compte de la
  * position relative d'une action dans son secteur.
  *
- * Approche : si le ROE d'une banque est 15%, c'est bon pour une banque
+ * Approche : si la marge op. d'une banque est 35%, c'est bon pour une banque
  * mais mediocre pour du tech. Les benchmarks permettent cette nuance.
  */
 
 export interface SectorBenchmark {
-  readonly roe: number;
   readonly operatingMargin: number;
-  readonly debtToEquity: number;
   readonly revenueGrowth: number;
   readonly epsGrowth: number;
   readonly per: number;
@@ -21,108 +19,84 @@ export interface SectorBenchmark {
 
 export const SECTOR_BENCHMARKS: Record<string, SectorBenchmark> = {
   Technologie: {
-    roe: 25,
     operatingMargin: 25,
-    debtToEquity: 0.5,
     revenueGrowth: 12,
     epsGrowth: 15,
     per: 30,
     dividendYield: 0.8,
   },
   Sante: {
-    roe: 18,
     operatingMargin: 20,
-    debtToEquity: 0.8,
     revenueGrowth: 6,
     epsGrowth: 8,
     per: 18,
     dividendYield: 2.0,
   },
   Finance: {
-    roe: 14,
     operatingMargin: 35,
-    debtToEquity: 1.5,
     revenueGrowth: 7,
     epsGrowth: 8,
     per: 14,
     dividendYield: 2.5,
   },
   "Consommation de base": {
-    roe: 22,
     operatingMargin: 15,
-    debtToEquity: 1.0,
     revenueGrowth: 4,
     epsGrowth: 6,
     per: 24,
     dividendYield: 2.8,
   },
   "Consommation cyclique": {
-    roe: 30,
     operatingMargin: 18,
-    debtToEquity: 2.0,
     revenueGrowth: 5,
     epsGrowth: 8,
     per: 22,
     dividendYield: 2.0,
   },
   Telecom: {
-    roe: 12,
     operatingMargin: 20,
-    debtToEquity: 1.3,
     revenueGrowth: 2,
     epsGrowth: 3,
     per: 12,
     dividendYield: 4.5,
   },
   Immobilier: {
-    roe: 5,
     operatingMargin: 30,
-    debtToEquity: 0.8,
     revenueGrowth: 10,
     epsGrowth: 5,
     per: 40,
     dividendYield: 4.0,
   },
   Automobile: {
-    roe: 15,
     operatingMargin: 10,
-    debtToEquity: 0.8,
     revenueGrowth: 10,
     epsGrowth: 15,
     per: 25,
     dividendYield: 0.5,
   },
   Industrie: {
-    roe: 20,
     operatingMargin: 14,
-    debtToEquity: 1.0,
     revenueGrowth: 6,
     epsGrowth: 10,
     per: 22,
     dividendYield: 1.5,
   },
   Energie: {
-    roe: 18,
     operatingMargin: 15,
-    debtToEquity: 0.4,
     revenueGrowth: 3,
     epsGrowth: 5,
     per: 12,
     dividendYield: 3.5,
   },
   "Services publics": {
-    roe: 10,
     operatingMargin: 20,
-    debtToEquity: 1.5,
     revenueGrowth: 3,
     epsGrowth: 4,
     per: 18,
     dividendYield: 3.5,
   },
   Materiaux: {
-    roe: 14,
     operatingMargin: 12,
-    debtToEquity: 0.6,
     revenueGrowth: 4,
     epsGrowth: 6,
     per: 16,
@@ -131,9 +105,7 @@ export const SECTOR_BENCHMARKS: Record<string, SectorBenchmark> = {
 };
 
 const DEFAULT_BENCHMARK: SectorBenchmark = {
-  roe: 15,
   operatingMargin: 15,
-  debtToEquity: 1.0,
   revenueGrowth: 8,
   epsGrowth: 10,
   per: 20,

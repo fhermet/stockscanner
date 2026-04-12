@@ -60,11 +60,11 @@ describe("normalizeOptimalRange", () => {
 });
 
 describe("scoreMetric", () => {
-  it("scores ROE correctly", () => {
-    expect(scoreMetric("roe", 0)).toBe(0);
-    expect(scoreMetric("roe", 20)).toBe(50);
-    expect(scoreMetric("roe", 40)).toBe(100);
-    expect(scoreMetric("roe", 80)).toBe(100); // clamped
+  it("scores ROIC correctly", () => {
+    expect(scoreMetric("roic", 0)).toBe(0);
+    expect(scoreMetric("roic", 15)).toBe(50);
+    expect(scoreMetric("roic", 30)).toBe(100);
+    expect(scoreMetric("roic", 60)).toBe(100); // clamped
   });
 
   it("scores PER inversely (low = good)", () => {
@@ -73,24 +73,24 @@ describe("scoreMetric", () => {
     expect(lowPER).toBeGreaterThan(highPER);
   });
 
-  it("scores debtToEquity inversely", () => {
-    const lowDebt = scoreMetric("debtToEquity", 0.2)!;
-    const highDebt = scoreMetric("debtToEquity", 2.5)!;
+  it("scores debtToOcf inversely", () => {
+    const lowDebt = scoreMetric("debtToOcf", 1.0)!;
+    const highDebt = scoreMetric("debtToOcf", 8.0)!;
     expect(lowDebt).toBeGreaterThan(highDebt);
   });
 });
 
 describe("scoreMetric with null", () => {
   it("returns null when value is null", () => {
-    expect(scoreMetric("roe", null)).toBeNull();
+    expect(scoreMetric("roic", null)).toBeNull();
     expect(scoreMetric("per", null)).toBeNull();
     expect(scoreMetric("peg", null)).toBeNull();
     expect(scoreMetric("dividendYield", null)).toBeNull();
   });
 
   it("still scores valid numbers correctly", () => {
-    expect(scoreMetric("roe", 20)).toBe(50);
-    expect(scoreMetric("roe", 40)).toBe(100);
-    expect(scoreMetric("roe", 0)).toBe(0);
+    expect(scoreMetric("roic", 15)).toBe(50);
+    expect(scoreMetric("roic", 30)).toBe(100);
+    expect(scoreMetric("roic", 0)).toBe(0);
   });
 });

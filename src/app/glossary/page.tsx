@@ -4,7 +4,7 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "Glossaire — Définitions des métriques financières",
   description:
-    "Définitions précises de toutes les métriques utilisées dans StockScanner : PER, PEG, ROE, marge opérationnelle, free cash flow, payout ratio, et plus.",
+    "Définitions précises de toutes les métriques utilisées dans StockScanner : PER, PEG, ROIC, marge opérationnelle, free cash flow, payout ratio, et plus.",
   alternates: { canonical: "/glossary" },
 };
 
@@ -98,22 +98,6 @@ const METRICS: readonly MetricDefinition[] = [
       "Un ROIC supérieur à 15% est considéré excellent. Contrairement au ROE, le ROIC n'est pas gonflé artificiellement par un levier financier élevé.",
   },
   {
-    id: "roe",
-    name: "ROE (Return on Equity)",
-    nameEn: "Return on Equity",
-    category: "profitability",
-    formula: "ROE = Résultat net / Capitaux propres × 100",
-    unit: "Pourcentage (%)",
-    interpretation:
-      "Mesure la rentabilité des fonds investis par les actionnaires. Un ROE élevé signifie que l'entreprise génère beaucoup de profit par rapport à ses capitaux propres. Utilisé dans les stratégies Growth et Lynch.",
-    example:
-      "Résultat net : 88 Mds$, Capitaux propres : 206 Mds$ → ROE = 42.7%. Excellent pour une entreprise tech.",
-    usedIn: [],
-    source: "SEC/EDGAR (fundamentals_annual).",
-    warning:
-      "Un ROE très élevé peut résulter de capitaux propres faibles (effet de levier) ou négatifs (buybacks). Pour la stratégie Buffett, le ROIC est préféré car il évite ces distorsions.",
-  },
-  {
     id: "operating-margin",
     name: "Marge opérationnelle",
     nameEn: "Operating Margin",
@@ -188,22 +172,6 @@ const METRICS: readonly MetricDefinition[] = [
     source: "SEC/EDGAR (total_debt / operating_cash_flow).",
     warning:
       "Non applicable aux entreprises financières (banques, assurances) dont le cash-flow opérationnel inclut les mouvements de dépôts et prêts.",
-  },
-  {
-    id: "debt-to-equity",
-    name: "Dette / Capitaux propres (Debt-to-Equity)",
-    nameEn: "Debt-to-Equity Ratio",
-    category: "solvency",
-    formula: "D/E = Dette totale / Capitaux propres",
-    unit: "Ratio (sans unité)",
-    interpretation:
-      "Mesure le levier financier de l'entreprise. Un ratio bas (< 0.5) signifie que l'entreprise est peu endettée. Un ratio élevé (> 1.5) signifie qu'elle est financée davantage par la dette que par les capitaux propres, ce qui augmente le risque.",
-    example:
-      "Dette : 60 Mds$, Capitaux propres : 206 Mds$ → D/E = 0.29. Très sain.",
-    usedIn: [],
-    source: "SEC/EDGAR (total_debt / shareholders_equity).",
-    warning:
-      "Non calculable quand les capitaux propres sont négatifs (buybacks massifs). Toutes les stratégies utilisent Debt/OCF à la place.",
   },
   // --- Cash flow ---
   {

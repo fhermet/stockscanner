@@ -13,9 +13,7 @@ const COMPLETE_STOCK: Stock = {
   price: 50,
   per: 20,
   peg: 1.5,
-  roe: 25,
   roic: 25,
-  debtToEquity: 0.5,
   debtToOcf: 1.5,
   operatingMargin: 20,
   freeCashFlow: 5,
@@ -32,9 +30,7 @@ const COMPLETE_STOCK: Stock = {
 const PARTIAL_STOCK: Stock = {
   ...COMPLETE_STOCK,
   per: null,
-  roe: null,
   operatingMargin: null,
-  debtToEquity: null,
 };
 
 describe("computeDataCompleteness", () => {

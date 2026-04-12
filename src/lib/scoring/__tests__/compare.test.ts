@@ -21,9 +21,7 @@ function makeScoredStock(
       price: 100,
       per: 25,
       peg: 1.5,
-      roe: 20,
       roic: 25,
-      debtToEquity: 0.5,
       debtToOcf: 1.5,
       operatingMargin: 25,
       freeCashFlow: 10,
@@ -113,7 +111,7 @@ describe("compareStocks", () => {
     const result = compareStocks([MSFT, AAPL], "buffett");
     expect(result.winner?.ticker).toBe("MSFT");
     expect(result.subScoreComparison.length).toBe(3);
-    expect(result.metricComparison.length).toBe(11);
+    expect(result.metricComparison.length).toBe(9);
   });
 
   it("handles edge case: stocks with identical scores", () => {
@@ -152,7 +150,7 @@ describe("N/A and missing data handling", () => {
       { name: "quality", value: 60, label: "Q", weight: 0.4 },
       { name: "strength", value: 50, label: "S", weight: 0.3 },
       { name: "valuation", value: 40, label: "V", weight: 0.3 },
-    ], { per: 0, roe: 0 }); // PER=0, ROE=0 → treated as N/A
+    ], { per: 0 }); // PER=0 → treated as N/A
 
     const result = compareStocks([MSFT, withNA], "buffett");
 
@@ -173,10 +171,10 @@ describe("N/A and missing data handling", () => {
   });
 
   it("generates warning when many metrics are partial", () => {
-    // per=0 and roe=0 are N/A (zeroIsNA), debtToEquity and fcf use NaN for truly missing
+    // per=0 is N/A (zeroIsNA), fcf uses NaN for truly missing
     const incomplete = makeScoredStock("INC", "Incomplete", 40, [
       { name: "quality", value: 40, label: "Q", weight: 1 },
-    ], { per: 0, roe: 0, debtToEquity: NaN, freeCashFlow: NaN });
+    ], { per: 0, freeCashFlow: NaN, roic: 0 });
 
     const result = compareStocks([MSFT, incomplete], "buffett");
     expect(result.warnings.length).toBeGreaterThan(0);
