@@ -136,6 +136,15 @@ export class CachedDataProvider implements DataProvider {
       });
   }
 
+  /**
+   * Check whether cached stock data exists for the given filters.
+   * Does not trigger a fetch — purely a cache probe.
+   */
+  hasCachedStocks(filters?: StockFilters): boolean {
+    const key = `stocks:${JSON.stringify(filters ?? {})}`;
+    return this.cache.has(key);
+  }
+
   async getStocks(filters?: StockFilters): Promise<readonly Stock[]> {
     const key = `stocks:${JSON.stringify(filters ?? {})}`;
     const cached = this.getEntry<readonly Stock[]>(key, this.config.stocksTTL);

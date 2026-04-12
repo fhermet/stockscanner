@@ -14,9 +14,9 @@ import { UNIVERSE_SIZE } from "@/lib/tickers";
 import { getIndexById, isValidIndexId } from "@/lib/indices";
 
 // Singleton cache: one provider per index, persists across requests
-const indexProviders = new Map<string, DataProvider>();
+const indexProviders = new Map<string, CachedDataProvider>();
 
-function getIndexProvider(indexId: string, tickers: readonly string[]): DataProvider {
+function getIndexProvider(indexId: string, tickers: readonly string[]): CachedDataProvider {
   const existing = indexProviders.get(indexId);
   if (existing) return existing;
 
@@ -28,6 +28,9 @@ function getIndexProvider(indexId: string, tickers: readonly string[]): DataProv
   indexProviders.set(indexId, provider);
   return provider;
 }
+
+// Mock provider singleton for instant Phase 1 responses
+const mockProvider = new MockDataProvider();
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
@@ -53,9 +56,23 @@ export async function GET(request: NextRequest) {
       name: indexDef.name,
       theoreticalCount: indexDef.theoreticalCount,
     };
-    provider = getIndexProvider(indexParam, indexDef.tickers);
+    const cachedProvider = getIndexProvider(indexParam, indexDef.tickers);
+
+    // Phase 1 (quick): serve cache if available, otherwise mock data.
+    // Never block on Yahoo for Phase 1 — the user sees instant results
+    // while Phase 2 fetches live data in the background.
+    if (isQuick && !cachedProvider.hasCachedStocks()) {
+      provider = mockProvider;
+    } else {
+      provider = cachedProvider;
+    }
   } else {
-    provider = getDataProvider();
+    const defaultProvider = getDataProvider();
+    if (isQuick && defaultProvider instanceof CachedDataProvider && !defaultProvider.hasCachedStocks()) {
+      provider = mockProvider;
+    } else {
+      provider = defaultProvider;
+    }
   }
 
   const filters: StockFilters = {
