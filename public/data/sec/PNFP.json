@@ -1,0 +1,39 @@
+{
+  "ticker": "PNFP",
+  "company_name": "Pinnacle Financial Partners, Inc.",
+  "cik": "0002082866",
+  "schema_version": "1.0",
+  "last_updated": "2026-04-12",
+  "annuals": [
+    {
+      "fiscal_year": 2025,
+      "fundamentals": {
+        "revenue": 2795632000.0,
+        "net_income": 641865000.0,
+        "shareholders_equity": 7043715000.0,
+        "total_debt": 0.0,
+        "eps_diluted": 8.07,
+        "dividends_paid": 74662000.0,
+        "operating_cash_flow": 759008000.0,
+        "capital_expenditure": 79926000.0,
+        "operating_income": 779878000.0,
+        "shares_outstanding": 77688626.0
+      },
+      "ratios": {
+        "roe": 0.091126,
+        "debt_to_equity": 0.0,
+        "revenue_growth": null,
+        "eps_growth": null,
+        "free_cash_flow": 679082000.0,
+        "payout_ratio": 0.11632,
+        "operating_margin": 0.278963
+      },
+      "completeness": {
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
+      }
+    }
+  ]
+}

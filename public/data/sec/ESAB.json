@@ -1,0 +1,129 @@
+{
+  "ticker": "ESAB",
+  "company_name": "ESAB Corp",
+  "cik": "0001877322",
+  "schema_version": "1.0",
+  "last_updated": "2026-04-12",
+  "annuals": [
+    {
+      "fiscal_year": 2022,
+      "fundamentals": {
+        "revenue": 2593480000.0,
+        "net_income": 223747000.0,
+        "shareholders_equity": 1350207000.0,
+        "total_debt": 1218643000.0,
+        "eps_diluted": 3.69,
+        "dividends_paid": 6054000.0,
+        "operating_cash_flow": 214358000.0,
+        "capital_expenditure": 40243000.0,
+        "operating_income": 329065000.0,
+        "shares_outstanding": 60153059000.0
+      },
+      "ratios": {
+        "roe": 0.165713,
+        "debt_to_equity": 0.90256,
+        "revenue_growth": null,
+        "eps_growth": null,
+        "free_cash_flow": 174115000.0,
+        "payout_ratio": 0.027057,
+        "operating_margin": 0.126882
+      },
+      "completeness": {
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
+      }
+    },
+    {
+      "fiscal_year": 2023,
+      "fundamentals": {
+        "revenue": 2774766000.0,
+        "net_income": 205285000.0,
+        "shareholders_equity": 1607399000.0,
+        "total_debt": 1018057000.0,
+        "eps_diluted": 3.36,
+        "dividends_paid": 13342000.0,
+        "operating_cash_flow": 330494000.0,
+        "capital_expenditure": 48178000.0,
+        "operating_income": 404166000.0,
+        "shares_outstanding": 60655746.0
+      },
+      "ratios": {
+        "roe": 0.138818,
+        "debt_to_equity": 0.633357,
+        "revenue_growth": 0.069901,
+        "eps_growth": -0.082513,
+        "free_cash_flow": 282316000.0,
+        "payout_ratio": 0.064993,
+        "operating_margin": 0.145658
+      },
+      "completeness": {
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
+      }
+    },
+    {
+      "fiscal_year": 2024,
+      "fundamentals": {
+        "revenue": 2740803000.0,
+        "net_income": 264842000.0,
+        "shareholders_equity": 1769004000.0,
+        "total_debt": 1085000000.0,
+        "eps_diluted": 4.31,
+        "dividends_paid": 16992000.0,
+        "operating_cash_flow": 355399000.0,
+        "capital_expenditure": 51779000.0,
+        "operating_income": 447450000.0,
+        "shares_outstanding": 61102063.0
+      },
+      "ratios": {
+        "roe": 0.156878,
+        "debt_to_equity": 0.613339,
+        "revenue_growth": -0.01224,
+        "eps_growth": 0.290119,
+        "free_cash_flow": 303620000.0,
+        "payout_ratio": 0.064159,
+        "operating_margin": 0.163255
+      },
+      "completeness": {
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
+      }
+    },
+    {
+      "fiscal_year": 2025,
+      "fundamentals": {
+        "revenue": 2842555000.0,
+        "net_income": 226766000.0,
+        "shareholders_equity": 2166040000.0,
+        "total_debt": 1243215000.0,
+        "eps_diluted": 3.67,
+        "dividends_paid": 21913000.0,
+        "operating_cash_flow": 260567000.0,
+        "capital_expenditure": 47287000.0,
+        "operating_income": 412170000.0,
+        "shares_outstanding": 61266294.0
+      },
+      "ratios": {
+        "roe": 0.115255,
+        "debt_to_equity": 0.573958,
+        "revenue_growth": 0.037125,
+        "eps_growth": -0.143769,
+        "free_cash_flow": 213280000.0,
+        "payout_ratio": 0.096633,
+        "operating_margin": 0.145
+      },
+      "completeness": {
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
+      }
+    }
+  ]
+}

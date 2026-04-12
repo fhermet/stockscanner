@@ -1,0 +1,169 @@
+{
+  "ticker": "RYAN",
+  "company_name": "RYAN SPECIALTY HOLDINGS, INC.",
+  "cik": "0001849253",
+  "schema_version": "1.0",
+  "last_updated": "2026-04-12",
+  "annuals": [
+    {
+      "fiscal_year": 2021,
+      "fundamentals": {
+        "revenue": 1432179000.0,
+        "net_income": 65873000.0,
+        "shareholders_equity": 594777000.0,
+        "total_debt": 1590096000.0,
+        "eps_diluted": null,
+        "dividends_paid": 0.0,
+        "operating_cash_flow": 273493000.0,
+        "capital_expenditure": 343158000.0,
+        "operating_income": 186624000.0,
+        "shares_outstanding": null
+      },
+      "ratios": {
+        "roe": 0.110752,
+        "debt_to_equity": 2.673432,
+        "revenue_growth": null,
+        "eps_growth": null,
+        "free_cash_flow": -69665000.0,
+        "payout_ratio": 0.0,
+        "operating_margin": 0.130308
+      },
+      "completeness": {
+        "present_field_count": 7,
+        "missing_field_count": 1,
+        "missing_field_names": [
+          "eps_diluted"
+        ],
+        "completeness_ratio": 0.875
+      }
+    },
+    {
+      "fiscal_year": 2022,
+      "fundamentals": {
+        "revenue": 1711861000.0,
+        "net_income": 61052000.0,
+        "shareholders_equity": 817812000.0,
+        "total_debt": 1976769000.0,
+        "eps_diluted": null,
+        "dividends_paid": 0.0,
+        "operating_cash_flow": 335514000.0,
+        "capital_expenditure": 7714000.0,
+        "operating_income": 289508000.0,
+        "shares_outstanding": null
+      },
+      "ratios": {
+        "roe": 0.08644,
+        "debt_to_equity": 2.417144,
+        "revenue_growth": 0.195284,
+        "eps_growth": -0.073186,
+        "free_cash_flow": 327800000.0,
+        "payout_ratio": 0.0,
+        "operating_margin": 0.169119
+      },
+      "completeness": {
+        "present_field_count": 7,
+        "missing_field_count": 1,
+        "missing_field_names": [
+          "eps_diluted"
+        ],
+        "completeness_ratio": 0.875
+      }
+    },
+    {
+      "fiscal_year": 2023,
+      "fundamentals": {
+        "revenue": 2026596000.0,
+        "net_income": 61037000.0,
+        "shareholders_equity": 559754000.0,
+        "total_debt": 1970999000.0,
+        "eps_diluted": null,
+        "dividends_paid": 0.0,
+        "operating_cash_flow": 477203000.0,
+        "capital_expenditure": 0.0,
+        "operating_income": 359081000.0,
+        "shares_outstanding": null
+      },
+      "ratios": {
+        "roe": 0.088616,
+        "debt_to_equity": 3.521188,
+        "revenue_growth": 0.183855,
+        "eps_growth": -0.000246,
+        "free_cash_flow": 477203000.0,
+        "payout_ratio": 0.0,
+        "operating_margin": 0.177184
+      },
+      "completeness": {
+        "present_field_count": 7,
+        "missing_field_count": 1,
+        "missing_field_names": [
+          "eps_diluted"
+        ],
+        "completeness_ratio": 0.875
+      }
+    },
+    {
+      "fiscal_year": 2024,
+      "fundamentals": {
+        "revenue": 2455671000.0,
+        "net_income": 94665000.0,
+        "shareholders_equity": 627662000.0,
+        "total_debt": 3276997000.0,
+        "eps_diluted": null,
+        "dividends_paid": 80200000.0,
+        "operating_cash_flow": 514868000.0,
+        "capital_expenditure": 0.0,
+        "operating_income": 427812000.0,
+        "shares_outstanding": null
+      },
+      "ratios": {
+        "roe": 0.159447,
+        "debt_to_equity": 5.220958,
+        "revenue_growth": 0.211722,
+        "eps_growth": 0.550945,
+        "free_cash_flow": 514868000.0,
+        "payout_ratio": 0.847198,
+        "operating_margin": 0.174214
+      },
+      "completeness": {
+        "present_field_count": 7,
+        "missing_field_count": 1,
+        "missing_field_names": [
+          "eps_diluted"
+        ],
+        "completeness_ratio": 0.875
+      }
+    },
+    {
+      "fiscal_year": 2025,
+      "fundamentals": {
+        "revenue": 2994582000.0,
+        "net_income": 63399000.0,
+        "shareholders_equity": 648073000.0,
+        "total_debt": 3346276000.0,
+        "eps_diluted": null,
+        "dividends_paid": 61000000.0,
+        "operating_cash_flow": 643667000.0,
+        "capital_expenditure": 3014000.0,
+        "operating_income": 493640000.0,
+        "shares_outstanding": null
+      },
+      "ratios": {
+        "roe": 0.099392,
+        "debt_to_equity": 5.163424,
+        "revenue_growth": 0.219456,
+        "eps_growth": -0.33028,
+        "free_cash_flow": 640653000.0,
+        "payout_ratio": 0.96216,
+        "operating_margin": 0.164844
+      },
+      "completeness": {
+        "present_field_count": 7,
+        "missing_field_count": 1,
+        "missing_field_names": [
+          "eps_diluted"
+        ],
+        "completeness_ratio": 0.875
+      }
+    }
+  ]
+}

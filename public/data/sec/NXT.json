@@ -1,0 +1,99 @@
+{
+  "ticker": "NXT",
+  "company_name": "Nextpower Inc.",
+  "cik": "0001852131",
+  "schema_version": "1.0",
+  "last_updated": "2026-04-12",
+  "annuals": [
+    {
+      "fiscal_year": 2023,
+      "fundamentals": {
+        "revenue": 1902137000.0,
+        "net_income": 1143000.0,
+        "shareholders_equity": -3075767000.0,
+        "total_debt": 150000000.0,
+        "eps_diluted": 0.02,
+        "dividends_paid": 0.0,
+        "operating_cash_flow": 107669000.0,
+        "capital_expenditure": 3183000.0,
+        "operating_income": 168485000.0,
+        "shares_outstanding": 145851637.0
+      },
+      "ratios": {
+        "roe": null,
+        "debt_to_equity": null,
+        "revenue_growth": null,
+        "eps_growth": null,
+        "free_cash_flow": 104486000.0,
+        "payout_ratio": 0.0,
+        "operating_margin": 0.088577
+      },
+      "completeness": {
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
+      }
+    },
+    {
+      "fiscal_year": 2024,
+      "fundamentals": {
+        "revenue": 2499841000.0,
+        "net_income": 306241000.0,
+        "shareholders_equity": 961013000.0,
+        "total_debt": 150000000.0,
+        "eps_diluted": 3.37,
+        "dividends_paid": 0.0,
+        "operating_cash_flow": 428973000.0,
+        "capital_expenditure": 6160000.0,
+        "operating_income": 587118000.0,
+        "shares_outstanding": 147284330.0
+      },
+      "ratios": {
+        "roe": 0.318665,
+        "debt_to_equity": 0.156085,
+        "revenue_growth": 0.314228,
+        "eps_growth": 266.927384,
+        "free_cash_flow": 422813000.0,
+        "payout_ratio": 0.0,
+        "operating_margin": 0.234862
+      },
+      "completeness": {
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
+      }
+    },
+    {
+      "fiscal_year": 2025,
+      "fundamentals": {
+        "revenue": 2959197000.0,
+        "net_income": 509168000.0,
+        "shareholders_equity": 1628130000.0,
+        "total_debt": 0.0,
+        "eps_diluted": 3.47,
+        "dividends_paid": 0.0,
+        "operating_cash_flow": 655794000.0,
+        "capital_expenditure": 33921000.0,
+        "operating_income": 639112000.0,
+        "shares_outstanding": 149275950.0
+      },
+      "ratios": {
+        "roe": 0.39331,
+        "debt_to_equity": 0.0,
+        "revenue_growth": 0.183754,
+        "eps_growth": 0.662638,
+        "free_cash_flow": 621873000.0,
+        "payout_ratio": 0.0,
+        "operating_margin": 0.215975
+      },
+      "completeness": {
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
+      }
+    }
+  ]
+}

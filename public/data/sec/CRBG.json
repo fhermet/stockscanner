@@ -1,0 +1,137 @@
+{
+  "ticker": "CRBG",
+  "company_name": "Corebridge Financial, Inc.",
+  "cik": "0001889539",
+  "schema_version": "1.0",
+  "last_updated": "2026-04-12",
+  "annuals": [
+    {
+      "fiscal_year": 2022,
+      "fundamentals": {
+        "revenue": 26679000000.0,
+        "net_income": 8149000000.0,
+        "shareholders_equity": 8210000000.0,
+        "total_debt": 7868000000.0,
+        "eps_diluted": 12.59,
+        "dividends_paid": 876000000.0,
+        "operating_cash_flow": 2695000000.0,
+        "capital_expenditure": null,
+        "operating_income": 10460000000.0,
+        "shares_outstanding": 647400000.0
+      },
+      "ratios": {
+        "roe": 0.99257,
+        "debt_to_equity": 0.958343,
+        "revenue_growth": null,
+        "eps_growth": null,
+        "free_cash_flow": null,
+        "payout_ratio": 0.107498,
+        "operating_margin": 0.392069
+      },
+      "completeness": {
+        "present_field_count": 7,
+        "missing_field_count": 1,
+        "missing_field_names": [
+          "capital_expenditure"
+        ],
+        "completeness_ratio": 0.875
+      }
+    },
+    {
+      "fiscal_year": 2023,
+      "fundamentals": {
+        "revenue": 18878000000.0,
+        "net_income": 1104000000.0,
+        "shareholders_equity": 11766000000.0,
+        "total_debt": 9177000000.0,
+        "eps_diluted": 1.71,
+        "dividends_paid": 1722000000.0,
+        "operating_cash_flow": 3357000000.0,
+        "capital_expenditure": null,
+        "operating_income": 940000000.0,
+        "shares_outstanding": 645200000.0
+      },
+      "ratios": {
+        "roe": 0.110533,
+        "debt_to_equity": 0.779959,
+        "revenue_growth": -0.292402,
+        "eps_growth": -0.864523,
+        "free_cash_flow": null,
+        "payout_ratio": 1.559783,
+        "operating_margin": 0.049793
+      },
+      "completeness": {
+        "present_field_count": 7,
+        "missing_field_count": 1,
+        "missing_field_names": [
+          "capital_expenditure"
+        ],
+        "completeness_ratio": 0.875
+      }
+    },
+    {
+      "fiscal_year": 2024,
+      "fundamentals": {
+        "revenue": 18781000000.0,
+        "net_income": 2230000000.0,
+        "shareholders_equity": 11462000000.0,
+        "total_debt": 0.0,
+        "eps_diluted": 3.72,
+        "dividends_paid": 544000000.0,
+        "operating_cash_flow": 2151000000.0,
+        "capital_expenditure": null,
+        "operating_income": 2803000000.0,
+        "shares_outstanding": 599200000.0
+      },
+      "ratios": {
+        "roe": 0.19201,
+        "debt_to_equity": 0.0,
+        "revenue_growth": -0.005138,
+        "eps_growth": 1.019928,
+        "free_cash_flow": null,
+        "payout_ratio": 0.243946,
+        "operating_margin": 0.149247
+      },
+      "completeness": {
+        "present_field_count": 7,
+        "missing_field_count": 1,
+        "missing_field_names": [
+          "capital_expenditure"
+        ],
+        "completeness_ratio": 0.875
+      }
+    },
+    {
+      "fiscal_year": 2025,
+      "fundamentals": {
+        "revenue": 18481000000.0,
+        "net_income": -366000000.0,
+        "shareholders_equity": 13201000000.0,
+        "total_debt": 0.0,
+        "eps_diluted": -0.68,
+        "dividends_paid": 511000000.0,
+        "operating_cash_flow": 2021000000.0,
+        "capital_expenditure": null,
+        "operating_income": -541000000.0,
+        "shares_outstanding": 539300000.0
+      },
+      "ratios": {
+        "roe": -0.02968,
+        "debt_to_equity": 0.0,
+        "revenue_growth": -0.015974,
+        "eps_growth": null,
+        "free_cash_flow": null,
+        "payout_ratio": null,
+        "operating_margin": -0.029273
+      },
+      "completeness": {
+        "present_field_count": 7,
+        "missing_field_count": 1,
+        "missing_field_names": [
+          "capital_expenditure"
+        ],
+        "completeness_ratio": 0.875
+      }
+    }
+  ]
+}

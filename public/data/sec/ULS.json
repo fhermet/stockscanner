@@ -1,0 +1,69 @@
+{
+  "ticker": "ULS",
+  "company_name": "UL Solutions Inc.",
+  "cik": "0001901440",
+  "schema_version": "1.0",
+  "last_updated": "2026-04-12",
+  "annuals": [
+    {
+      "fiscal_year": 2024,
+      "fundamentals": {
+        "revenue": 2870000000.0,
+        "net_income": 326000000.0,
+        "shareholders_equity": 904000000.0,
+        "total_debt": 742000000.0,
+        "eps_diluted": 1.62,
+        "dividends_paid": 100000000.0,
+        "operating_cash_flow": 524000000.0,
+        "capital_expenditure": 237000000.0,
+        "operating_income": 462000000.0,
+        "shares_outstanding": 201000000.0
+      },
+      "ratios": {
+        "roe": 0.360619,
+        "debt_to_equity": 0.820796,
+        "revenue_growth": null,
+        "eps_growth": null,
+        "free_cash_flow": 287000000.0,
+        "payout_ratio": 0.306748,
+        "operating_margin": 0.160976
+      },
+      "completeness": {
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
+      }
+    },
+    {
+      "fiscal_year": 2025,
+      "fundamentals": {
+        "revenue": 3053000000.0,
+        "net_income": 325000000.0,
+        "shareholders_equity": 1262000000.0,
+        "total_debt": 491000000.0,
+        "eps_diluted": 1.6,
+        "dividends_paid": 104000000.0,
+        "operating_cash_flow": 600000000.0,
+        "capital_expenditure": 197000000.0,
+        "operating_income": 522000000.0,
+        "shares_outstanding": 203000000.0
+      },
+      "ratios": {
+        "roe": 0.300092,
+        "debt_to_equity": 0.389065,
+        "revenue_growth": 0.063763,
+        "eps_growth": -0.003067,
+        "free_cash_flow": 403000000.0,
+        "payout_ratio": 0.32,
+        "operating_margin": 0.170979
+      },
+      "completeness": {
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
+      }
+    }
+  ]
+}

@@ -1,0 +1,69 @@
+{
+  "ticker": "SARO",
+  "company_name": "StandardAero, Inc.",
+  "cik": "0002025410",
+  "schema_version": "1.0",
+  "last_updated": "2026-04-12",
+  "annuals": [
+    {
+      "fiscal_year": 2024,
+      "fundamentals": {
+        "revenue": 5237161000.0,
+        "net_income": 10974000.0,
+        "shareholders_equity": 2373404000.0,
+        "total_debt": 2231426000.0,
+        "eps_diluted": 0.04,
+        "dividends_paid": 0.0,
+        "operating_cash_flow": 76330000.0,
+        "capital_expenditure": 102935000.0,
+        "operating_income": 403219000.0,
+        "shares_outstanding": 289799000.0
+      },
+      "ratios": {
+        "roe": 0.004624,
+        "debt_to_equity": 0.94018,
+        "revenue_growth": null,
+        "eps_growth": null,
+        "free_cash_flow": -26605000.0,
+        "payout_ratio": 0.0,
+        "operating_margin": 0.076992
+      },
+      "completeness": {
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
+      }
+    },
+    {
+      "fiscal_year": 2025,
+      "fundamentals": {
+        "revenue": 6062513000.0,
+        "net_income": 277417000.0,
+        "shareholders_equity": 2667311000.0,
+        "total_debt": 2214605000.0,
+        "eps_diluted": 0.83,
+        "dividends_paid": 0.0,
+        "operating_cash_flow": 316705000.0,
+        "capital_expenditure": 82408000.0,
+        "operating_income": 551069000.0,
+        "shares_outstanding": 334321000.0
+      },
+      "ratios": {
+        "roe": 0.11007,
+        "debt_to_equity": 0.830276,
+        "revenue_growth": 0.157595,
+        "eps_growth": 24.279479,
+        "free_cash_flow": 234297000.0,
+        "payout_ratio": 0.0,
+        "operating_margin": 0.090898
+      },
+      "completeness": {
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
+      }
+    }
+  ]
+}

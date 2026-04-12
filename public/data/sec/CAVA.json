@@ -1,0 +1,99 @@
+{
+  "ticker": "CAVA",
+  "company_name": "CAVA GROUP, INC.",
+  "cik": "0001639438",
+  "schema_version": "1.0",
+  "last_updated": "2026-04-12",
+  "annuals": [
+    {
+      "fiscal_year": 2023,
+      "fundamentals": {
+        "revenue": 728700000.0,
+        "net_income": 13280000.0,
+        "shareholders_equity": 570802000.0,
+        "total_debt": 0.0,
+        "eps_diluted": 0.21,
+        "dividends_paid": 0.0,
+        "operating_cash_flow": 97101000.0,
+        "capital_expenditure": 138806000.0,
+        "operating_income": 4725000.0,
+        "shares_outstanding": 63448000.0
+      },
+      "ratios": {
+        "roe": 0.023266,
+        "debt_to_equity": 0.0,
+        "revenue_growth": null,
+        "eps_growth": null,
+        "free_cash_flow": -41705000.0,
+        "payout_ratio": 0.0,
+        "operating_margin": 0.006484
+      },
+      "completeness": {
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
+      }
+    },
+    {
+      "fiscal_year": 2024,
+      "fundamentals": {
+        "revenue": 963713000.0,
+        "net_income": 130319000.0,
+        "shareholders_equity": 695566000.0,
+        "total_debt": 0.0,
+        "eps_diluted": 1.1,
+        "dividends_paid": 0.0,
+        "operating_cash_flow": 161027000.0,
+        "capital_expenditure": 108131000.0,
+        "operating_income": 43118000.0,
+        "shares_outstanding": 118273000.0
+      },
+      "ratios": {
+        "roe": 0.205815,
+        "debt_to_equity": 0.0,
+        "revenue_growth": 0.32251,
+        "eps_growth": 8.813178,
+        "free_cash_flow": 52896000.0,
+        "payout_ratio": 0.0,
+        "operating_margin": 0.044742
+      },
+      "completeness": {
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
+      }
+    },
+    {
+      "fiscal_year": 2025,
+      "fundamentals": {
+        "revenue": 1179664000.0,
+        "net_income": 63743000.0,
+        "shareholders_equity": 779656000.0,
+        "total_debt": 0.0,
+        "eps_diluted": 0.54,
+        "dividends_paid": 0.0,
+        "operating_cash_flow": 184840000.0,
+        "capital_expenditure": 158699000.0,
+        "operating_income": 55285000.0,
+        "shares_outstanding": 118278000.0
+      },
+      "ratios": {
+        "roe": 0.086418,
+        "debt_to_equity": 0.0,
+        "revenue_growth": 0.224082,
+        "eps_growth": -0.510869,
+        "free_cash_flow": 26141000.0,
+        "payout_ratio": 0.0,
+        "operating_margin": 0.046865
+      },
+      "completeness": {
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
+      }
+    }
+  ]
+}

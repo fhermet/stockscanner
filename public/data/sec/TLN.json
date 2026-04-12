@@ -1,0 +1,99 @@
+{
+  "ticker": "TLN",
+  "company_name": "Talen Energy Corp",
+  "cik": "0001622536",
+  "schema_version": "1.0",
+  "last_updated": "2026-04-12",
+  "annuals": [
+    {
+      "fiscal_year": 2015,
+      "fundamentals": {
+        "revenue": 4481000000.0,
+        "net_income": -341000000.0,
+        "shareholders_equity": 4303000000.0,
+        "total_debt": 4203000000.0,
+        "eps_diluted": -3.1,
+        "dividends_paid": 0.0,
+        "operating_cash_flow": 768000000.0,
+        "capital_expenditure": 451000000.0,
+        "operating_income": -39000000.0,
+        "shares_outstanding": 109898000.0
+      },
+      "ratios": {
+        "roe": -0.079247,
+        "debt_to_equity": 0.97676,
+        "revenue_growth": null,
+        "eps_growth": null,
+        "free_cash_flow": 317000000.0,
+        "payout_ratio": null,
+        "operating_margin": -0.008703
+      },
+      "completeness": {
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
+      }
+    },
+    {
+      "fiscal_year": 2024,
+      "fundamentals": {
+        "revenue": 1574000000.0,
+        "net_income": 1013000000.0,
+        "shareholders_equity": 1387000000.0,
+        "total_debt": 3004000000.0,
+        "eps_diluted": 17.67,
+        "dividends_paid": 0.0,
+        "operating_cash_flow": 256000000.0,
+        "capital_expenditure": 85000000.0,
+        "operating_income": 226000000.0,
+        "shares_outstanding": 56486000.0
+      },
+      "ratios": {
+        "roe": 0.730353,
+        "debt_to_equity": 2.165826,
+        "revenue_growth": null,
+        "eps_growth": null,
+        "free_cash_flow": 171000000.0,
+        "payout_ratio": 0.0,
+        "operating_margin": 0.143583
+      },
+      "completeness": {
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
+      }
+    },
+    {
+      "fiscal_year": 2025,
+      "fundamentals": {
+        "revenue": 2518000000.0,
+        "net_income": -219000000.0,
+        "shareholders_equity": 1093000000.0,
+        "total_debt": 6811000000.0,
+        "eps_diluted": -4.79,
+        "dividends_paid": 0.0,
+        "operating_cash_flow": 704000000.0,
+        "capital_expenditure": 98000000.0,
+        "operating_income": -90000000.0,
+        "shares_outstanding": 45692000.0
+      },
+      "ratios": {
+        "roe": -0.176613,
+        "debt_to_equity": 6.231473,
+        "revenue_growth": 0.599746,
+        "eps_growth": null,
+        "free_cash_flow": 606000000.0,
+        "payout_ratio": null,
+        "operating_margin": -0.035743
+      },
+      "completeness": {
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
+      }
+    }
+  ]
+}

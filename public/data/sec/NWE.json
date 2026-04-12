@@ -1,0 +1,99 @@
+{
+  "ticker": "NWE",
+  "company_name": "NorthWestern Energy Group, Inc.",
+  "cik": "0001993004",
+  "schema_version": "1.0",
+  "last_updated": "2026-04-12",
+  "annuals": [
+    {
+      "fiscal_year": 2023,
+      "fundamentals": {
+        "revenue": 1554800000.0,
+        "net_income": 194131000.0,
+        "shareholders_equity": 2785314000.0,
+        "total_debt": 2784585000.0,
+        "eps_diluted": 3.22,
+        "dividends_paid": 154050000.0,
+        "operating_cash_flow": 489231000.0,
+        "capital_expenditure": 566889000.0,
+        "operating_income": 300455000.0,
+        "shares_outstanding": 60357793.0
+      },
+      "ratios": {
+        "roe": 0.069698,
+        "debt_to_equity": 0.999738,
+        "revenue_growth": null,
+        "eps_growth": null,
+        "free_cash_flow": -77658000.0,
+        "payout_ratio": 0.793536,
+        "operating_margin": 0.193244
+      },
+      "completeness": {
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
+      }
+    },
+    {
+      "fiscal_year": 2024,
+      "fundamentals": {
+        "revenue": 1513898000.0,
+        "net_income": 224111000.0,
+        "shareholders_equity": 2857700000.0,
+        "total_debt": 2995293000.0,
+        "eps_diluted": 3.65,
+        "dividends_paid": 158589000.0,
+        "operating_cash_flow": 406741000.0,
+        "capital_expenditure": 549244000.0,
+        "operating_income": 323321000.0,
+        "shares_outstanding": 61374205.0
+      },
+      "ratios": {
+        "roe": 0.07943,
+        "debt_to_equity": 1.048148,
+        "revenue_growth": -0.026307,
+        "eps_growth": 0.154432,
+        "free_cash_flow": -142503000.0,
+        "payout_ratio": 0.707636,
+        "operating_margin": 0.213569
+      },
+      "completeness": {
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
+      }
+    },
+    {
+      "fiscal_year": 2025,
+      "fundamentals": {
+        "revenue": 1610559000.0,
+        "net_income": 181092000.0,
+        "shareholders_equity": 2885740000.0,
+        "total_debt": 3286007000.0,
+        "eps_diluted": 2.94,
+        "dividends_paid": 161389000.0,
+        "operating_cash_flow": 394455000.0,
+        "capital_expenditure": 524456000.0,
+        "operating_income": 325818000.0,
+        "shares_outstanding": 61541418.0
+      },
+      "ratios": {
+        "roe": 0.06306,
+        "debt_to_equity": 1.138705,
+        "revenue_growth": 0.063849,
+        "eps_growth": -0.191954,
+        "free_cash_flow": -130001000.0,
+        "payout_ratio": 0.891199,
+        "operating_margin": 0.202301
+      },
+      "completeness": {
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
+      }
+    }
+  ]
+}

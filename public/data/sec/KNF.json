@@ -1,0 +1,99 @@
+{
+  "ticker": "KNF",
+  "company_name": "Knife River Corp",
+  "cik": "0001955520",
+  "schema_version": "1.0",
+  "last_updated": "2026-04-12",
+  "annuals": [
+    {
+      "fiscal_year": 2023,
+      "fundamentals": {
+        "revenue": 2830350000.0,
+        "net_income": 182872000.0,
+        "shareholders_equity": 1266012000.0,
+        "total_debt": 681659000.0,
+        "eps_diluted": 3.23,
+        "dividends_paid": 0.0,
+        "operating_cash_flow": 335726000.0,
+        "capital_expenditure": 124283000.0,
+        "operating_income": 296397000.0,
+        "shares_outstanding": 56668000.0
+      },
+      "ratios": {
+        "roe": 0.144447,
+        "debt_to_equity": 0.53843,
+        "revenue_growth": null,
+        "eps_growth": null,
+        "free_cash_flow": 211443000.0,
+        "payout_ratio": 0.0,
+        "operating_margin": 0.104721
+      },
+      "completeness": {
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
+      }
+    },
+    {
+      "fiscal_year": 2024,
+      "fundamentals": {
+        "revenue": 2899005000.0,
+        "net_income": 201678000.0,
+        "shareholders_equity": 1476085000.0,
+        "total_debt": 677386000.0,
+        "eps_diluted": 3.55,
+        "dividends_paid": 0.0,
+        "operating_cash_flow": 322324000.0,
+        "capital_expenditure": 172427000.0,
+        "operating_income": 316194000.0,
+        "shares_outstanding": 56844000.0
+      },
+      "ratios": {
+        "roe": 0.147098,
+        "debt_to_equity": 0.458907,
+        "revenue_growth": 0.024257,
+        "eps_growth": 0.102837,
+        "free_cash_flow": 149897000.0,
+        "payout_ratio": 0.0,
+        "operating_margin": 0.10907
+      },
+      "completeness": {
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
+      }
+    },
+    {
+      "fiscal_year": 2025,
+      "fundamentals": {
+        "revenue": 3146012000.0,
+        "net_income": 157074000.0,
+        "shareholders_equity": 1640940000.0,
+        "total_debt": 1165538000.0,
+        "eps_diluted": 2.76,
+        "dividends_paid": 0.0,
+        "operating_cash_flow": 278475000.0,
+        "capital_expenditure": 348041000.0,
+        "operating_income": 285874000.0,
+        "shares_outstanding": 56895000.0
+      },
+      "ratios": {
+        "roe": 0.100785,
+        "debt_to_equity": 0.710287,
+        "revenue_growth": 0.085204,
+        "eps_growth": -0.221164,
+        "free_cash_flow": -69566000.0,
+        "payout_ratio": 0.0,
+        "operating_margin": 0.090869
+      },
+      "completeness": {
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
+      }
+    }
+  ]
+}

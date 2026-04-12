@@ -1,0 +1,41 @@
+{
+  "ticker": "VNOM",
+  "company_name": "Viper Energy, Inc.",
+  "cik": "0002074176",
+  "schema_version": "1.0",
+  "last_updated": "2026-04-12",
+  "annuals": [
+    {
+      "fiscal_year": 2025,
+      "fundamentals": {
+        "revenue": 1346000000.0,
+        "net_income": -206000000.0,
+        "shareholders_equity": 4448000000.0,
+        "total_debt": 2186000000.0,
+        "eps_diluted": -0.48,
+        "dividends_paid": 328000000.0,
+        "operating_cash_flow": 1053000000.0,
+        "capital_expenditure": null,
+        "operating_income": -140000000.0,
+        "shares_outstanding": 142530000.0
+      },
+      "ratios": {
+        "roe": -0.046313,
+        "debt_to_equity": 0.491457,
+        "revenue_growth": null,
+        "eps_growth": null,
+        "free_cash_flow": null,
+        "payout_ratio": null,
+        "operating_margin": -0.104012
+      },
+      "completeness": {
+        "present_field_count": 7,
+        "missing_field_count": 1,
+        "missing_field_names": [
+          "capital_expenditure"
+        ],
+        "completeness_ratio": 0.875
+      }
+    }
+  ]
+}

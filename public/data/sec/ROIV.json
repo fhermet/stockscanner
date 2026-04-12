@@ -1,0 +1,99 @@
+{
+  "ticker": "ROIV",
+  "company_name": "Roivant Sciences Ltd.",
+  "cik": "0001635088",
+  "schema_version": "1.0",
+  "last_updated": "2026-04-12",
+  "annuals": [
+    {
+      "fiscal_year": 2022,
+      "fundamentals": {
+        "revenue": 55286000.0,
+        "net_income": -845262000.0,
+        "shareholders_equity": 1656944000.0,
+        "total_debt": 210025000.0,
+        "eps_diluted": -1.26,
+        "dividends_paid": 0.0,
+        "operating_cash_flow": -677729000.0,
+        "capital_expenditure": 17436000.0,
+        "operating_income": -1351642000.0,
+        "shares_outstanding": 669753458.0
+      },
+      "ratios": {
+        "roe": -0.510133,
+        "debt_to_equity": 0.126754,
+        "revenue_growth": null,
+        "eps_growth": null,
+        "free_cash_flow": -695165000.0,
+        "payout_ratio": null,
+        "operating_margin": null
+      },
+      "completeness": {
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
+      }
+    },
+    {
+      "fiscal_year": 2023,
+      "fundamentals": {
+        "revenue": 61280000.0,
+        "net_income": -1009030000.0,
+        "shareholders_equity": 1157766000.0,
+        "total_debt": 375515000.0,
+        "eps_diluted": -1.42,
+        "dividends_paid": 0.0,
+        "operating_cash_flow": -843393000.0,
+        "capital_expenditure": 12690000.0,
+        "operating_income": -1175318000.0,
+        "shares_outstanding": 712791115.0
+      },
+      "ratios": {
+        "roe": -0.716969,
+        "debt_to_equity": 0.324344,
+        "revenue_growth": 0.108418,
+        "eps_growth": null,
+        "free_cash_flow": -856083000.0,
+        "payout_ratio": null,
+        "operating_margin": null
+      },
+      "completeness": {
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
+      }
+    },
+    {
+      "fiscal_year": 2024,
+      "fundamentals": {
+        "revenue": 32713000.0,
+        "net_income": 4348926000.0,
+        "shareholders_equity": 5968581000.0,
+        "total_debt": 430591000.0,
+        "eps_diluted": 5.23,
+        "dividends_paid": 0.0,
+        "operating_cash_flow": -765268000.0,
+        "capital_expenditure": 1382000.0,
+        "operating_income": 4497032000.0,
+        "shares_outstanding": 831049444.0
+      },
+      "ratios": {
+        "roe": 1.22052,
+        "debt_to_equity": 0.072143,
+        "revenue_growth": -0.466172,
+        "eps_growth": null,
+        "free_cash_flow": -766650000.0,
+        "payout_ratio": 0.0,
+        "operating_margin": null
+      },
+      "completeness": {
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
+      }
+    }
+  ]
+}

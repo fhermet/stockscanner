@@ -1,0 +1,99 @@
+{
+  "ticker": "CART",
+  "company_name": "Maplebear Inc.",
+  "cik": "0001579091",
+  "schema_version": "1.0",
+  "last_updated": "2026-04-12",
+  "annuals": [
+    {
+      "fiscal_year": 2023,
+      "fundamentals": {
+        "revenue": 3042000000.0,
+        "net_income": -1622000000.0,
+        "shareholders_equity": 3750000000.0,
+        "total_debt": 0.0,
+        "eps_diluted": -12.43,
+        "dividends_paid": 0.0,
+        "operating_cash_flow": 586000000.0,
+        "capital_expenditure": 54000000.0,
+        "operating_income": -2142000000.0,
+        "shares_outstanding": 130616000.0
+      },
+      "ratios": {
+        "roe": -0.432533,
+        "debt_to_equity": 0.0,
+        "revenue_growth": null,
+        "eps_growth": null,
+        "free_cash_flow": 532000000.0,
+        "payout_ratio": null,
+        "operating_margin": -0.704142
+      },
+      "completeness": {
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
+      }
+    },
+    {
+      "fiscal_year": 2024,
+      "fundamentals": {
+        "revenue": 3378000000.0,
+        "net_income": 457000000.0,
+        "shareholders_equity": 3093000000.0,
+        "total_debt": 0.0,
+        "eps_diluted": 1.58,
+        "dividends_paid": 0.0,
+        "operating_cash_flow": 687000000.0,
+        "capital_expenditure": 64000000.0,
+        "operating_income": 489000000.0,
+        "shares_outstanding": 289158000.0
+      },
+      "ratios": {
+        "roe": 0.133567,
+        "debt_to_equity": 0.0,
+        "revenue_growth": 0.110454,
+        "eps_growth": null,
+        "free_cash_flow": 623000000.0,
+        "payout_ratio": 0.0,
+        "operating_margin": 0.14476
+      },
+      "completeness": {
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
+      }
+    },
+    {
+      "fiscal_year": 2025,
+      "fundamentals": {
+        "revenue": 3742000000.0,
+        "net_income": 447000000.0,
+        "shareholders_equity": 2518000000.0,
+        "total_debt": 0.0,
+        "eps_diluted": 1.6,
+        "dividends_paid": 0.0,
+        "operating_cash_flow": 971000000.0,
+        "capital_expenditure": 61000000.0,
+        "operating_income": 498000000.0,
+        "shares_outstanding": 279621000.0
+      },
+      "ratios": {
+        "roe": 0.15933,
+        "debt_to_equity": 0.0,
+        "revenue_growth": 0.107756,
+        "eps_growth": -0.021882,
+        "free_cash_flow": 910000000.0,
+        "payout_ratio": 0.0,
+        "operating_margin": 0.133084
+      },
+      "completeness": {
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
+      }
+    }
+  ]
+}

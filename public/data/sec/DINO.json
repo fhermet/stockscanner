@@ -1,0 +1,129 @@
+{
+  "ticker": "DINO",
+  "company_name": "HF Sinclair Corp",
+  "cik": "0001915657",
+  "schema_version": "1.0",
+  "last_updated": "2026-04-12",
+  "annuals": [
+    {
+      "fiscal_year": 2022,
+      "fundamentals": {
+        "revenue": 38204839000.0,
+        "net_income": 2922668000.0,
+        "shareholders_equity": 9243815000.0,
+        "total_debt": 3275827000.0,
+        "eps_diluted": 14.28,
+        "dividends_paid": 255928000.0,
+        "operating_cash_flow": 3777159000.0,
+        "capital_expenditure": 485043000.0,
+        "operating_income": 4054249000.0,
+        "shares_outstanding": 202566000.0
+      },
+      "ratios": {
+        "roe": 0.316176,
+        "debt_to_equity": 0.35438,
+        "revenue_growth": null,
+        "eps_growth": null,
+        "free_cash_flow": 3292116000.0,
+        "payout_ratio": 0.087567,
+        "operating_margin": 0.106119
+      },
+      "completeness": {
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
+      }
+    },
+    {
+      "fiscal_year": 2023,
+      "fundamentals": {
+        "revenue": 31964395000.0,
+        "net_income": 1589666000.0,
+        "shareholders_equity": 10169090000.0,
+        "total_debt": 2755500000.0,
+        "eps_diluted": 8.29,
+        "dividends_paid": 340736000.0,
+        "operating_cash_flow": 2297235000.0,
+        "capital_expenditure": 353451000.0,
+        "operating_income": 2202566000.0,
+        "shares_outstanding": 190035000.0
+      },
+      "ratios": {
+        "roe": 0.163774,
+        "debt_to_equity": 0.270968,
+        "revenue_growth": -0.163342,
+        "eps_growth": -0.456091,
+        "free_cash_flow": 1943784000.0,
+        "payout_ratio": 0.214344,
+        "operating_margin": 0.068907
+      },
+      "completeness": {
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
+      }
+    },
+    {
+      "fiscal_year": 2024,
+      "fundamentals": {
+        "revenue": 28580000000.0,
+        "net_income": 177000000.0,
+        "shareholders_equity": 9278000000.0,
+        "total_debt": 2650000000.0,
+        "eps_diluted": 0.91,
+        "dividends_paid": 386000000.0,
+        "operating_cash_flow": 1110000000.0,
+        "capital_expenditure": 470000000.0,
+        "operating_income": 261000000.0,
+        "shares_outstanding": 192073000.0
+      },
+      "ratios": {
+        "roe": 0.018203,
+        "debt_to_equity": 0.285622,
+        "revenue_growth": -0.10588,
+        "eps_growth": -0.888656,
+        "free_cash_flow": 640000000.0,
+        "payout_ratio": 2.180791,
+        "operating_margin": 0.009132
+      },
+      "completeness": {
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
+      }
+    },
+    {
+      "fiscal_year": 2025,
+      "fundamentals": {
+        "revenue": 26869000000.0,
+        "net_income": 579000000.0,
+        "shareholders_equity": 9184000000.0,
+        "total_debt": 2769000000.0,
+        "eps_diluted": 3.08,
+        "dividends_paid": 376000000.0,
+        "operating_cash_flow": 1315000000.0,
+        "capital_expenditure": 449000000.0,
+        "operating_income": 927000000.0,
+        "shares_outstanding": 186465000.0
+      },
+      "ratios": {
+        "roe": 0.062723,
+        "debt_to_equity": 0.301503,
+        "revenue_growth": -0.059867,
+        "eps_growth": 2.271186,
+        "free_cash_flow": 866000000.0,
+        "payout_ratio": 0.649396,
+        "operating_margin": 0.034501
+      },
+      "completeness": {
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
+      }
+    }
+  ]
+}
