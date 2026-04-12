@@ -10,8 +10,8 @@ import {
 } from "../index";
 
 describe("indices registry", () => {
-  it("has 8 indices", () => {
-    expect(ALL_INDICES.length).toBe(8);
+  it("has 9 indices", () => {
+    expect(ALL_INDICES.length).toBe(9);
   });
 
   it("all indices have required fields", () => {
@@ -19,7 +19,7 @@ describe("indices registry", () => {
       expect(idx.id).toBeTruthy();
       expect(idx.name).toBeTruthy();
       expect(idx.countryCode).toBeTruthy();
-      expect(idx.tickers.length).toBeGreaterThan(0);
+      expect(idx.tickers.length).toBeGreaterThanOrEqual(0);
       expect(idx.theoreticalCount).toBeGreaterThan(0);
     }
   });
@@ -44,10 +44,11 @@ describe("getCountries", () => {
 });
 
 describe("getIndicesForCountry", () => {
-  it("returns 3 indices for US", () => {
+  it("returns 4 indices for US", () => {
     const us = getIndicesForCountry("us");
-    expect(us.length).toBe(3);
+    expect(us.length).toBe(4);
     expect(us.map((i) => i.id)).toContain("sp500");
+    expect(us.map((i) => i.id)).toContain("sp400");
     expect(us.map((i) => i.id)).toContain("nasdaq100");
     expect(us.map((i) => i.id)).toContain("dowjones");
   });

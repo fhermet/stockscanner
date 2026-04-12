@@ -1,5 +1,6 @@
 import { IndexDefinition } from "./types";
 import { SP500_TICKERS } from "./generated/sp500";
+import { SP400_TICKERS } from "./generated/sp400";
 import { NASDAQ100_TICKERS } from "./generated/nasdaq100";
 import { DOWJONES_TICKERS } from "./generated/dowjones";
 
@@ -12,6 +13,17 @@ export const SP500: IndexDefinition = {
   description: "Les 500 plus grandes capitalisations americaines",
   theoreticalCount: 500,
   tickers: SP500_TICKERS as unknown as readonly string[],
+};
+
+export const SP400: IndexDefinition = {
+  id: "sp400",
+  name: "S&P MidCap 400",
+  shortName: "S&P 400",
+  country: "USA",
+  countryCode: "us",
+  description: "Les 400 capitalisations moyennes americaines (5-15 Mds$)",
+  theoreticalCount: 400,
+  tickers: SP400_TICKERS as unknown as readonly string[],
 };
 
 export const NASDAQ100: IndexDefinition = {
@@ -36,4 +48,4 @@ export const DOW_JONES: IndexDefinition = {
   tickers: DOWJONES_TICKERS as unknown as readonly string[],
 };
 
-export const US_INDICES = [SP500, NASDAQ100, DOW_JONES] as const;
+export const US_INDICES = [SP500, SP400, NASDAQ100, DOW_JONES] as const;
