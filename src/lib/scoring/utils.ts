@@ -3,12 +3,18 @@ import { getSectorBenchmark, sectorAdjustmentFactor } from "./sector-benchmarks"
 
 /**
  * Calcule le score total a partir de sous-scores ponderes.
+ * Les sous-scores null sont ignores et leurs poids redistribues
+ * proportionnellement aux sous-scores disponibles (ex: banques sans
+ * FCF/Debt-OCF dans la strategie Buffett). Retourne null seulement
+ * si tous les sous-scores sont null.
  */
 export function computeWeightedTotal(subScores: readonly SubScore[]): number | null {
-  if (subScores.some((s) => s.value === null)) return null;
-  return Math.round(
-    subScores.reduce((acc, s) => acc + (s.value as number) * s.weight, 0)
-  );
+  const available = subScores.filter((s): s is SubScore & { value: number } => s.value !== null);
+  if (available.length === 0) return null;
+  const totalWeight = available.reduce((acc, s) => acc + s.weight, 0);
+  if (totalWeight === 0) return null;
+  const raw = available.reduce((acc, s) => acc + s.value * s.weight, 0);
+  return Math.round(raw / totalWeight);
 }
 
 /**

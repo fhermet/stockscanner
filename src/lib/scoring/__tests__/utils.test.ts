@@ -12,18 +12,37 @@ describe("computeWeightedTotal", () => {
     expect(computeWeightedTotal(subScores)).toBe(66);
   });
 
-  it("returns 0 for empty subScores", () => {
-    expect(computeWeightedTotal([])).toBe(0);
+  it("returns null for empty subScores", () => {
+    expect(computeWeightedTotal([])).toBeNull();
   });
 });
 
 describe("computeWeightedTotal with null sub-scores", () => {
-  it("returns null if any sub-score value is null", () => {
+  it("skips null sub-scores and redistributes weights", () => {
     const result = computeWeightedTotal([
       { name: "a", value: 80, weight: 0.5, label: "A" },
       { name: "b", value: null, weight: 0.5, label: "B" },
     ]);
+    // Only "a" available with weight 0.5 → 80 * 0.5 / 0.5 = 80
+    expect(result).toBe(80);
+  });
+
+  it("returns null if ALL sub-scores are null", () => {
+    const result = computeWeightedTotal([
+      { name: "a", value: null, weight: 0.5, label: "A" },
+      { name: "b", value: null, weight: 0.5, label: "B" },
+    ]);
     expect(result).toBeNull();
+  });
+
+  it("redistributes weight with 2 of 3 available", () => {
+    const result = computeWeightedTotal([
+      { name: "quality", value: 70, weight: 0.4, label: "Qualite" },
+      { name: "strength", value: null, weight: 0.3, label: "Solidite" },
+      { name: "valuation", value: 60, weight: 0.3, label: "Valorisation" },
+    ]);
+    // quality: 70*0.4 + valuation: 60*0.3 = 28 + 18 = 46 / (0.4+0.3) = 65.7 → 66
+    expect(result).toBe(66);
   });
 
   it("returns number when all sub-scores are present", () => {
