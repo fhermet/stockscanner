@@ -8,8 +8,12 @@
  * 1. Read all SEC JSON files (local, fast)
  * 2. Compute SEC-only scores for the start year (fundamental ranking)
  * 3. Rank by strategy, pick top N
- * 4. Fetch Yahoo yearly prices for those N tickers + ^GSPC (S&P 500)
- * 5. Compute equal-weighted portfolio return from startYear to latest
+ * 4. Fetch Yahoo yearly prices for those N tickers + ^SP500TR (S&P 500 Total Return)
+ * 5. Compute equal-weighted total return (price + dividends) from startYear to latest
+ *
+ * Total return: dividends per share are extracted from SEC data
+ * (dividends_paid / shares_outstanding) and added to the price return.
+ * Benchmark uses ^SP500TR (S&P 500 Total Return index, dividends reinvested).
  */
 
 import type { StrategyId } from "@/lib/types";
@@ -65,6 +69,43 @@ const STRATEGY_LABELS: Record<StrategyId, string> = {
   growth: "Growth",
   dividend: "Dividende",
 };
+
+/** S&P 500 Total Return index (dividends reinvested) */
+const BENCHMARK_TICKER = "^SP500TR";
+
+// --- Dividend helpers ---
+
+/**
+ * Extract cumulative dividends per share from SEC data for a range of years.
+ * Returns the sum of DPS for each fiscal year in [startYear, endYear).
+ * DPS = |dividends_paid| / shares_outstanding.
+ */
+export function getCumulativeDps(
+  secData: SecTickerData | null,
+  startYear: number,
+  endYear: number,
+): number {
+  if (!secData) return 0;
+  let total = 0;
+  for (const annual of secData.annuals) {
+    if (annual.fiscal_year >= startYear && annual.fiscal_year < endYear) {
+      const divPaid = annual.fundamentals.dividends_paid;
+      const shares = annual.fundamentals.shares_outstanding;
+      if (divPaid != null && shares != null && shares > 0) {
+        // dividends_paid is typically negative in SEC filings (cash outflow)
+        total += Math.abs(divPaid) / shares;
+      }
+    }
+  }
+  return total;
+}
+
+/**
+ * Get DPS for a single fiscal year from SEC data.
+ */
+function getAnnualDps(secData: SecTickerData | null, year: number): number {
+  return getCumulativeDps(secData, year, year + 1);
+}
 
 // --- Core engine ---
 
@@ -146,11 +187,13 @@ export async function runBacktest(
     return emptyResult(strategyId, startYear, topN, "Aucune donnée disponible pour cette année.");
   }
 
-  // Fetch prices for winners + benchmark in parallel
+  // Fetch prices + SEC data for winners + benchmark in parallel
   const pricePromises = topTickers.map((t) => getYearlyPrices(t.ticker));
-  const benchmarkPromise = getYearlyPrices("^GSPC");
-  const [tickerPrices, benchmarkPrices] = await Promise.all([
+  const secPromises = topTickers.map((t) => getSecHistory(t.ticker));
+  const benchmarkPromise = getYearlyPrices(BENCHMARK_TICKER);
+  const [tickerPrices, tickerSecData, benchmarkPrices] = await Promise.all([
     Promise.all(pricePromises),
+    Promise.all(secPromises),
     benchmarkPromise,
   ]);
 
@@ -165,17 +208,20 @@ export async function runBacktest(
 
   const endYear = Math.min(...allEndYears);
 
-  // Build stock results
+  // Build stock results (total return = price return + dividends)
   const stocks: BacktestStock[] = [];
   for (let i = 0; i < topTickers.length; i++) {
     const t = topTickers[i];
     const prices = tickerPrices[i];
+    const secData = tickerSecData[i];
     const startPrice = findPrice(prices, startYear);
     const endPrice = findPrice(prices, endYear);
 
-    if (startPrice === null || endPrice === null) continue;
+    if (startPrice === null || endPrice === null || startPrice === 0) continue;
 
-    const returnPct = round2((endPrice / startPrice - 1) * 100);
+    // Total return: price appreciation + cumulative dividends per share
+    const cumDps = getCumulativeDps(secData, startYear, endYear);
+    const returnPct = round2(((endPrice + cumDps) / startPrice - 1) * 100);
 
     stocks.push({
       ticker: t.ticker,
@@ -232,8 +278,8 @@ export async function runBacktest(
     summary,
     disclaimer:
       "Simulation basée sur des données historiques. Les performances passées ne préjugent pas des performances futures. " +
-      "Le classement utilise les scores fondamentaux SEC (sans données de marché). Les rendements sont calculés sur les prix Yahoo Finance, " +
-      "sans tenir compte des dividendes réinvestis, des frais de transaction ni de la fiscalité.",
+      "Le classement utilise les scores fondamentaux SEC (sans données de marché). Les rendements incluent les dividendes (total return). " +
+      "Le benchmark est le S&P 500 Total Return (dividendes réinvestis). Sans frais de transaction ni fiscalité.",
   };
 }
 
@@ -324,4 +370,358 @@ export async function getAvailableYears(): Promise<readonly number[]> {
 
 export function resetBacktestCache(): void {
   rankingCache = new Map();
+}
+
+// ============================================================
+// Rolling backtest with annual rebalancing
+// ============================================================
+
+export interface AnnualHolding {
+  readonly ticker: string;
+  readonly companyName: string;
+  readonly score: number;
+  readonly returnPct: number;
+}
+
+export interface AnnualSlice {
+  readonly year: number;
+  readonly holdings: readonly AnnualHolding[];
+  readonly portfolioReturnPct: number;
+  readonly benchmarkReturnPct: number | null;
+  readonly turnover: number; // 0-1, fraction of positions changed vs previous year
+}
+
+export interface RiskMetrics {
+  readonly cagr: number;
+  readonly benchmarkCagr: number | null;
+  readonly volatility: number;
+  readonly sharpeRatio: number | null;
+  readonly maxDrawdown: number;
+  readonly winRate: number; // fraction of years beating benchmark
+  readonly bestYear: { readonly year: number; readonly returnPct: number };
+  readonly worstYear: { readonly year: number; readonly returnPct: number };
+}
+
+export interface RollingBacktestResult {
+  readonly strategyId: StrategyId;
+  readonly strategyLabel: string;
+  readonly startYear: number;
+  readonly endYear: number;
+  readonly topN: number;
+  readonly slices: readonly AnnualSlice[];
+  readonly cumulativeReturnPct: number;
+  readonly cumulativeBenchmarkPct: number | null;
+  readonly outperformance: number | null;
+  readonly risk: RiskMetrics;
+  readonly summary: string;
+  readonly disclaimer: string;
+}
+
+/**
+ * Compute risk metrics from a series of annual slices.
+ * Exported for testing.
+ */
+export function computeRiskMetrics(slices: readonly AnnualSlice[]): RiskMetrics {
+  const returns = slices.map((s) => s.portfolioReturnPct);
+  const benchReturns = slices
+    .map((s) => s.benchmarkReturnPct)
+    .filter((r): r is number => r !== null);
+
+  // CAGR: compound annual growth rate
+  const years = returns.length;
+  let cumulative = 1;
+  for (const r of returns) cumulative *= 1 + r / 100;
+  const cagr = years > 0 ? (Math.pow(cumulative, 1 / years) - 1) * 100 : 0;
+
+  // Benchmark CAGR
+  let benchmarkCagr: number | null = null;
+  if (benchReturns.length > 0) {
+    let benchCum = 1;
+    for (const r of benchReturns) benchCum *= 1 + r / 100;
+    benchmarkCagr = (Math.pow(benchCum, 1 / benchReturns.length) - 1) * 100;
+  }
+
+  // Volatility: std dev of annual returns
+  const mean = returns.length > 0 ? returns.reduce((a, b) => a + b, 0) / returns.length : 0;
+  const variance = returns.length > 1
+    ? returns.reduce((acc, r) => acc + (r - mean) ** 2, 0) / (returns.length - 1)
+    : 0;
+  const volatility = Math.sqrt(variance);
+
+  // Sharpe ratio (risk-free ≈ 0 for simplicity)
+  const sharpeRatio = volatility > 0 ? cagr / volatility : null;
+
+  // Max drawdown from cumulative equity curve
+  let peak = 1;
+  let maxDrawdown = 0;
+  let equity = 1;
+  for (const r of returns) {
+    equity *= 1 + r / 100;
+    if (equity > peak) peak = equity;
+    const drawdown = ((peak - equity) / peak) * 100;
+    if (drawdown > maxDrawdown) maxDrawdown = drawdown;
+  }
+
+  // Win rate vs benchmark
+  const comparableSlices = slices.filter((s) => s.benchmarkReturnPct !== null);
+  const wins = comparableSlices.filter(
+    (s) => s.portfolioReturnPct > s.benchmarkReturnPct!,
+  ).length;
+  const winRate = comparableSlices.length > 0 ? wins / comparableSlices.length : 0;
+
+  // Best / worst year
+  let bestYear = { year: 0, returnPct: -Infinity };
+  let worstYear = { year: 0, returnPct: Infinity };
+  for (const s of slices) {
+    if (s.portfolioReturnPct > bestYear.returnPct) {
+      bestYear = { year: s.year, returnPct: s.portfolioReturnPct };
+    }
+    if (s.portfolioReturnPct < worstYear.returnPct) {
+      worstYear = { year: s.year, returnPct: s.portfolioReturnPct };
+    }
+  }
+  if (bestYear.year === 0) bestYear = { year: 0, returnPct: 0 };
+  if (worstYear.year === 0) worstYear = { year: 0, returnPct: 0 };
+
+  return {
+    cagr: round2(cagr),
+    benchmarkCagr: benchmarkCagr !== null ? round2(benchmarkCagr) : null,
+    volatility: round2(volatility),
+    sharpeRatio: sharpeRatio !== null ? round2(sharpeRatio) : null,
+    maxDrawdown: round2(maxDrawdown),
+    winRate: round2(winRate * 100),
+    bestYear: { year: bestYear.year, returnPct: round2(bestYear.returnPct) },
+    worstYear: { year: worstYear.year, returnPct: round2(worstYear.returnPct) },
+  };
+}
+
+/**
+ * Compute turnover between two sets of tickers.
+ * Returns a fraction 0-1: how many positions changed.
+ */
+function computeTurnover(
+  prev: readonly string[],
+  curr: readonly string[],
+): number {
+  if (prev.length === 0) return 0;
+  const prevSet = new Set(prev);
+  const kept = curr.filter((t) => prevSet.has(t)).length;
+  const maxLen = Math.max(prev.length, curr.length);
+  return maxLen > 0 ? round2((maxLen - kept) / maxLen) : 0;
+}
+
+/**
+ * Run a rolling backtest with annual rebalancing.
+ *
+ * Each year, the portfolio is re-scored and rebalanced to the top N stocks.
+ * Returns are compounded year over year.
+ */
+export async function runRollingBacktest(
+  strategyId: StrategyId,
+  topN: number = 5,
+): Promise<RollingBacktestResult> {
+  const availableYears = await getAvailableYears();
+  if (availableYears.length < 2) {
+    return emptyRollingResult(strategyId, 0, 0, topN, "Pas assez d'années disponibles pour un backtest rolling.");
+  }
+
+  const startYear = availableYears[0];
+  const lastYear = availableYears[availableYears.length - 1];
+
+  // Pre-fetch benchmark prices (S&P 500 Total Return)
+  const benchmarkPrices = await getYearlyPrices(BENCHMARK_TICKER);
+
+  // We need prices for year Y and Y+1 to compute the return for year Y.
+  // So the last scoreable year is lastYear (return = price at lastYear+1 / price at lastYear).
+  const slices: AnnualSlice[] = [];
+  let prevTickers: string[] = [];
+
+  // Cache of ticker → yearly prices to avoid redundant fetches
+  const priceCache = new Map<string, readonly YearlyPrice[]>();
+  // Cache of ticker → SEC data for dividend extraction
+  const secCache = new Map<string, SecTickerData | null>();
+
+  async function getCachedPrices(ticker: string): Promise<readonly YearlyPrice[]> {
+    const cached = priceCache.get(ticker);
+    if (cached) return cached;
+    const prices = await getYearlyPrices(ticker);
+    priceCache.set(ticker, prices);
+    return prices;
+  }
+
+  async function getCachedSec(ticker: string): Promise<SecTickerData | null> {
+    if (secCache.has(ticker)) return secCache.get(ticker)!;
+    const data = await getSecHistory(ticker);
+    secCache.set(ticker, data);
+    return data;
+  }
+
+  for (const year of availableYears) {
+    // Get top tickers for this year
+    const topTickers = await getTopTickers(strategyId, year, topN);
+    if (topTickers.length === 0) continue;
+
+    // Fetch prices + SEC data for all holdings in parallel
+    const [holdingPrices, holdingSecData] = await Promise.all([
+      Promise.all(topTickers.map((t) => getCachedPrices(t.ticker))),
+      Promise.all(topTickers.map((t) => getCachedSec(t.ticker))),
+    ]);
+
+    // Compute per-holding total return (year → year+1), including dividends
+    const holdings: AnnualHolding[] = [];
+    for (let i = 0; i < topTickers.length; i++) {
+      const t = topTickers[i];
+      const prices = holdingPrices[i];
+      const secData = holdingSecData[i];
+      const priceStart = findPrice(prices, year);
+      const priceEnd = findPrice(prices, year + 1);
+
+      if (priceStart === null || priceEnd === null || priceStart === 0) continue;
+
+      const dps = getAnnualDps(secData, year);
+      holdings.push({
+        ticker: t.ticker,
+        companyName: t.companyName,
+        score: t.scores.get(strategyId) ?? 0,
+        returnPct: round2(((priceEnd + dps) / priceStart - 1) * 100),
+      });
+    }
+
+    if (holdings.length === 0) continue;
+
+    // Equal-weighted portfolio return for this year
+    const portfolioReturnPct = round2(
+      holdings.reduce((acc, h) => acc + h.returnPct, 0) / holdings.length,
+    );
+
+    // Benchmark return for this year
+    const benchStart = findPrice(benchmarkPrices, year);
+    const benchEnd = findPrice(benchmarkPrices, year + 1);
+    const benchmarkReturnPct =
+      benchStart !== null && benchEnd !== null && benchStart > 0
+        ? round2((benchEnd / benchStart - 1) * 100)
+        : null;
+
+    // Turnover
+    const currTickers = holdings.map((h) => h.ticker);
+    const turnover = computeTurnover(prevTickers, currTickers);
+    prevTickers = currTickers;
+
+    slices.push({
+      year,
+      holdings,
+      portfolioReturnPct,
+      benchmarkReturnPct,
+      turnover,
+    });
+  }
+
+  if (slices.length === 0) {
+    return emptyRollingResult(strategyId, startYear, lastYear, topN, "Aucune donnée de prix disponible pour la simulation.");
+  }
+
+  const actualStart = slices[0].year;
+  const actualEnd = slices[slices.length - 1].year + 1; // return goes into next year
+
+  // Cumulative returns
+  let cumPortfolio = 1;
+  for (const s of slices) cumPortfolio *= 1 + s.portfolioReturnPct / 100;
+  const cumulativeReturnPct = round2((cumPortfolio - 1) * 100);
+
+  let cumulativeBenchmarkPct: number | null = null;
+  const benchSlices = slices.filter((s) => s.benchmarkReturnPct !== null);
+  if (benchSlices.length > 0) {
+    let cumBench = 1;
+    for (const s of benchSlices) cumBench *= 1 + s.benchmarkReturnPct! / 100;
+    cumulativeBenchmarkPct = round2((cumBench - 1) * 100);
+  }
+
+  const outperformance = cumulativeBenchmarkPct !== null
+    ? round2(cumulativeReturnPct - cumulativeBenchmarkPct)
+    : null;
+
+  const risk = computeRiskMetrics(slices);
+
+  const summary = buildRollingSummary(
+    strategyId, actualStart, actualEnd, slices.length, topN,
+    cumulativeReturnPct, cumulativeBenchmarkPct, risk,
+  );
+
+  return {
+    strategyId,
+    strategyLabel: STRATEGY_LABELS[strategyId],
+    startYear: actualStart,
+    endYear: actualEnd,
+    topN,
+    slices,
+    cumulativeReturnPct,
+    cumulativeBenchmarkPct,
+    outperformance,
+    risk,
+    summary,
+    disclaimer:
+      "Simulation basée sur des données historiques avec rebalancement annuel. " +
+      "Les performances passées ne préjugent pas des performances futures. " +
+      "Portefeuille equal-weighted, rendements total return (dividendes inclus). " +
+      "Le benchmark est le S&P 500 Total Return (dividendes réinvestis). Sans frais de transaction ni fiscalité. " +
+      "Le classement utilise les scores fondamentaux SEC (sans données de marché pour le ranking).",
+  };
+}
+
+function buildRollingSummary(
+  strategyId: StrategyId,
+  startYear: number,
+  endYear: number,
+  numYears: number,
+  topN: number,
+  cumulativeReturnPct: number,
+  cumulativeBenchmarkPct: number | null,
+  risk: RiskMetrics,
+): string {
+  const label = STRATEGY_LABELS[strategyId];
+  let text = `Stratégie ${label} avec rebalancement annuel (top ${topN}), de ${startYear} à ${endYear} (${numYears} ans). `;
+
+  text += `Rendement cumulé : ${cumulativeReturnPct >= 0 ? "+" : ""}${cumulativeReturnPct}%`;
+
+  if (cumulativeBenchmarkPct !== null) {
+    text += ` vs ${cumulativeBenchmarkPct >= 0 ? "+" : ""}${cumulativeBenchmarkPct}% pour le S&P 500`;
+  }
+
+  text += `. CAGR : ${risk.cagr >= 0 ? "+" : ""}${risk.cagr}%`;
+
+  if (risk.benchmarkCagr !== null) {
+    text += ` vs ${risk.benchmarkCagr >= 0 ? "+" : ""}${risk.benchmarkCagr}% (S&P 500)`;
+  }
+
+  text += `. La stratégie a battu le benchmark ${risk.winRate}% des années.`;
+
+  return text;
+}
+
+function emptyRollingResult(
+  strategyId: StrategyId,
+  startYear: number,
+  endYear: number,
+  topN: number,
+  message: string,
+): RollingBacktestResult {
+  return {
+    strategyId,
+    strategyLabel: STRATEGY_LABELS[strategyId],
+    startYear,
+    endYear,
+    topN,
+    slices: [],
+    cumulativeReturnPct: 0,
+    cumulativeBenchmarkPct: null,
+    outperformance: null,
+    risk: {
+      cagr: 0, benchmarkCagr: null, volatility: 0, sharpeRatio: null,
+      maxDrawdown: 0, winRate: 0,
+      bestYear: { year: 0, returnPct: 0 },
+      worstYear: { year: 0, returnPct: 0 },
+    },
+    summary: message,
+    disclaimer: "",
+  };
 }
