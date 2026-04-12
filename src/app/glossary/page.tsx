@@ -95,7 +95,7 @@ const METRICS: readonly MetricDefinition[] = [
     usedIn: ["Warren Buffett (Qualité, 40%)", "Growth (Rentabilité, 25%)"],
     source: "SEC/EDGAR (net_income / (shareholders_equity + total_debt)).",
     warning:
-      "Un ROIC supérieur à 15% est considéré excellent. Contrairement au ROE, le ROIC n'est pas gonflé artificiellement par un levier financier élevé.",
+      "Un ROIC superieur a 15% est considere excellent. Le ROIC n'est pas gonfle artificiellement par un levier financier eleve, car il mesure la rentabilite de tout le capital investi.",
   },
   {
     id: "operating-margin",

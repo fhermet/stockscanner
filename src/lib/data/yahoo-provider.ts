@@ -270,8 +270,7 @@ async function fetchStock(ticker: string): Promise<Stock | undefined> {
     }
 
     // --- Yahoo fallback: only for tickers without SEC data (European stocks) ---
-    // When SEC data exists, don't override with Yahoo — SEC nulls are intentional
-    // (e.g. ROE/D/E null because equity is negative).
+    // When SEC data exists, don't override with Yahoo — SEC nulls are intentional.
     const hasSec = secData !== null && secData.annuals.length > 0;
     if (operatingMargin === null && !hasSec) {
       const marginRaw = nullableNum(financial?.operatingMargins);

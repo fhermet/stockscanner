@@ -1,7 +1,7 @@
 /**
  * Multi-currency formatting using Intl.NumberFormat.
  *
- * Scoring note: the scoring engine uses only ratios (PER, ROE, margins,
+ * Scoring note: the scoring engine uses only ratios (PER, ROIC, margins,
  * growth rates) and relative metrics. It is NOT biased by currency.
  * Market cap and FCF are used as ratios (FCF/marketCap) so currency
  * cancels out. The only currency-sensitive displays are price and

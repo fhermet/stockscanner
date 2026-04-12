@@ -263,7 +263,7 @@ export default function StrategiesPage() {
           href="/glossary"
           className="text-brand-600 hover:text-brand-700 transition-colors font-medium"
         >
-          Voir le glossaire des métriques financières (PER, PEG, ROE, etc.) &rarr;
+          Voir le glossaire des métriques financières (PER, PEG, ROIC, etc.) &rarr;
         </Link>
       </p>
 
@@ -366,7 +366,7 @@ export default function StrategiesPage() {
             linéairement en dehors.
           </p>
           <p>
-            <strong>Ajustement sectoriel</strong> — Certaines métriques (ROE, marge, PER)
+            <strong>Ajustement sectoriel</strong> — Certaines métriques (marge, PER)
             sont ajustées en fonction de la médiane du secteur de l&apos;action. Cela évite de
             pénaliser des secteurs structurellement différents (ex : les banques ont
             naturellement des marges plus faibles que les entreprises tech).
