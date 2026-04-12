@@ -45,7 +45,7 @@ const METRICS: readonly MetricDefinition[] = [
       "Indique combien d'années de bénéfices actuels il faudrait pour \"rembourser\" le prix de l'action. Un PER bas suggère une valorisation attractive, un PER élevé reflète des attentes de croissance forte.",
     example:
       "Apple à 150$ avec un EPS de 6$ → PER = 25. Il faut 25 années de bénéfices constants pour couvrir le prix.",
-    usedIn: ["Warren Buffett (Valorisation, 30%)"],
+    usedIn: ["Warren Buffett (Valorisation, 25% — PER 50%)"],
     source: "Cours : Yahoo Finance. EPS dilué : SEC/EDGAR.",
     warning:
       "Le PER est trompeur pour les entreprises en forte croissance (PER élevé justifié) ou en perte (PER négatif ou non défini). Toujours le lire en contexte sectoriel.",
@@ -92,7 +92,7 @@ const METRICS: readonly MetricDefinition[] = [
       "Mesure la rentabilité de tout le capital investi dans l'entreprise (fonds propres + dette), pas seulement les capitaux propres. C'est la métrique de rentabilité privilégiée par Warren Buffett car elle fonctionne même quand les capitaux propres sont négatifs (buybacks massifs comme chez McDonald's ou Starbucks).",
     example:
       "Résultat net : 8.56 Mds$, Capitaux propres : -1.8 Mds$, Dette : 40 Mds$ → Capital investi = 38.2 Mds$ → ROIC = 22.4%. McDonald's est très rentable malgré une equity négative.",
-    usedIn: ["Warren Buffett (Qualité, 40%)", "Growth (Rentabilité, 25%)"],
+    usedIn: ["Warren Buffett (Qualité, 35% — ROIC 30%)", "Growth (Rentabilité, 25%)"],
     source: "SEC/EDGAR (net_income / (shareholders_equity + total_debt)).",
     warning:
       "Un ROIC superieur a 15% est considere excellent. Le ROIC n'est pas gonfle artificiellement par un levier financier eleve, car il mesure la rentabilite de tout le capital investi.",
@@ -109,7 +109,7 @@ const METRICS: readonly MetricDefinition[] = [
     example:
       "CA : 245 Mds$, Résultat opérationnel : 109 Mds$ → Marge = 44.5%. Typique d'une entreprise software à forte valeur ajoutée.",
     usedIn: [
-      "Warren Buffett (Qualité, 40%)",
+      "Warren Buffett (Qualité, 35% — Marge 25%)",
       "Peter Lynch (Qualité, 25%)",
       "Growth (Rentabilité, 25%)",
     ],
@@ -165,7 +165,7 @@ const METRICS: readonly MetricDefinition[] = [
     example:
       "Dette : 40 Mds$, Cash-flow opérationnel : 10.5 Mds$ → Debt/OCF = 3.8x. McDonald's peut rembourser sa dette en moins de 4 ans de cash-flow.",
     usedIn: [
-      "Warren Buffett (Solidité, 30%)",
+      "Warren Buffett (Solidité, 25% — Dette/CFO 50%)",
       "Peter Lynch (Qualité, 25%)",
       "Dividende (Stabilité, 35%)",
     ],
@@ -185,7 +185,7 @@ const METRICS: readonly MetricDefinition[] = [
       "Représente la trésorerie réellement disponible après avoir financé les opérations et les investissements nécessaires. C'est l'argent que l'entreprise peut utiliser pour rembourser sa dette, verser des dividendes, racheter des actions ou investir dans de nouvelles opportunités.",
     example:
       "Cash flow opérationnel : 118 Mds$, CapEx : 44 Mds$ → FCF = 74 Mds$.",
-    usedIn: ["Warren Buffett (Qualité + Solidité)"],
+    usedIn: ["Warren Buffett (Qualité + Solidité + Valorisation)"],
     source: "SEC/EDGAR (operating_cash_flow - capital_expenditure).",
   },
   {
@@ -199,8 +199,98 @@ const METRICS: readonly MetricDefinition[] = [
       "Rapporte le cash flow libre à la valeur de marché de l'entreprise. Un FCF yield élevé signifie que l'entreprise génère beaucoup de cash par rapport à sa valorisation. C'est un indicateur de \"valeur réelle\" indépendant du bénéfice comptable.",
     example:
       "FCF : 74 Mds$, Market Cap : 3 119 Mds$ → FCF Yield = 2.37%.",
-    usedIn: ["Warren Buffett (Qualité, 40%)"],
+    usedIn: ["Historique (score complet avec prix)"],
     source: "FCF : SEC/EDGAR. Capitalisation : prix Yahoo × actions SEC.",
+  },
+  {
+    id: "fcf-conversion",
+    name: "Conversion en cash (FCF / Résultat net)",
+    nameEn: "Free Cash Flow Conversion",
+    category: "cash",
+    formula: "FCF Conversion = (Free Cash Flow / Résultat net) × 100",
+    unit: "Pourcentage (%)",
+    interpretation:
+      "Mesure la qualité des benefices : quelle part du resultat net se transforme en cash reel. Un taux proche de 100% ou superieur indique que les benefices comptables sont bien soutenus par du cash. Un taux tres inferieur peut signaler des manipulations comptables ou des besoins en fonds de roulement importants.",
+    example:
+      "FCF : 74 Mds$, Resultat net : 88 Mds$ → Conversion = 84%. Excellent : les benefices se transforment presque integralement en cash.",
+    usedIn: ["Warren Buffett (Qualité, 35% — Conversion 20%)"],
+    source: "SEC/EDGAR (free_cash_flow / net_income).",
+    warning: "Plafonné à 120% pour éviter les scores extrêmes. Score de 0 si le résultat net est négatif.",
+  },
+  {
+    id: "roic-stability",
+    name: "Stabilité du ROIC",
+    nameEn: "ROIC Stability (Standard Deviation)",
+    category: "profitability",
+    formula: "Stabilité ROIC = écart-type du ROIC sur 5 ans",
+    unit: "Points de pourcentage",
+    interpretation:
+      "Mesure la volatilité de la rentabilité du capital investi. Un ecart-type faible (< 3%) indique un business previsible et resilient. Un ecart-type eleve (> 10%) revele une rentabilite instable, typique des entreprises cycliques ou en restructuration.",
+    example:
+      "ROIC 5 ans : 22%, 24%, 23%, 25%, 22% → Ecart-type = 1.2%. Tres stable.",
+    usedIn: ["Warren Buffett (Qualité 25% + Durabilité 35%)"],
+    source: "SEC/EDGAR (net_income / invested_capital, historique 5 ans).",
+    warning: "Nécessite au moins 3 années de données. Score inversé : faible volatilité = bon score.",
+  },
+  {
+    id: "interest-coverage",
+    name: "Couverture des intérêts (Interest Coverage)",
+    nameEn: "Interest Coverage Ratio",
+    category: "solvency",
+    formula: "Interest Coverage = EBIT / Charges d'intérêts",
+    unit: "Multiple (sans unité)",
+    interpretation:
+      "Mesure la capacite de l'entreprise a payer ses charges d'interets avec son resultat operationnel. Un ratio superieur a 8x est confortable, entre 4x et 8x est correct, en dessous de 3x il y a un risque de defaut en cas de retournement.",
+    example:
+      "EBIT : 109 Mds$, Charges d'interets : 2.3 Mds$ → Coverage = 47x. Microsoft n'a aucune difficulte a servir sa dette.",
+    usedIn: ["Warren Buffett (Solidité, 25% — Interest Coverage 30%)"],
+    source: "SEC/EDGAR (operating_income / interest_expense).",
+    warning: "Si les charges d'interets sont nulles avec un EBIT positif, le score est maximal (pas de dette a servir). Plafonne a 20x pour la normalisation.",
+  },
+  {
+    id: "ev-to-ebit",
+    name: "EV/EBIT (Enterprise Value / EBIT)",
+    nameEn: "Enterprise Value to EBIT",
+    category: "valuation",
+    formula: "EV/EBIT = Valeur d'entreprise / Résultat opérationnel",
+    unit: "Multiple (sans unité)",
+    interpretation:
+      "Compare la valeur totale de l'entreprise (incluant la dette) a son resultat operationnel. Plus fiable que le PER car il est insensible a la structure de financement et aux elements exceptionnels. Un ratio bas indique une valorisation attractive.",
+    example:
+      "EV : 3 200 Mds$, EBIT : 109 Mds$ → EV/EBIT = 29.4x. Eleve pour du tech, mais justifie par la croissance.",
+    usedIn: ["Warren Buffett (Valorisation, 25% — EV/EBIT 30%)"],
+    source: "Enterprise Value : Yahoo Finance. EBIT : SEC/EDGAR (operating_income).",
+    warning: "Ajuste par rapport au secteur ET a la moyenne historique 5 ans de l'action. Plage : 40x → 8x (inverse).",
+  },
+  {
+    id: "price-to-fcf",
+    name: "Price/FCF (Cours / Cash flow libre)",
+    nameEn: "Price to Free Cash Flow",
+    category: "valuation",
+    formula: "Price/FCF = Capitalisation boursière / Free Cash Flow",
+    unit: "Multiple (sans unité)",
+    interpretation:
+      "Mesure combien le marche paie pour chaque dollar de cash flow libre. Similaire au PER mais base sur le cash reel plutot que le benefice comptable. Un ratio bas indique une valorisation attractive en termes de generation de cash.",
+    example:
+      "Market Cap : 3 100 Mds$, FCF : 70 Mds$ → Price/FCF = 44x.",
+    usedIn: ["Warren Buffett (Valorisation, 25% — Price/FCF 20%)"],
+    source: "Market Cap et FCF : Yahoo Finance + SEC/EDGAR.",
+    warning: "Non defini si le FCF est negatif. Ajuste par rapport au secteur ET a la moyenne historique 5 ans. Plage : 40x → 8x (inverse).",
+  },
+  {
+    id: "revenue-cagr-5y",
+    name: "Croissance du CA (CAGR 5 ans)",
+    nameEn: "5-Year Revenue CAGR",
+    category: "growth",
+    formula: "CAGR = (CA année N / CA année N-5)^(1/5) - 1",
+    unit: "Pourcentage (%)",
+    interpretation:
+      "Mesure le taux de croissance annuel compose du chiffre d'affaires sur 5 ans. Favorise une croissance reguliere et soutenable plutot que l'hypercroissance ponctuelle. Un CAGR de 8%+ est bon, 15%+ est excellent.",
+    example:
+      "CA 2019 : 143 Mds$, CA 2024 : 245 Mds$ → CAGR = 11.4%. Croissance forte et reguliere.",
+    usedIn: ["Warren Buffett (Durabilité, 15% — CAGR CA 65%)"],
+    source: "SEC/EDGAR (revenue, historique 5 ans).",
+    warning: "Un CAGR negatif donne un score faible ou nul. Nécessite au minimum 2 années de données.",
   },
   // --- Dividende ---
   {

@@ -60,10 +60,10 @@ describe("normalizeOptimalRange", () => {
 });
 
 describe("scoreMetric", () => {
-  it("scores ROIC correctly", () => {
+  it("scores ROIC correctly (range 0-40%)", () => {
     expect(scoreMetric("roic", 0)).toBe(0);
-    expect(scoreMetric("roic", 15)).toBe(50);
-    expect(scoreMetric("roic", 30)).toBe(100);
+    expect(scoreMetric("roic", 20)).toBe(50);
+    expect(scoreMetric("roic", 40)).toBe(100);
     expect(scoreMetric("roic", 60)).toBe(100); // clamped
   });
 
@@ -89,8 +89,8 @@ describe("scoreMetric with null", () => {
   });
 
   it("still scores valid numbers correctly", () => {
-    expect(scoreMetric("roic", 15)).toBe(50);
-    expect(scoreMetric("roic", 30)).toBe(100);
+    expect(scoreMetric("roic", 20)).toBe(50);
+    expect(scoreMetric("roic", 40)).toBe(100);
     expect(scoreMetric("roic", 0)).toBe(0);
   });
 });

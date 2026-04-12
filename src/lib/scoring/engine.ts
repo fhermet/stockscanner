@@ -2,6 +2,7 @@ import { Stock, StrategyId, StrategyScore, SubScore, ScoredStock } from "../type
 import { computeWeightedTotal } from "./utils";
 import { generateExplanations } from "./explain";
 import { computeDataCompleteness, computeConfidence } from "./completeness";
+import { applyBuffettPreFilters } from "./pre-filters";
 
 /**
  * Interface que chaque strategie doit implementer.
@@ -39,6 +40,21 @@ export function scoreStock(
 ): StrategyScore {
   const dataCompleteness = computeDataCompleteness(stock, strategyId);
   const confidence = computeConfidence(dataCompleteness);
+
+  // --- Buffett v2 pre-filters: exclude before scoring ---
+  if (strategyId === "buffett") {
+    const preFilter = applyBuffettPreFilters(stock);
+    if (!preFilter.passed) {
+      const scorer = getScorer(strategyId);
+      const subScores = scorer.score(stock);
+      const explanations = preFilter.failedReasons.map((reason) => ({
+        text: reason,
+        type: "negative" as const,
+        metric: "Pre-filtre",
+      }));
+      return { strategyId, total: null, subScores, explanations, confidence, dataCompleteness };
+    }
+  }
 
   const scorer = getScorer(strategyId);
   const subScores = scorer.score(stock);

@@ -76,46 +76,114 @@ function computeDebtToOcfFromMerged(m: MergedAnnual): number | null {
 
 // --- Scoring per strategy ---
 
-function scoreBuffettHistorical(annual: SecAnnual): HistoricalStrategyScore {
+/**
+ * Compute ROIC stability (std dev) over annuals up to currentYear.
+ */
+function computeRoicStability(
+  currentYear: number,
+  allAnnuals: readonly SecAnnual[],
+): number | null {
+  const recent = allAnnuals
+    .filter((a) => a.fiscal_year <= currentYear)
+    .slice(-5);
+  const roicValues: number[] = [];
+  for (const a of recent) {
+    const r = computeRoicFromFundamentals(a.fundamentals);
+    if (r !== null) roicValues.push(r * 100);
+  }
+  if (roicValues.length < 3) return null;
+  const mean = roicValues.reduce((a, b) => a + b, 0) / roicValues.length;
+  const variance = roicValues.reduce((a, v) => a + (v - mean) ** 2, 0) / roicValues.length;
+  return Math.sqrt(variance);
+}
+
+/**
+ * Compute revenue CAGR over annuals up to currentYear.
+ */
+function computeRevenueCagr(
+  currentYear: number,
+  allAnnuals: readonly SecAnnual[],
+): number | null {
+  const recent = allAnnuals
+    .filter((a) => a.fiscal_year <= currentYear)
+    .slice(-5);
+  if (recent.length < 2) return null;
+  const first = recent[0].fundamentals.revenue;
+  const last = recent[recent.length - 1].fundamentals.revenue;
+  if (first === null || first <= 0 || last === null || last <= 0) return null;
+  const years = recent.length - 1;
+  return (Math.pow(last / first, 1 / years) - 1) * 100;
+}
+
+function scoreBuffettHistorical(
+  annual: SecAnnual,
+  allAnnuals: readonly SecAnnual[],
+): HistoricalStrategyScore {
   const { ratios, fundamentals } = annual;
 
-  // Quality (partial): ROIC + margin available, FCF yield needs marketCap
+  // ===== Quality (35%) =====
   const roic = computeRoicFromFundamentals(fundamentals);
   const roicScore = roic !== null ? (scoreMetric("roic", roic * 100) ?? 0) : 0;
   const marginScore = ratios.operating_margin !== null
     ? (scoreMetric("operatingMargin", ratios.operating_margin * 100) ?? 0)
     : 0;
-  const qualityAvailable = roic !== null || ratios.operating_margin !== null;
+
+  // FCF Conversion: FCF / Net Income
+  let fcfConvScore = 0;
+  let fcfConvAvailable = false;
+  if (fundamentals.net_income !== null && fundamentals.net_income > 0 && ratios.free_cash_flow !== null) {
+    const conv = Math.min((ratios.free_cash_flow / fundamentals.net_income) * 100, 120);
+    fcfConvScore = scoreMetric("fcfConversion", Math.max(0, conv)) ?? 0;
+    fcfConvAvailable = true;
+  } else if (fundamentals.net_income !== null && fundamentals.net_income <= 0) {
+    fcfConvScore = 0;
+    fcfConvAvailable = true;
+  }
+
+  // ROIC Stability
+  const roicStab = computeRoicStability(annual.fiscal_year, allAnnuals);
+  const roicStabScore = roicStab !== null ? (scoreMetric("roicStability", roicStab) ?? 0) : 0;
 
   const qualityItems: { score: number; weight: number }[] = [];
-  if (roic !== null) qualityItems.push({ score: roicScore, weight: 0.4 });
-  if (ratios.operating_margin !== null) qualityItems.push({ score: marginScore, weight: 0.35 });
-  // FCF yield excluded (needs marketCap)
+  if (roic !== null) qualityItems.push({ score: roicScore, weight: 0.3 });
+  if (ratios.operating_margin !== null) qualityItems.push({ score: marginScore, weight: 0.25 });
+  if (fcfConvAvailable) qualityItems.push({ score: fcfConvScore, weight: 0.2 });
+  if (roicStab !== null) qualityItems.push({ score: roicStabScore, weight: 0.25 });
+  const qualityAvailable = qualityItems.length > 0;
+  const qualityValue = qualityAvailable ? weightedAverage(qualityItems) : 0;
 
-  const qualityValue = qualityItems.length > 0 ? weightedAverage(qualityItems) : 0;
-
-  // Strength (full): Debt/OCF + FCF positive
+  // ===== Strength (25%) =====
   const debtToOcf = computeDebtToOcfFromFundamentals(fundamentals);
-  const debtScore = debtToOcf !== null
-    ? (scoreMetric("debtToOcf", debtToOcf) ?? 0)
-    : 0;
+  const debtScore = debtToOcf !== null ? (scoreMetric("debtToOcf", debtToOcf) ?? 0) : 0;
+  // Interest coverage: not available in SEC data (no interest_expense field)
   const fcfPosScore = ratios.free_cash_flow !== null
     ? (ratios.free_cash_flow > 0 ? 100 : 10)
     : 0;
-  const strengthAvailable = debtToOcf !== null || ratios.free_cash_flow !== null;
 
   const strengthItems: { score: number; weight: number }[] = [];
-  if (debtToOcf !== null) strengthItems.push({ score: debtScore, weight: 0.6 });
-  if (ratios.free_cash_flow !== null) strengthItems.push({ score: fcfPosScore, weight: 0.4 });
+  if (debtToOcf !== null) strengthItems.push({ score: debtScore, weight: 0.5 });
+  if (ratios.free_cash_flow !== null) strengthItems.push({ score: fcfPosScore, weight: 0.2 });
+  const strengthAvailable = strengthItems.length > 0;
+  const strengthValue = strengthAvailable ? weightedAverage(strengthItems) : 0;
 
-  const strengthValue = strengthItems.length > 0 ? weightedAverage(strengthItems) : 0;
+  // ===== Valuation (25%): excluded without market price =====
 
-  // Valuation: excluded (PER needs market price)
+  // ===== Durability (15%) =====
+  const durRoicStabScore = roicStabScore;
+  const cagr = computeRevenueCagr(annual.fiscal_year, allAnnuals);
+  const cagrScore = cagr !== null ? (scoreMetric("revenueCagr", Math.max(0, cagr)) ?? 0) : 0;
+
+  const durItems: { score: number; weight: number }[] = [];
+  if (roicStab !== null) durItems.push({ score: durRoicStabScore, weight: 0.35 });
+  if (cagr !== null) durItems.push({ score: cagrScore, weight: 0.65 });
+  const durabilityAvailable = durItems.length > 0;
+  const durabilityValue = durabilityAvailable ? weightedAverage(durItems) : 0;
 
   const subScores: HistoricalSubScore[] = [
-    { name: "quality", label: "Qualité", value: qualityValue, weight: 0.4, available: qualityAvailable },
-    { name: "strength", label: "Solidité financière", value: strengthValue, weight: 0.3, available: strengthAvailable },
-    { name: "valuation", label: "Valorisation", value: 0, weight: 0.3, available: false },
+    { name: "quality", label: "Qualité", value: qualityValue, weight: 0.35, available: qualityAvailable },
+    { name: "strength", label: "Solidité financière", value: strengthValue, weight: 0.25, available: strengthAvailable },
+    { name: "valuation", label: "Valorisation", value: 0, weight: 0.25, available: false },
+    { name: "durability", label: "Durabilité", value: durabilityValue, weight: 0.15, available: durabilityAvailable },
   ];
 
   const available = subScores.filter((s) => s.available);
@@ -130,7 +198,7 @@ function scoreBuffettHistorical(annual: SecAnnual): HistoricalStrategyScore {
     total,
     subScores,
     coverage: totalAvailableWeight,
-    excludedSubScores: ["Valorisation (PER — données de marché requises)"],
+    excludedSubScores: ["Valorisation (données de marché requises)"],
     isPartial: true,
   };
 }
@@ -331,7 +399,7 @@ export function computeHistoricalScores(
   return data.annuals.map((annual) => ({
     fiscalYear: annual.fiscal_year,
     scores: [
-      scoreBuffettHistorical(annual),
+      scoreBuffettHistorical(annual, data.annuals),
       scoreDividendHistorical(annual, data.annuals),
       scoreGrowthHistorical(annual),
       scoreLynchHistorical(annual),
@@ -347,8 +415,8 @@ export function getStrategyCoverage(strategyId: StrategyId): {
   const configs: Record<StrategyId, { label: string; coverage: string; excluded: readonly string[] }> = {
     buffett: {
       label: "Historique fondamental Warren Buffett",
-      coverage: "70%",
-      excluded: ["Valorisation (PER — données de marché requises)"],
+      coverage: "75%",
+      excluded: ["Valorisation (PER + EV/EBIT + P/FCF — données de marché requises)"],
     },
     dividend: {
       label: "Historique fondamental Dividende",
@@ -376,38 +444,130 @@ export function getStrategyCoverage(strategyId: StrategyId): {
 // FULL HISTORICAL SCORING (SEC + Yahoo prices)
 // =============================================================================
 
-function scoreBuffettFull(m: MergedAnnual): HistoricalStrategyScore {
-  // Quality: ROIC + margin + FCF yield
+function computeRoicStabilityFromMerged(
+  currentYear: number,
+  allAnnuals: readonly MergedAnnual[],
+): number | null {
+  const recent = allAnnuals.filter((a) => a.fiscalYear <= currentYear).slice(-5);
+  const roicValues: number[] = [];
+  for (const a of recent) {
+    const r = computeRoicFromMerged(a);
+    if (r !== null) roicValues.push(r * 100);
+  }
+  if (roicValues.length < 3) return null;
+  const mean = roicValues.reduce((a, b) => a + b, 0) / roicValues.length;
+  const variance = roicValues.reduce((a, v) => a + (v - mean) ** 2, 0) / roicValues.length;
+  return Math.sqrt(variance);
+}
+
+function computeRevenueCagrFromMerged(
+  currentYear: number,
+  allAnnuals: readonly MergedAnnual[],
+): number | null {
+  const recent = allAnnuals.filter((a) => a.fiscalYear <= currentYear).slice(-5);
+  if (recent.length < 2) return null;
+  const first = recent[0].revenue;
+  const last = recent[recent.length - 1].revenue;
+  if (first === null || first <= 0 || last === null || last <= 0) return null;
+  const years = recent.length - 1;
+  return (Math.pow(last / first, 1 / years) - 1) * 100;
+}
+
+function scoreBuffettFull(m: MergedAnnual, allAnnuals: readonly MergedAnnual[]): HistoricalStrategyScore {
+  // ===== Quality (35%) =====
   const roic = computeRoicFromMerged(m);
   const roicScore = roic !== null ? (scoreMetric("roic", roic * 100) ?? 0) : 0;
   const marginScore = m.operatingMargin !== null ? (scoreMetric("operatingMargin", m.operatingMargin * 100) ?? 0) : 0;
-  const fcfYieldScore = m.fcfYield !== null ? (scoreMetric("fcfYield", m.fcfYield) ?? 0) : 0;
+
+  // FCF Conversion
+  let fcfConvScore = 0;
+  let fcfConvAvail = false;
+  if (m.netIncome !== null && m.netIncome > 0 && m.freeCashFlow !== null) {
+    const conv = Math.min((m.freeCashFlow / m.netIncome) * 100, 120);
+    fcfConvScore = scoreMetric("fcfConversion", Math.max(0, conv)) ?? 0;
+    fcfConvAvail = true;
+  } else if (m.netIncome !== null && m.netIncome <= 0) {
+    fcfConvScore = 0;
+    fcfConvAvail = true;
+  }
+
+  // ROIC Stability
+  const roicStab = computeRoicStabilityFromMerged(m.fiscalYear, allAnnuals);
+  const roicStabScore = roicStab !== null ? (scoreMetric("roicStability", roicStab) ?? 0) : 0;
 
   const qualityItems: { score: number; weight: number }[] = [];
-  if (roic !== null) qualityItems.push({ score: roicScore, weight: 0.4 });
-  if (m.operatingMargin !== null) qualityItems.push({ score: marginScore, weight: 0.35 });
-  if (m.fcfYield !== null) qualityItems.push({ score: fcfYieldScore, weight: 0.25 });
+  if (roic !== null) qualityItems.push({ score: roicScore, weight: 0.3 });
+  if (m.operatingMargin !== null) qualityItems.push({ score: marginScore, weight: 0.25 });
+  if (fcfConvAvail) qualityItems.push({ score: fcfConvScore, weight: 0.2 });
+  if (roicStab !== null) qualityItems.push({ score: roicStabScore, weight: 0.25 });
   const qualityAvailable = qualityItems.length > 0;
   const qualityValue = qualityAvailable ? weightedAverage(qualityItems) : 0;
 
-  // Strength: Debt/OCF + FCF positive
+  // ===== Strength (25%) =====
   const debtToOcf = computeDebtToOcfFromMerged(m);
   const debtScore = debtToOcf !== null ? (scoreMetric("debtToOcf", debtToOcf) ?? 0) : 0;
   const fcfPosScore = m.freeCashFlow !== null ? (m.freeCashFlow > 0 ? 100 : 10) : 0;
+
+  // Interest Coverage from merged data
+  let icScore = 0;
+  let icAvail = false;
+  if (m.operatingIncome !== null && m.interestExpense !== null && m.interestExpense > 0) {
+    const ic = m.operatingIncome / m.interestExpense;
+    icScore = ic >= 20 ? 100 : ic <= 0 ? 0 : (scoreMetric("interestCoverage", ic) ?? 0);
+    icAvail = true;
+  } else if (m.operatingIncome !== null && m.operatingIncome > 0 &&
+             (m.interestExpense === null || m.interestExpense === 0)) {
+    icScore = 100; // no debt cost
+    icAvail = true;
+  }
+
   const strengthItems: { score: number; weight: number }[] = [];
-  if (debtToOcf !== null) strengthItems.push({ score: debtScore, weight: 0.6 });
-  if (m.freeCashFlow !== null) strengthItems.push({ score: fcfPosScore, weight: 0.4 });
+  if (debtToOcf !== null) strengthItems.push({ score: debtScore, weight: 0.5 });
+  if (icAvail) strengthItems.push({ score: icScore, weight: 0.3 });
+  if (m.freeCashFlow !== null) strengthItems.push({ score: fcfPosScore, weight: 0.2 });
   const strengthAvailable = strengthItems.length > 0;
   const strengthValue = strengthAvailable ? weightedAverage(strengthItems) : 0;
 
-  // Valuation: PER
+  // ===== Valuation (25%): PER + EV/EBIT + P/FCF =====
   const perScore = m.per !== null ? (scoreMetric("per", m.per) ?? 0) : 0;
-  const valuationAvailable = m.per !== null;
+  // EV/EBIT and P/FCF: computed from merged data if available
+  let evEbitScore = 0;
+  let evEbitAvail = false;
+  if (m.marketCap !== null && m.totalDebt !== null && m.operatingIncome !== null && m.operatingIncome > 0) {
+    const ev = m.marketCap + (m.totalDebt ?? 0); // simplified EV
+    const evToEbit = ev / m.operatingIncome;
+    evEbitScore = scoreMetric("evToEbit", evToEbit) ?? 0;
+    evEbitAvail = true;
+  }
+  let pFcfScore = 0;
+  let pFcfAvail = false;
+  if (m.marketCap !== null && m.freeCashFlow !== null && m.freeCashFlow > 0) {
+    const pToFcf = m.marketCap / m.freeCashFlow;
+    pFcfScore = scoreMetric("priceToFcf", pToFcf) ?? 0;
+    pFcfAvail = true;
+  }
+
+  const valItems: { score: number; weight: number }[] = [];
+  if (m.per !== null) valItems.push({ score: perScore, weight: 0.5 });
+  if (evEbitAvail) valItems.push({ score: evEbitScore, weight: 0.3 });
+  if (pFcfAvail) valItems.push({ score: pFcfScore, weight: 0.2 });
+  const valuationAvailable = valItems.length > 0;
+  const valuationValue = valuationAvailable ? weightedAverage(valItems) : 0;
+
+  // ===== Durability (15%) =====
+  const cagr = computeRevenueCagrFromMerged(m.fiscalYear, allAnnuals);
+  const cagrScore = cagr !== null ? (scoreMetric("revenueCagr", Math.max(0, cagr)) ?? 0) : 0;
+  const durItems: { score: number; weight: number }[] = [];
+  if (roicStab !== null) durItems.push({ score: roicStabScore, weight: 0.35 });
+  if (cagr !== null) durItems.push({ score: cagrScore, weight: 0.65 });
+  const durabilityAvailable = durItems.length > 0;
+  const durabilityValue = durabilityAvailable ? weightedAverage(durItems) : 0;
 
   const subScores: HistoricalSubScore[] = [
-    { name: "quality", label: "Qualité", value: qualityValue, weight: 0.4, available: qualityAvailable },
-    { name: "strength", label: "Solidité financière", value: strengthValue, weight: 0.3, available: strengthAvailable },
-    { name: "valuation", label: "Valorisation", value: perScore, weight: 0.3, available: valuationAvailable },
+    { name: "quality", label: "Qualité", value: qualityValue, weight: 0.35, available: qualityAvailable },
+    { name: "strength", label: "Solidité financière", value: strengthValue, weight: 0.25, available: strengthAvailable },
+    { name: "valuation", label: "Valorisation", value: valuationValue, weight: 0.25, available: valuationAvailable },
+    { name: "durability", label: "Durabilité", value: durabilityValue, weight: 0.15, available: durabilityAvailable },
   ];
 
   const available = subScores.filter((s) => s.available);
@@ -622,7 +782,7 @@ export function computeFullHistoricalScores(
   return merged.annuals.map((m) => ({
     fiscalYear: m.fiscalYear,
     scores: [
-      scoreBuffettFull(m),
+      scoreBuffettFull(m, merged.annuals),
       scoreDividendFull(m, merged.annuals),
       scoreGrowthFull(m),
       scoreLynchFull(m),

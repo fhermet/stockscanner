@@ -114,6 +114,7 @@ describe("mergeHistory", () => {
           operating_cash_flow: 87000000000,
           capital_expenditure: 28000000000,
           operating_income: 88000000000,
+          interest_expense: 2300000000,
           shares_outstanding: 7400000000,
         },
         ratios: {
@@ -144,6 +145,7 @@ describe("mergeHistory", () => {
           operating_cash_flow: 118000000000,
           capital_expenditure: 44000000000,
           operating_income: 109000000000,
+          interest_expense: 2300000000,
           shares_outstanding: 7400000000,
         },
         ratios: {

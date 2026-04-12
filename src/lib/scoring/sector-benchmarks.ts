@@ -15,6 +15,8 @@ export interface SectorBenchmark {
   readonly epsGrowth: number;
   readonly per: number;
   readonly dividendYield: number;
+  readonly evToEbit: number;
+  readonly priceToFcf: number;
 }
 
 export const SECTOR_BENCHMARKS: Record<string, SectorBenchmark> = {
@@ -24,6 +26,8 @@ export const SECTOR_BENCHMARKS: Record<string, SectorBenchmark> = {
     epsGrowth: 15,
     per: 30,
     dividendYield: 0.8,
+    evToEbit: 25,
+    priceToFcf: 28,
   },
   Sante: {
     operatingMargin: 20,
@@ -31,6 +35,8 @@ export const SECTOR_BENCHMARKS: Record<string, SectorBenchmark> = {
     epsGrowth: 8,
     per: 18,
     dividendYield: 2.0,
+    evToEbit: 16,
+    priceToFcf: 20,
   },
   Finance: {
     operatingMargin: 35,
@@ -38,6 +44,8 @@ export const SECTOR_BENCHMARKS: Record<string, SectorBenchmark> = {
     epsGrowth: 8,
     per: 14,
     dividendYield: 2.5,
+    evToEbit: 12,
+    priceToFcf: 14,
   },
   "Consommation de base": {
     operatingMargin: 15,
@@ -45,6 +53,8 @@ export const SECTOR_BENCHMARKS: Record<string, SectorBenchmark> = {
     epsGrowth: 6,
     per: 24,
     dividendYield: 2.8,
+    evToEbit: 20,
+    priceToFcf: 25,
   },
   "Consommation cyclique": {
     operatingMargin: 18,
@@ -52,6 +62,8 @@ export const SECTOR_BENCHMARKS: Record<string, SectorBenchmark> = {
     epsGrowth: 8,
     per: 22,
     dividendYield: 2.0,
+    evToEbit: 18,
+    priceToFcf: 22,
   },
   Telecom: {
     operatingMargin: 20,
@@ -59,6 +71,8 @@ export const SECTOR_BENCHMARKS: Record<string, SectorBenchmark> = {
     epsGrowth: 3,
     per: 12,
     dividendYield: 4.5,
+    evToEbit: 10,
+    priceToFcf: 12,
   },
   Immobilier: {
     operatingMargin: 30,
@@ -66,6 +80,8 @@ export const SECTOR_BENCHMARKS: Record<string, SectorBenchmark> = {
     epsGrowth: 5,
     per: 40,
     dividendYield: 4.0,
+    evToEbit: 25,
+    priceToFcf: 30,
   },
   Automobile: {
     operatingMargin: 10,
@@ -73,6 +89,8 @@ export const SECTOR_BENCHMARKS: Record<string, SectorBenchmark> = {
     epsGrowth: 15,
     per: 25,
     dividendYield: 0.5,
+    evToEbit: 15,
+    priceToFcf: 18,
   },
   Industrie: {
     operatingMargin: 14,
@@ -80,6 +98,8 @@ export const SECTOR_BENCHMARKS: Record<string, SectorBenchmark> = {
     epsGrowth: 10,
     per: 22,
     dividendYield: 1.5,
+    evToEbit: 18,
+    priceToFcf: 22,
   },
   Energie: {
     operatingMargin: 15,
@@ -87,6 +107,8 @@ export const SECTOR_BENCHMARKS: Record<string, SectorBenchmark> = {
     epsGrowth: 5,
     per: 12,
     dividendYield: 3.5,
+    evToEbit: 8,
+    priceToFcf: 10,
   },
   "Services publics": {
     operatingMargin: 20,
@@ -94,6 +116,8 @@ export const SECTOR_BENCHMARKS: Record<string, SectorBenchmark> = {
     epsGrowth: 4,
     per: 18,
     dividendYield: 3.5,
+    evToEbit: 14,
+    priceToFcf: 16,
   },
   Materiaux: {
     operatingMargin: 12,
@@ -101,6 +125,8 @@ export const SECTOR_BENCHMARKS: Record<string, SectorBenchmark> = {
     epsGrowth: 6,
     per: 16,
     dividendYield: 2.5,
+    evToEbit: 12,
+    priceToFcf: 15,
   },
 };
 
@@ -110,6 +136,8 @@ const DEFAULT_BENCHMARK: SectorBenchmark = {
   epsGrowth: 10,
   per: 20,
   dividendYield: 2.0,
+  evToEbit: 16,
+  priceToFcf: 20,
 };
 
 export function getSectorBenchmark(sector: string): SectorBenchmark {

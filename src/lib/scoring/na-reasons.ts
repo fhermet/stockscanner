@@ -107,6 +107,26 @@ export function explainNa(
     };
   }
 
+  // --- Interest coverage ---
+  if (missing.has("interest coverage")) {
+    return {
+      summary: "Couverture des interets non calculable",
+      detail:
+        "Le ratio de couverture des interets (EBIT / charges d'interets) n'est pas disponible. " +
+        "Les charges d'interets ne sont pas presentes dans les donnees SEC actuelles.",
+    };
+  }
+
+  // --- EV/EBIT ---
+  if (missing.has("EV/EBIT")) {
+    return {
+      summary: "EV/EBIT non calculable",
+      detail:
+        "Le ratio Enterprise Value / EBIT n'est pas calculable. " +
+        "La valeur d'entreprise ou le resultat operationnel est absent.",
+    };
+  }
+
   // --- Generic fallback ---
   const missingList = completeness.missing.join(", ");
   return {

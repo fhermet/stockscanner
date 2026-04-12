@@ -13,6 +13,7 @@ export interface SecFundamentals {
   readonly operating_cash_flow: number | null;
   readonly capital_expenditure: number | null;
   readonly operating_income: number | null;
+  readonly interest_expense: number | null;
   readonly shares_outstanding: number | null;
 }
 

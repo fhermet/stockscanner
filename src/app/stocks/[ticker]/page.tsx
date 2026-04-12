@@ -339,6 +339,41 @@ export default async function StockDetailPage({
                 : "N/A"
             }
           />
+          {strategyId === "buffett" && (
+            <>
+              <div className="pt-2">
+                <h2 className="text-sm font-semibold text-slate-500 uppercase tracking-wider">
+                  Buffett v2
+                </h2>
+              </div>
+              <MetricCard
+                label="EV/EBIT"
+                value={stock.evToEbit != null ? `${stock.evToEbit}x` : "N/A"}
+              />
+              <MetricCard
+                label="Interest Coverage"
+                value={
+                  stock.interestCoverage != null
+                    ? stock.interestCoverage >= 999
+                      ? "Pas de dette"
+                      : `${stock.interestCoverage}x`
+                    : "N/A"
+                }
+              />
+              <MetricCard
+                label="Stabilite ROIC"
+                value={stock.roicStability != null ? `${stock.roicStability}% ecart-type` : "N/A"}
+              />
+              <MetricCard
+                label="ROIC moyen 5 ans"
+                value={stock.roicAvg5y != null ? `${stock.roicAvg5y}%` : "N/A"}
+              />
+              <MetricCard
+                label="CAGR CA 5 ans"
+                value={stock.revenueCagr5y != null ? `${stock.revenueCagr5y}%` : "N/A"}
+              />
+            </>
+          )}
 
           <div className="pt-4 space-y-2">
             <Link

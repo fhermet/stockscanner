@@ -21,6 +21,7 @@ const SUBSCORE_LABELS: Record<string, string> = {
   quality: "qualite",
   strength: "solidite financiere",
   valuation: "valorisation",
+  durability: "durabilite",
   growth: "croissance",
   value: "valorisation (PEG)",
   momentum: "momentum de croissance",

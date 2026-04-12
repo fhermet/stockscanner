@@ -49,6 +49,7 @@ function makeSecData(ticker: string, years: number[]): SecTickerData {
         operating_cash_flow: 40000000000,
         capital_expenditure: 10000000000,
         operating_income: 35000000000,
+        interest_expense: 2300000000,
         shares_outstanding: 3000000000,
       },
       ratios: {

@@ -52,7 +52,7 @@ export function normalizeOptimalRange(
 // --- Presets de normalisation par metrique ---
 
 export const METRIC_RANGES = {
-  roic: { min: 0, max: 30 }, // 30%+ ROIC = world class (Buffett standard)
+  roic: { min: 0, max: 40 }, // 40%+ ROIC = elite (Buffett v2)
   operatingMargin: { min: 0, max: 40 },
   fcfYield: { min: 0, max: 10 },
   debtToOcf: { min: 10, max: 0 }, // inverse: bas = bon (years to repay)
@@ -62,6 +62,13 @@ export const METRIC_RANGES = {
   epsGrowth: { min: -5, max: 40 },
   dividendYield: { min: 0, max: 6 },
   payoutOptimal: { optMin: 30, optMax: 60, absMin: 0, absMax: 100 },
+  // --- Buffett v2 new metrics ---
+  interestCoverage: { min: 2, max: 20 }, // 2x → 20x, cap at 20x
+  evToEbit: { min: 40, max: 8 }, // inverse: bas = bon
+  priceToFcf: { min: 40, max: 8 }, // inverse: bas = bon
+  fcfConversion: { min: 0, max: 120 }, // FCF/Net Income %, cap at 120
+  roicStability: { min: 15, max: 2 }, // inverse: low std dev = stable = bon
+  revenueCagr: { min: 0, max: 15 }, // 0% → 15% CAGR
 } as const;
 
 export function scoreMetric(

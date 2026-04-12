@@ -27,6 +27,22 @@ export interface Stock {
   readonly dividendYield: number | null; // percentage
   readonly payoutRatio: number | null; // percentage
   readonly history: readonly YearlyData[];
+
+  // --- Buffett v2 metrics (optional for backward compat) ---
+  readonly netIncome?: number | null; // in billions
+  readonly operatingIncome?: number | null; // in billions (≈ EBIT)
+  readonly enterpriseValue?: number | null; // in billions
+  readonly interestCoverage?: number | null; // EBIT / interest expense
+  readonly evToEbit?: number | null; // Enterprise Value / EBIT
+  // Historical summary (computed from SEC 5yr history)
+  readonly roicStability?: number | null; // std dev of ROIC, percentage points
+  readonly revenueCagr5y?: number | null; // CAGR percentage
+  readonly roicAvg5y?: number | null; // average ROIC percentage
+  readonly fcfPositiveYears?: number; // count of positive FCF years (0-5)
+  // 5-year valuation averages for historical comparison
+  readonly perAvg5y?: number | null;
+  readonly evToEbitAvg5y?: number | null;
+  readonly priceToFcfAvg5y?: number | null;
 }
 
 // --- Strategy ---

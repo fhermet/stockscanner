@@ -4,6 +4,7 @@ import { DataProvider } from "./provider";
 import { createLogger } from "../logger";
 import { ALL_TICKERS } from "../tickers";
 import { getSecHistory, preloadSecData } from "./sec-history-provider";
+import { getYearlyPrices } from "./yahoo-history-provider";
 import type { SecAnnual } from "@/lib/types/sec-fundamentals";
 import type { YearlyData } from "../types";
 
@@ -113,6 +114,81 @@ function adjustHistoryForSplits(
       dividendPerShare: parseFloat((entry.dividendPerShare / factor).toFixed(4)),
     };
   });
+}
+
+/**
+ * Compute historical ROIC values (percentage) from SEC annuals.
+ * Uses last 5 years. ROIC = net_income / (equity + debt).
+ */
+function computeHistoricalRoics(annuals: readonly SecAnnual[]): number[] {
+  const recent = annuals.slice(-5);
+  const values: number[] = [];
+  for (const a of recent) {
+    const ni = a.fundamentals.net_income;
+    const eq = a.fundamentals.shareholders_equity ?? 0;
+    const debt = a.fundamentals.total_debt ?? 0;
+    const ic = eq + debt;
+    if (ni !== null && ic > 0) {
+      values.push((ni / ic) * 100);
+    }
+  }
+  return values;
+}
+
+/**
+ * Compute 5-year average valuation multiples from SEC annuals + yearly prices.
+ * Returns averages of PER, EV/EBIT, and Price/FCF over available years (min 2).
+ */
+interface ValuationAvg5y {
+  perAvg5y: number | null;
+  evToEbitAvg5y: number | null;
+  priceToFcfAvg5y: number | null;
+}
+
+function computeValuationAverages(
+  annuals: readonly SecAnnual[],
+  yearlyPrices: ReadonlyMap<number, number>,
+): ValuationAvg5y {
+  const recent = annuals.slice(-5);
+  const perValues: number[] = [];
+  const evEbitValues: number[] = [];
+  const pFcfValues: number[] = [];
+
+  for (const a of recent) {
+    const price = yearlyPrices.get(a.fiscal_year);
+    if (price === undefined || price <= 0) continue;
+
+    const f = a.fundamentals;
+    const shares = f.shares_outstanding;
+    if (shares === null || shares <= 0) continue;
+    const mktCap = price * shares;
+
+    // PER
+    if (f.eps_diluted !== null && f.eps_diluted > 0) {
+      perValues.push(price / f.eps_diluted);
+    }
+
+    // EV/EBIT — simplified EV = marketCap + totalDebt
+    if (f.operating_income !== null && f.operating_income > 0) {
+      const ev = mktCap + (f.total_debt ?? 0);
+      evEbitValues.push(ev / f.operating_income);
+    }
+
+    // Price/FCF
+    const fcf = a.ratios.free_cash_flow;
+    if (fcf !== null && fcf > 0) {
+      pFcfValues.push(mktCap / fcf);
+    }
+  }
+
+  const avg = (arr: number[]): number | null =>
+    arr.length >= 2 ? parseFloat((arr.reduce((a, b) => a + b, 0) / arr.length).toFixed(1)) : null;
+
+  return {
+    perAvg5y: avg(perValues),
+    evToEbitAvg5y: avg(evEbitValues),
+    priceToFcfAvg5y: avg(pFcfValues),
+  };
 }
 
 const SECTOR_MAP: Record<string, string> = {
@@ -320,6 +396,107 @@ async function fetchStock(ticker: string): Promise<Stock | undefined> {
       peg = parseFloat((per / epsGrowth).toFixed(2));
     }
 
+    // --- Buffett v2 metrics (from SEC + Yahoo) ---
+    let netIncome: number | null = null;
+    let operatingIncome: number | null = null;
+    let enterpriseValue: number | null = null;
+    let interestCoverage: number | null = null;
+    let evToEbit: number | null = null;
+    let roicStability: number | null = null;
+    let revenueCagr5y: number | null = null;
+    let roicAvg5y: number | null = null;
+    let fcfPositiveYears: number | undefined = undefined;
+
+    if (secData && secData.annuals.length > 0) {
+      const latest = secData.annuals[secData.annuals.length - 1];
+
+      // Net income (in billions)
+      if (latest.fundamentals.net_income !== null) {
+        netIncome = parseFloat((latest.fundamentals.net_income / 1_000_000_000).toFixed(2));
+      }
+
+      // Operating income / EBIT (in billions)
+      if (latest.fundamentals.operating_income !== null) {
+        operatingIncome = parseFloat((latest.fundamentals.operating_income / 1_000_000_000).toFixed(2));
+      }
+
+      // Enterprise Value from Yahoo (in billions)
+      const evRaw = nullableNum(stats?.enterpriseValue);
+      if (evRaw !== null && evRaw > 0) {
+        enterpriseValue = parseFloat((evRaw / 1_000_000_000).toFixed(1));
+      }
+
+      // Interest Coverage: EBIT / interest_expense
+      if (
+        latest.fundamentals.operating_income !== null &&
+        latest.fundamentals.interest_expense !== null &&
+        latest.fundamentals.interest_expense > 0
+      ) {
+        interestCoverage = parseFloat(
+          (latest.fundamentals.operating_income / latest.fundamentals.interest_expense).toFixed(1),
+        );
+      } else if (
+        latest.fundamentals.operating_income !== null &&
+        latest.fundamentals.operating_income > 0 &&
+        (latest.fundamentals.interest_expense === null || latest.fundamentals.interest_expense === 0)
+      ) {
+        // No interest expense with positive EBIT → effectively no debt cost → max score
+        interestCoverage = 999;
+      }
+
+      // EV/EBIT: Enterprise Value / Operating Income
+      if (enterpriseValue !== null && operatingIncome !== null && operatingIncome > 0) {
+        evToEbit = parseFloat((enterpriseValue / operatingIncome).toFixed(1));
+      }
+
+      // Historical ROIC stability (std dev over available years, min 3)
+      const roicValues = computeHistoricalRoics(secData.annuals);
+      if (roicValues.length >= 3) {
+        const mean = roicValues.reduce((a, b) => a + b, 0) / roicValues.length;
+        const variance = roicValues.reduce((a, v) => a + (v - mean) ** 2, 0) / roicValues.length;
+        roicStability = parseFloat(Math.sqrt(variance).toFixed(1));
+        roicAvg5y = parseFloat(mean.toFixed(1));
+      }
+
+      // Revenue CAGR 5yr
+      const annuals = secData.annuals;
+      if (annuals.length >= 2) {
+        const recent = annuals.slice(-5);
+        const first = recent[0].fundamentals.revenue;
+        const last = recent[recent.length - 1].fundamentals.revenue;
+        if (first !== null && first > 0 && last !== null && last > 0) {
+          const years = recent.length - 1;
+          const cagr = (Math.pow(last / first, 1 / years) - 1) * 100;
+          revenueCagr5y = parseFloat(cagr.toFixed(1));
+        }
+      }
+
+      // FCF positive years (count over last 5 years)
+      const recentAnnuals = annuals.slice(-5);
+      fcfPositiveYears = recentAnnuals.filter(
+        (a) => a.ratios.free_cash_flow !== null && a.ratios.free_cash_flow > 0,
+      ).length;
+    }
+
+    // --- 5-year valuation averages (SEC fundamentals + Yahoo historical prices) ---
+    let perAvg5y: number | null = null;
+    let evToEbitAvg5y: number | null = null;
+    let priceToFcfAvg5y: number | null = null;
+
+    if (secData && secData.annuals.length >= 2) {
+      const yearlyPrices = await getYearlyPrices(ticker);
+      if (yearlyPrices.length > 0) {
+        const priceByYear = new Map<number, number>();
+        for (const yp of yearlyPrices) {
+          priceByYear.set(yp.year, yp.close);
+        }
+        const avgs = computeValuationAverages(secData.annuals, priceByYear);
+        perAvg5y = avgs.perAvg5y;
+        evToEbitAvg5y = avgs.evToEbitAvg5y;
+        priceToFcfAvg5y = avgs.priceToFcfAvg5y;
+      }
+    }
+
     return {
       ticker: price.symbol ?? ticker,
       name: price.shortName ?? price.longName ?? ticker,
@@ -340,6 +517,19 @@ async function fetchStock(ticker: string): Promise<Stock | undefined> {
       dividendYield,
       payoutRatio,
       history,
+      // Buffett v2
+      netIncome,
+      operatingIncome,
+      enterpriseValue,
+      interestCoverage,
+      evToEbit,
+      roicStability,
+      revenueCagr5y,
+      roicAvg5y,
+      fcfPositiveYears,
+      perAvg5y,
+      evToEbitAvg5y,
+      priceToFcfAvg5y,
     };
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : "unknown";

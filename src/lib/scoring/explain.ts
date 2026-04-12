@@ -72,6 +72,46 @@ const STRATEGY_RULES: Record<StrategyId, MetricRule[]> = {
         negative: { text: "Endettement eleve ({value} annees de cash-flow)" },
       },
     },
+    {
+      metric: "Interest Coverage",
+      getValue: (s) => s.interestCoverage ?? null,
+      format: (v) => `${v.toFixed(1)}x`,
+      thresholds: {
+        positive: { min: 8, text: "Couverture des interets confortable ({value})" },
+        neutral: { min: 4, text: "Couverture des interets correcte ({value})" },
+        negative: { text: "Couverture des interets tendue ({value})" },
+      },
+    },
+    {
+      metric: "EV/EBIT",
+      getValue: (s) => s.evToEbit ?? null,
+      format: (v) => `${v.toFixed(1)}x`,
+      thresholds: {
+        positive: { min: -Infinity, text: "Valorisation EV/EBIT attractive ({value})" },
+        neutral: { min: 18.01, text: "Valorisation EV/EBIT raisonnable ({value})" },
+        negative: { text: "Valorisation EV/EBIT elevee ({value})" },
+      },
+    },
+    {
+      metric: "ROIC Stabilite",
+      getValue: (s) => s.roicStability ?? null,
+      format: (v) => `${v.toFixed(1)}%`,
+      thresholds: {
+        positive: { min: -Infinity, text: "ROIC tres stable ({value} d'ecart-type)" },
+        neutral: { min: 6.01, text: "ROIC moderement volatile ({value} d'ecart-type)" },
+        negative: { text: "ROIC volatile ({value} d'ecart-type) : rentabilite imprevisible" },
+      },
+    },
+    {
+      metric: "Croissance CA 5a",
+      getValue: (s) => s.revenueCagr5y ?? null,
+      format: (v) => `${v.toFixed(1)}%`,
+      thresholds: {
+        positive: { min: 8, text: "Croissance du CA reguliere ({value} CAGR 5 ans)" },
+        neutral: { min: 3, text: "Croissance du CA moderee ({value} CAGR 5 ans)" },
+        negative: { text: "Croissance du CA faible ({value} CAGR 5 ans)" },
+      },
+    },
   ],
   lynch: [
     {
@@ -166,8 +206,8 @@ function evaluateRule(stock: Stock, rule: MetricRule): Explanation | null {
   if (value === null) return null;
   const formatted = rule.format(value);
 
-  // Special handling for inverse metrics (debt, PEG, PER)
-  const isInverse = ["Dette/Capitaux", "PEG", "PER"].includes(rule.metric);
+  // Special handling for inverse metrics (debt, PEG, PER, EV/EBIT, ROIC Stabilite)
+  const isInverse = ["Dette/Capitaux", "PEG", "PER", "EV/EBIT", "ROIC Stabilite"].includes(rule.metric);
 
   const { positive, neutral, negative } = rule.thresholds;
 

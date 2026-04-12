@@ -27,6 +27,7 @@ describe("SecFundamentals types", () => {
             operating_cash_flow: 118548000000,
             capital_expenditure: 44477000000,
             operating_income: 109433000000,
+            interest_expense: 2300000000,
             shares_outstanding: 7431000000,
           },
           ratios: {
@@ -69,6 +70,7 @@ describe("SecFundamentals types", () => {
         operating_cash_flow: 50000000,
         capital_expenditure: null,
         operating_income: null,
+        interest_expense: null,
         shares_outstanding: null,
       },
       ratios: {

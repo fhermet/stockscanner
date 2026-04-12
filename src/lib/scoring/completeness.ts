@@ -32,6 +32,7 @@ const STRATEGY_METRICS: Record<StrategyId, MetricCheck[]> = {
     { name: "marge operationnelle", test: (s) => s.operatingMargin !== null },
     { name: "dette/cash-flow", test: (s) => s.debtToOcf !== null, skipSectors: FINANCE_SECTORS },
     { name: "free cash flow", test: (s) => s.freeCashFlow !== null, skipSectors: FINANCE_SECTORS },
+    // Buffett v2: new metrics are optional — enhance score when present but don't block
   ],
   lynch: [
     { name: "PEG", test: (s) => s.peg !== null },

@@ -22,6 +22,7 @@ function makeAnnual(overrides: Partial<SecAnnual> = {}): SecAnnual {
       operating_cash_flow: 118000000000,
       capital_expenditure: 44000000000,
       operating_income: 109000000000,
+      interest_expense: 2300000000,
       shares_outstanding: 7431000000,
     },
     ratios: {
@@ -85,7 +86,7 @@ describe("computeHistoricalScores", () => {
 });
 
 describe("Buffett historical scoring", () => {
-  it("computes quality and strength sub-scores", () => {
+  it("computes quality, strength, and durability sub-scores", () => {
     const data = makeTickerData([makeAnnual()]);
     const buffett = findStrategy(computeHistoricalScores(data)[0].scores, "buffett");
 
@@ -95,6 +96,7 @@ describe("Buffett historical scoring", () => {
     const quality = buffett.subScores.find((s) => s.name === "quality");
     const strength = buffett.subScores.find((s) => s.name === "strength");
     const valuation = buffett.subScores.find((s) => s.name === "valuation");
+    const durability = buffett.subScores.find((s) => s.name === "durability");
 
     expect(quality?.available).toBe(true);
     expect(quality?.value).toBeGreaterThan(0);
@@ -102,6 +104,8 @@ describe("Buffett historical scoring", () => {
     expect(strength?.value).toBeGreaterThan(0);
     expect(valuation?.available).toBe(false);
     expect(valuation?.value).toBe(0);
+    // Durability not available with 1 year (needs 3+ for ROIC stability, 2+ for CAGR)
+    expect(durability).toBeDefined();
   });
 
   it("handles high ROE and low debt well", () => {
@@ -126,6 +130,7 @@ describe("Buffett historical scoring", () => {
         operating_cash_flow: null,
         capital_expenditure: null,
         operating_income: null,
+        interest_expense: null,
         shares_outstanding: null,
       },
       ratios: {
@@ -143,10 +148,24 @@ describe("Buffett historical scoring", () => {
     expect(buffett.total).toBe(0);
   });
 
-  it("coverage is 0.7 (quality 0.4 + strength 0.3)", () => {
+  it("coverage is 0.6 with 1 year (quality 0.35 + strength 0.25, durability needs 3+ years)", () => {
     const data = makeTickerData([makeAnnual()]);
     const buffett = findStrategy(computeHistoricalScores(data)[0].scores, "buffett");
-    expect(buffett.coverage).toBe(0.7);
+    expect(buffett.coverage).toBe(0.6);
+  });
+
+  it("coverage is 0.75 with 3+ years (quality + strength + durability)", () => {
+    const annuals = [
+      makeAnnual({ fiscal_year: 2020 }),
+      makeAnnual({ fiscal_year: 2021 }),
+      makeAnnual({ fiscal_year: 2022 }),
+      makeAnnual({ fiscal_year: 2023 }),
+      makeAnnual({ fiscal_year: 2024 }),
+    ];
+    const data = makeTickerData(annuals);
+    const points = computeHistoricalScores(data);
+    const buffett = findStrategy(points[points.length - 1].scores, "buffett");
+    expect(buffett.coverage).toBe(0.75);
   });
 });
 
@@ -253,7 +272,7 @@ describe("Dividend historical scoring", () => {
 describe("getStrategyCoverage", () => {
   it("returns correct coverage info for each strategy", () => {
     const buffett = getStrategyCoverage("buffett");
-    expect(buffett.coverage).toBe("70%");
+    expect(buffett.coverage).toBe("75%");
     expect(buffett.excluded.length).toBeGreaterThan(0);
 
     const growth = getStrategyCoverage("growth");
@@ -307,6 +326,7 @@ function makeMergedHistory(overrides: Partial<MergedHistory["annuals"][0]>[] = [
     operatingCashFlow: 118000000000,
     capitalExpenditure: 44000000000,
     operatingIncome: 109000000000,
+    interestExpense: 2300000000,
     sharesOutstanding: 7400000000,
     revenueGrowth: 0.16,
     epsGrowth: 0.22,
@@ -345,9 +365,16 @@ describe("computeFullHistoricalScores", () => {
     expect(points[0].scores).toHaveLength(4);
   });
 
-  it("Buffett: 100% coverage with price data", () => {
-    const merged = makeMergedHistory();
-    const buffett = computeFullHistoricalScores(merged)[0].scores.find(
+  it("Buffett: 100% coverage with price data and 5yr history", () => {
+    const merged = makeMergedHistory([
+      { fiscalYear: 2020 },
+      { fiscalYear: 2021 },
+      { fiscalYear: 2022 },
+      { fiscalYear: 2023 },
+      { fiscalYear: 2024 },
+    ]);
+    const points = computeFullHistoricalScores(merged);
+    const buffett = points[points.length - 1].scores.find(
       (s) => s.strategyId === "buffett",
     )!;
 

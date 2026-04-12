@@ -45,40 +45,53 @@ const STRATEGIES: readonly StrategyDetail[] = [
     accentColor: "bg-indigo-600",
     philosophy:
       "Identifier les entreprises de qualité avec un avantage compétitif durable, une rentabilité forte sur le capital investi, un cash flow abondant et une dette maîtrisée. La valorisation doit rester raisonnable : un bon business acheté à un prix correct.",
-    totalFormula: "Score = Qualité × 40% + Solidité × 30% + Valorisation × 30%",
+    totalFormula: "Score = Qualité × 35% + Solidité × 25% + Valorisation × 25% + Durabilité × 15%",
     subScores: [
       {
         name: "quality",
         label: "Qualité",
-        weight: "40%",
+        weight: "35%",
         metrics: [
-          { name: "ROIC (Return on Invested Capital)", weight: "40%", range: "0% → 30% (linéaire)", note: "Mesure la rentabilité de tout le capital investi (fonds propres + dette). Fonctionne même quand l'equity est négative (buybacks)." },
-          { name: "Marge opérationnelle", weight: "35%", range: "0% → 40% (linéaire)", note: "Ajusté par secteur" },
-          { name: "FCF Yield", weight: "25%", range: "0% → 10% (linéaire)", note: "FCF Yield = Free Cash Flow / Capitalisation × 100" },
+          { name: "ROIC (Return on Invested Capital)", weight: "30%", range: "0% → 40% (linéaire, cap à 40%)", note: "Mesure la rentabilité de tout le capital investi (fonds propres + dette)." },
+          { name: "Marge opérationnelle", weight: "25%", range: "0% → 40% (linéaire)", note: "Ajusté par secteur." },
+          { name: "Conversion en cash (FCF / Résultat net)", weight: "20%", range: "0% → 120% (linéaire, cap à 120%)", note: "Qualité des bénéfices : quelle part se transforme en cash réel." },
+          { name: "Stabilité du ROIC", weight: "25%", range: "15% → 2% (inversé : stable = bon)", note: "Écart-type du ROIC sur 5 ans. Minimum 3 ans de données." },
         ],
       },
       {
         name: "strength",
         label: "Solidité financière",
-        weight: "30%",
+        weight: "25%",
         metrics: [
-          { name: "Dette / Cash-flow opérationnel", weight: "60%", range: "10 → 0 (inversé : bas = bon)", note: "Nombre d'années de cash-flow nécessaires pour rembourser la dette." },
-          { name: "Free Cash Flow positif", weight: "40%", range: "Binaire : 100 si FCF > 0, 10 sinon" },
+          { name: "Dette / Cash-flow opérationnel", weight: "50%", range: "10 → 0 (inversé : bas = bon)", note: "Nombre d'années de cash-flow nécessaires pour rembourser la dette." },
+          { name: "Interest Coverage (EBIT / intérêts)", weight: "30%", range: "2x → 20x (linéaire, cap à 20x)", note: "Capacité à couvrir les charges d'intérêts. Score max si pas de dette." },
+          { name: "Free Cash Flow positif", weight: "20%", range: "Binaire : 100 si FCF > 0, 10 sinon" },
         ],
       },
       {
         name: "valuation",
         label: "Valorisation",
-        weight: "30%",
+        weight: "25%",
         metrics: [
-          { name: "PER (Price/Earnings)", weight: "100%", range: "50 → 10 (inversé : bas = bon)", note: "Ajusté par secteur" },
+          { name: "PER (Price/Earnings)", weight: "50%", range: "50 → 10 (inversé)", note: "Ajusté secteur + moyenne historique 5 ans." },
+          { name: "EV/EBIT", weight: "30%", range: "40 → 8 (inversé)", note: "Ajusté secteur + moyenne historique 5 ans." },
+          { name: "Price/FCF", weight: "20%", range: "40 → 8 (inversé)", note: "Ajusté secteur + moyenne historique 5 ans." },
+        ],
+      },
+      {
+        name: "durability",
+        label: "Durabilité",
+        weight: "15%",
+        metrics: [
+          { name: "Stabilité du ROIC", weight: "35%", range: "15% → 2% (inversé)", note: "Réutilise la métrique de Qualité." },
+          { name: "CAGR du CA sur 5 ans", weight: "65%", range: "0% → 15% (linéaire)", note: "Favorise une croissance régulière sans exiger l'hypercroissance." },
         ],
       },
     ],
     sectorAdjustment:
-      "La marge opérationnelle et le PER sont comparés aux médianes du secteur de l'action. Une marge de 10% est excellente pour un distributeur mais faible pour une entreprise tech. L'ajustement sectoriel corrige ce biais.",
+      "La marge opérationnelle et les métriques de valorisation (PER, EV/EBIT, Price/FCF) sont comparées aux médianes du secteur. Chaque métrique de valorisation combine un ajustement sectoriel et un ajustement par rapport à la propre moyenne historique 5 ans de l'action.",
     historicalNote:
-      "Le score historique couvre 100% des sous-scores quand les prix de marché sont disponibles. Sans prix (années anciennes), la valorisation (PER) est exclue (couverture 70%).",
+      "Le score historique couvre 100% des sous-scores quand les prix de marché sont disponibles. Sans prix, la valorisation (25%) est exclue et le score est recalculé sur les 75% restants (Qualité + Solidité + Durabilité).",
   },
   {
     id: "lynch",

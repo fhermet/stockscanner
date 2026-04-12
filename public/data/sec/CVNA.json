@@ -12,11 +12,12 @@
         "net_income": -62841000.0,
         "shareholders_equity": 125736000.0,
         "total_debt": 48469000.0,
-        "eps_diluted": null,
+        "eps_diluted": -0.45,
         "dividends_paid": 0.0,
         "operating_cash_flow": -199924000.0,
         "capital_expenditure": 78490000.0,
         "operating_income": null,
+        "interest_expense": 7659000.0,
         "shares_outstanding": null
       },
       "ratios": {
@@ -29,12 +30,10 @@
         "operating_margin": null
       },
       "completeness": {
-        "present_field_count": 7,
-        "missing_field_count": 1,
-        "missing_field_names": [
-          "eps_diluted"
-        ],
-        "completeness_ratio": 0.875
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
       }
     },
     {
@@ -44,11 +43,12 @@
         "net_income": -61754000.0,
         "shareholders_equity": 73408000.0,
         "total_debt": 425349000.0,
-        "eps_diluted": null,
+        "eps_diluted": -0.74,
         "dividends_paid": 4619000.0,
         "operating_cash_flow": -414340000.0,
         "capital_expenditure": 143668000.0,
         "operating_income": null,
+        "interest_expense": 25018000.0,
         "shares_outstanding": null
       },
       "ratios": {
@@ -61,12 +61,10 @@
         "operating_margin": null
       },
       "completeness": {
-        "present_field_count": 7,
-        "missing_field_count": 1,
-        "missing_field_names": [
-          "eps_diluted"
-        ],
-        "completeness_ratio": 0.875
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
       }
     },
     {
@@ -76,11 +74,12 @@
         "net_income": -114659000.0,
         "shareholders_equity": 98112000.0,
         "total_debt": 716739000.0,
-        "eps_diluted": -2.45,
+        "eps_diluted": -0.82,
         "dividends_paid": 0.0,
         "operating_cash_flow": -757134000.0,
         "capital_expenditure": 230538000.0,
         "operating_income": null,
+        "interest_expense": 80606000.0,
         "shares_outstanding": 46847000.0
       },
       "ratios": {
@@ -106,11 +105,12 @@
         "net_income": -171140000.0,
         "shareholders_equity": 387600000.0,
         "total_debt": 1206427000.0,
-        "eps_diluted": null,
+        "eps_diluted": -0.87,
         "dividends_paid": 0.0,
         "operating_cash_flow": -608412000.0,
         "capital_expenditure": 359801000.0,
         "operating_income": null,
+        "interest_expense": 131528000.0,
         "shares_outstanding": null
       },
       "ratios": {
@@ -123,12 +123,10 @@
         "operating_margin": null
       },
       "completeness": {
-        "present_field_count": 7,
-        "missing_field_count": 1,
-        "missing_field_names": [
-          "eps_diluted"
-        ],
-        "completeness_ratio": 0.875
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
       }
     },
     {
@@ -143,6 +141,7 @@
         "operating_cash_flow": -2594000000.0,
         "capital_expenditure": 557000000.0,
         "operating_income": null,
+        "interest_expense": 176000000.0,
         "shares_outstanding": 82805000.0
       },
       "ratios": {
@@ -173,6 +172,7 @@
         "operating_cash_flow": -1324000000.0,
         "capital_expenditure": 512000000.0,
         "operating_income": -2351000000.0,
+        "interest_expense": 486000000.0,
         "shares_outstanding": 100828000.0
       },
       "ratios": {
@@ -203,6 +203,7 @@
         "operating_cash_flow": 803000000.0,
         "capital_expenditure": 87000000.0,
         "operating_income": null,
+        "interest_expense": 632000000.0,
         "shares_outstanding": 200578000.0
       },
       "ratios": {
@@ -233,6 +234,7 @@
         "operating_cash_flow": 918000000.0,
         "capital_expenditure": 91000000.0,
         "operating_income": 990000000.0,
+        "interest_expense": null,
         "shares_outstanding": 132206000.0
       },
       "ratios": {
@@ -263,6 +265,7 @@
         "operating_cash_flow": 1036000000.0,
         "capital_expenditure": 147000000.0,
         "operating_income": 1881000000.0,
+        "interest_expense": null,
         "shares_outstanding": 224277000.0
       },
       "ratios": {
