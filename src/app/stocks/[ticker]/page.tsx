@@ -299,10 +299,11 @@ export default async function StockDetailPage({
           />
           <MetricCard label="PER" value={String(stock.per)} />
           <MetricCard label="PEG" value={String(stock.peg)} />
-          <MetricCard label="ROE" value={`${stock.roe}%`} />
+          <MetricCard label="ROIC" value={stock.roic !== null ? `${stock.roic}%` : "N/A"} />
+          <MetricCard label="ROE" value={stock.roe !== null ? `${stock.roe}%` : "N/A"} />
           <MetricCard
-            label="Dette / Capitaux propres"
-            value={String(stock.debtToEquity)}
+            label="Dette / Cash-flow op."
+            value={stock.debtToOcf !== null ? `${stock.debtToOcf}x` : "N/A"}
           />
           <MetricCard
             label="Marge opérationnelle"

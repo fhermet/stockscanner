@@ -20,7 +20,31 @@ interface MetricConfig {
   readonly color: string;
 }
 
+function computeRoic(a: SecAnnual): number | null {
+  const ni = a.fundamentals.net_income;
+  const eq = a.fundamentals.shareholders_equity ?? 0;
+  const debt = a.fundamentals.total_debt ?? 0;
+  if (ni === null) return null;
+  const ic = eq + debt;
+  return ic > 0 ? ni / ic : null;
+}
+
+function computeDebtToOcf(a: SecAnnual): number | null {
+  const debt = a.fundamentals.total_debt;
+  const ocf = a.fundamentals.operating_cash_flow;
+  if (debt === null || ocf === null || ocf <= 0) return null;
+  return debt / ocf;
+}
+
 const METRICS: readonly MetricConfig[] = [
+  {
+    key: "roic",
+    label: "ROIC (Return on Invested Capital)",
+    labelShort: "ROIC",
+    format: (a) => formatPercent(computeRoic(a)),
+    values: (a) => computeRoic(a),
+    color: "#8b5cf6",
+  },
   {
     key: "roe",
     label: "ROE",
@@ -44,6 +68,14 @@ const METRICS: readonly MetricConfig[] = [
     format: (a) => formatPercent(a.ratios.revenue_growth),
     values: (a) => a.ratios.revenue_growth,
     color: "#f59e0b",
+  },
+  {
+    key: "debt_to_ocf",
+    label: "Dette / Cash-flow opérationnel",
+    labelShort: "Debt/OCF",
+    format: (a) => formatRatio(computeDebtToOcf(a)),
+    values: (a) => computeDebtToOcf(a),
+    color: "#f43f5e",
   },
   {
     key: "debt_to_equity",

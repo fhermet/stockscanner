@@ -44,7 +44,7 @@ const STRATEGIES: readonly StrategyDetail[] = [
     color: "border-indigo-200 bg-indigo-50",
     accentColor: "bg-indigo-600",
     philosophy:
-      "Identifier les entreprises de qualité avec un avantage compétitif durable, une rentabilité forte, un cash flow abondant et une dette maîtrisée. La valorisation doit rester raisonnable : un bon business acheté à un prix correct.",
+      "Identifier les entreprises de qualité avec un avantage compétitif durable, une rentabilité forte sur le capital investi, un cash flow abondant et une dette maîtrisée. La valorisation doit rester raisonnable : un bon business acheté à un prix correct.",
     totalFormula: "Score = Qualité × 40% + Solidité × 30% + Valorisation × 30%",
     subScores: [
       {
@@ -52,7 +52,7 @@ const STRATEGIES: readonly StrategyDetail[] = [
         label: "Qualité",
         weight: "40%",
         metrics: [
-          { name: "ROE", weight: "40%", range: "0% → 40% (linéaire)", note: "Ajusté par secteur" },
+          { name: "ROIC (Return on Invested Capital)", weight: "40%", range: "0% → 30% (linéaire)", note: "Mesure la rentabilité de tout le capital investi (fonds propres + dette). Fonctionne même quand l'equity est négative (buybacks)." },
           { name: "Marge opérationnelle", weight: "35%", range: "0% → 40% (linéaire)", note: "Ajusté par secteur" },
           { name: "FCF Yield", weight: "25%", range: "0% → 10% (linéaire)", note: "FCF Yield = Free Cash Flow / Capitalisation × 100" },
         ],
@@ -62,7 +62,7 @@ const STRATEGIES: readonly StrategyDetail[] = [
         label: "Solidité financière",
         weight: "30%",
         metrics: [
-          { name: "Dette / Capitaux propres", weight: "60%", range: "3 → 0 (inversé : bas = bon)" },
+          { name: "Dette / Cash-flow opérationnel", weight: "60%", range: "10 → 0 (inversé : bas = bon)", note: "Nombre d'années de cash-flow nécessaires pour rembourser la dette." },
           { name: "Free Cash Flow positif", weight: "40%", range: "Binaire : 100 si FCF > 0, 10 sinon" },
         ],
       },
@@ -76,7 +76,7 @@ const STRATEGIES: readonly StrategyDetail[] = [
       },
     ],
     sectorAdjustment:
-      "Le ROE, la marge opérationnelle et le PER sont comparés aux médianes du secteur de l'action. Un ROE de 15% est excellent pour une banque mais moyen pour une entreprise tech. L'ajustement sectoriel corrige ce biais.",
+      "La marge opérationnelle et le PER sont comparés aux médianes du secteur de l'action. Une marge de 10% est excellente pour un distributeur mais faible pour une entreprise tech. L'ajustement sectoriel corrige ce biais.",
     historicalNote:
       "Le score historique couvre 100% des sous-scores quand les prix de marché sont disponibles. Sans prix (années anciennes), la valorisation (PER) est exclue (couverture 70%).",
   },

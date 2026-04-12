@@ -82,6 +82,22 @@ const METRICS: readonly MetricDefinition[] = [
   },
   // --- Rentabilité ---
   {
+    id: "roic",
+    name: "ROIC (Return on Invested Capital)",
+    nameEn: "Return on Invested Capital",
+    category: "profitability",
+    formula: "ROIC = Résultat net / (Capitaux propres + Dette totale) × 100",
+    unit: "Pourcentage (%)",
+    interpretation:
+      "Mesure la rentabilité de tout le capital investi dans l'entreprise (fonds propres + dette), pas seulement les capitaux propres. C'est la métrique de rentabilité privilégiée par Warren Buffett car elle fonctionne même quand les capitaux propres sont négatifs (buybacks massifs comme chez McDonald's ou Starbucks).",
+    example:
+      "Résultat net : 8.56 Mds$, Capitaux propres : -1.8 Mds$, Dette : 40 Mds$ → Capital investi = 38.2 Mds$ → ROIC = 22.4%. McDonald's est très rentable malgré une equity négative.",
+    usedIn: ["Warren Buffett (Qualité, 40%)"],
+    source: "SEC/EDGAR (net_income / (shareholders_equity + total_debt)).",
+    warning:
+      "Un ROIC supérieur à 15% est considéré excellent. Contrairement au ROE, le ROIC n'est pas gonflé artificiellement par un levier financier élevé.",
+  },
+  {
     id: "roe",
     name: "ROE (Return on Equity)",
     nameEn: "Return on Equity",
@@ -89,13 +105,13 @@ const METRICS: readonly MetricDefinition[] = [
     formula: "ROE = Résultat net / Capitaux propres × 100",
     unit: "Pourcentage (%)",
     interpretation:
-      "Mesure la rentabilité des fonds investis par les actionnaires. Un ROE élevé signifie que l'entreprise génère beaucoup de profit par rapport à ses capitaux propres. Indicateur clé de la qualité du management.",
+      "Mesure la rentabilité des fonds investis par les actionnaires. Un ROE élevé signifie que l'entreprise génère beaucoup de profit par rapport à ses capitaux propres. Utilisé dans les stratégies Growth et Lynch.",
     example:
       "Résultat net : 88 Mds$, Capitaux propres : 206 Mds$ → ROE = 42.7%. Excellent pour une entreprise tech.",
-    usedIn: ["Warren Buffett (Qualité, 40%)", "Growth (Rentabilité, 25%)"],
+    usedIn: ["Growth (Rentabilité, 25%)"],
     source: "SEC/EDGAR (fundamentals_annual).",
     warning:
-      "Un ROE très élevé peut résulter de capitaux propres faibles (effet de levier), pas nécessairement d'une bonne rentabilité opérationnelle. À lire avec le ratio dette/capitaux propres.",
+      "Un ROE très élevé peut résulter de capitaux propres faibles (effet de levier) ou négatifs (buybacks). Pour la stratégie Buffett, le ROIC est préféré car il évite ces distorsions.",
   },
   {
     id: "operating-margin",
@@ -154,6 +170,22 @@ const METRICS: readonly MetricDefinition[] = [
   },
   // --- Solidité financière ---
   {
+    id: "debt-to-ocf",
+    name: "Dette / Cash-flow opérationnel (Debt/OCF)",
+    nameEn: "Debt-to-Operating Cash Flow Ratio",
+    category: "solvency",
+    formula: "Debt/OCF = Dette totale / Cash-flow opérationnel",
+    unit: "Ratio (en années)",
+    interpretation:
+      "Mesure le nombre d'années de cash-flow opérationnel nécessaires pour rembourser l'intégralité de la dette. C'est la métrique de solidité financière utilisée par la stratégie Buffett car elle fonctionne même quand les capitaux propres sont négatifs. Un ratio inférieur à 3 est sain, au-delà de 5 c'est préoccupant.",
+    example:
+      "Dette : 40 Mds$, Cash-flow opérationnel : 10.5 Mds$ → Debt/OCF = 3.8x. McDonald's peut rembourser sa dette en moins de 4 ans de cash-flow.",
+    usedIn: ["Warren Buffett (Solidité, 30%)"],
+    source: "SEC/EDGAR (total_debt / operating_cash_flow).",
+    warning:
+      "Non applicable aux entreprises financières (banques, assurances) dont le cash-flow opérationnel inclut les mouvements de dépôts et prêts.",
+  },
+  {
     id: "debt-to-equity",
     name: "Dette / Capitaux propres (Debt-to-Equity)",
     nameEn: "Debt-to-Equity Ratio",
@@ -165,13 +197,12 @@ const METRICS: readonly MetricDefinition[] = [
     example:
       "Dette : 60 Mds$, Capitaux propres : 206 Mds$ → D/E = 0.29. Très sain.",
     usedIn: [
-      "Warren Buffett (Solidité, 30%)",
       "Peter Lynch (Qualité, 25%)",
       "Dividende (Stabilité, 35%)",
     ],
     source: "SEC/EDGAR (total_debt / shareholders_equity).",
     warning:
-      "Les entreprises financières (banques, assurances) ont structurellement un D/E élevé. L'ajustement sectoriel corrige partiellement ce biais pour la stratégie Buffett.",
+      "Non calculable quand les capitaux propres sont négatifs (buybacks massifs). La stratégie Buffett utilise Debt/OCF à la place pour éviter ce problème.",
   },
   // --- Cash flow ---
   {
