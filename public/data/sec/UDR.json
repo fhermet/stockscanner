@@ -3,7 +3,7 @@
   "company_name": "UDR, Inc.",
   "cik": "0000074208",
   "schema_version": "1.0",
-  "last_updated": "2026-04-11",
+  "last_updated": "2026-04-12",
   "annuals": [
     {
       "fiscal_year": 2010,
@@ -44,7 +44,7 @@
         "net_income": 20023000.0,
         "shareholders_equity": 2314050000.0,
         "total_debt": 3918370000.0,
-        "eps_diluted": null,
+        "eps_diluted": 0.05,
         "dividends_paid": 150446000.0,
         "operating_cash_flow": 244236000.0,
         "capital_expenditure": 13267000.0,
@@ -61,12 +61,10 @@
         "operating_margin": -0.156531
       },
       "completeness": {
-        "present_field_count": 7,
-        "missing_field_count": 1,
-        "missing_field_names": [
-          "eps_diluted"
-        ],
-        "completeness_ratio": 0.875
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
       }
     },
     {
@@ -106,7 +104,7 @@
         "net_income": 44812000.0,
         "shareholders_equity": 2811648000.0,
         "total_debt": 3523703000.0,
-        "eps_diluted": null,
+        "eps_diluted": 0.16,
         "dividends_paid": 231822000.0,
         "operating_cash_flow": 339902000.0,
         "capital_expenditure": 7639000.0,
@@ -123,12 +121,10 @@
         "operating_margin": 0.15406
       },
       "completeness": {
-        "present_field_count": 7,
-        "missing_field_count": 1,
-        "missing_field_names": [
-          "eps_diluted"
-        ],
-        "completeness_ratio": 0.875
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
       }
     },
     {
@@ -272,7 +268,7 @@
         "eps_growth": 0.670857,
         "free_cash_flow": 555826000.0,
         "payout_ratio": 1.685036,
-        "operating_margin": 30.178492
+        "operating_margin": null
       },
       "completeness": {
         "present_field_count": 8,
@@ -302,7 +298,7 @@
         "eps_growth": -0.089318,
         "free_cash_flow": null,
         "payout_ratio": 2.071089,
-        "operating_margin": 15.727997
+        "operating_margin": null
       },
       "completeness": {
         "present_field_count": 7,
@@ -334,7 +330,7 @@
         "eps_growth": -0.65255,
         "free_cash_flow": null,
         "payout_ratio": 6.525223,
-        "operating_margin": 49.142434
+        "operating_margin": null
       },
       "completeness": {
         "present_field_count": 7,
@@ -366,7 +362,7 @@
         "eps_growth": 1.334298,
         "free_cash_flow": null,
         "payout_ratio": 2.891558,
-        "operating_margin": 43.914782
+        "operating_margin": null
       },
       "completeness": {
         "present_field_count": 7,
@@ -398,7 +394,7 @@
         "eps_growth": -0.420568,
         "free_cash_flow": null,
         "payout_ratio": 5.563757,
-        "operating_margin": 49.943051
+        "operating_margin": null
       },
       "completeness": {
         "present_field_count": 7,
@@ -430,7 +426,7 @@
         "eps_growth": 4.111971,
         "free_cash_flow": null,
         "payout_ratio": 1.214917,
-        "operating_margin": 92.796727
+        "operating_margin": null
       },
       "completeness": {
         "present_field_count": 7,
@@ -462,7 +458,7 @@
         "eps_growth": -0.798392,
         "free_cash_flow": null,
         "payout_ratio": 6.234102,
-        "operating_margin": 34.215342
+        "operating_margin": null
       },
       "completeness": {
         "present_field_count": 7,
@@ -494,7 +490,7 @@
         "eps_growth": 3.216152,
         "free_cash_flow": null,
         "payout_ratio": 1.503463,
-        "operating_margin": 48.728633
+        "operating_margin": null
       },
       "completeness": {
         "present_field_count": 7,

@@ -3,7 +3,7 @@
   "company_name": "Charter Communications",
   "cik": "0001091667",
   "schema_version": "1.0",
-  "last_updated": "2026-04-11",
+  "last_updated": "2026-04-12",
   "annuals": [
     {
       "fiscal_year": 2011,
@@ -48,7 +48,7 @@
         "net_income": -304000000.0,
         "shareholders_equity": 149000000.0,
         "total_debt": 0.0,
-        "eps_diluted": null,
+        "eps_diluted": -3.05,
         "dividends_paid": 0.0,
         "operating_cash_flow": 1876000000.0,
         "capital_expenditure": 1745000000.0,
@@ -65,12 +65,10 @@
         "operating_margin": 0.122068
       },
       "completeness": {
-        "present_field_count": 7,
-        "missing_field_count": 1,
-        "missing_field_names": [
-          "eps_diluted"
-        ],
-        "completeness_ratio": 0.875
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
       }
     },
     {
@@ -80,7 +78,7 @@
         "net_income": -169000000.0,
         "shareholders_equity": 151000000.0,
         "total_debt": 0.0,
-        "eps_diluted": 0.35,
+        "eps_diluted": -1.65,
         "dividends_paid": 0.0,
         "operating_cash_flow": 2158000000.0,
         "capital_expenditure": 1825000000.0,
@@ -110,7 +108,7 @@
         "net_income": -183000000.0,
         "shareholders_equity": 146000000.0,
         "total_debt": 0.0,
-        "eps_diluted": null,
+        "eps_diluted": -1.7,
         "dividends_paid": 0.0,
         "operating_cash_flow": 2359000000.0,
         "capital_expenditure": 2221000000.0,
@@ -127,12 +125,10 @@
         "operating_margin": 0.10661
       },
       "completeness": {
-        "present_field_count": 7,
-        "missing_field_count": 1,
-        "missing_field_names": [
-          "eps_diluted"
-        ],
-        "completeness_ratio": 0.875
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
       }
     },
     {
@@ -142,7 +138,7 @@
         "net_income": -271000000.0,
         "shareholders_equity": -46000000.0,
         "total_debt": 35723000000.0,
-        "eps_diluted": -1.09,
+        "eps_diluted": -2.43,
         "dividends_paid": 0.0,
         "operating_cash_flow": 2359000000.0,
         "capital_expenditure": 1840000000.0,
@@ -306,7 +302,7 @@
         "eps_growth": 0.086162,
         "free_cash_flow": 5549000000.0,
         "payout_ratio": 0.0,
-        "operating_margin": 10.874545
+        "operating_margin": null
       },
       "completeness": {
         "present_field_count": 8,
@@ -336,7 +332,7 @@
         "eps_growth": -0.098516,
         "free_cash_flow": 3318000000.0,
         "payout_ratio": 0.0,
-        "operating_margin": 12.647533
+        "operating_margin": null
       },
       "completeness": {
         "present_field_count": 8,
@@ -366,7 +362,7 @@
         "eps_growth": 0.115427,
         "free_cash_flow": 3161000000.0,
         "payout_ratio": 0.0,
-        "operating_margin": 13.940489
+        "operating_margin": null
       },
       "completeness": {
         "present_field_count": 8,
@@ -396,7 +392,7 @@
         "eps_growth": -0.018886,
         "free_cash_flow": 4418000000.0,
         "payout_ratio": 0.0,
-        "operating_margin": 14.519685
+        "operating_margin": null
       },
       "completeness": {
         "present_field_count": 8,

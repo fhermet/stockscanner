@@ -3,7 +3,7 @@
   "company_name": "SBA Communications",
   "cik": "0001034054",
   "schema_version": "1.0",
-  "last_updated": "2026-04-11",
+  "last_updated": "2026-04-12",
   "annuals": [
     {
       "fiscal_year": 2010,
@@ -44,7 +44,7 @@
         "net_income": -126456000.0,
         "shareholders_equity": -11313000.0,
         "total_debt": 3354485000.0,
-        "eps_diluted": null,
+        "eps_diluted": -1.13,
         "dividends_paid": 0.0,
         "operating_cash_flow": 249058000.0,
         "capital_expenditure": 126938000.0,
@@ -61,12 +61,10 @@
         "operating_margin": 0.158499
       },
       "completeness": {
-        "present_field_count": 7,
-        "missing_field_count": 1,
-        "missing_field_names": [
-          "eps_diluted"
-        ],
-        "completeness_ratio": 0.875
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
       }
     },
     {
@@ -76,7 +74,7 @@
         "net_income": -181037000.0,
         "shareholders_equity": 652991000.0,
         "total_debt": 5356103000.0,
-        "eps_diluted": null,
+        "eps_diluted": -1.51,
         "dividends_paid": 0.0,
         "operating_cash_flow": 340914000.0,
         "capital_expenditure": 113265000.0,
@@ -93,12 +91,10 @@
         "operating_margin": 0.154228
       },
       "completeness": {
-        "present_field_count": 7,
-        "missing_field_count": 1,
-        "missing_field_names": [
-          "eps_diluted"
-        ],
-        "completeness_ratio": 0.875
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
       }
     },
     {
@@ -108,7 +104,7 @@
         "net_income": -55909000.0,
         "shareholders_equity": 356966000.0,
         "total_debt": 5876607000.0,
-        "eps_diluted": -0.15,
+        "eps_diluted": -0.44,
         "dividends_paid": 0.0,
         "operating_cash_flow": 497587000.0,
         "capital_expenditure": 168893000.0,
@@ -138,7 +134,7 @@
         "net_income": -24295000.0,
         "shareholders_equity": -660800000.0,
         "total_debt": 7860799000.0,
-        "eps_diluted": null,
+        "eps_diluted": -0.19,
         "dividends_paid": 0.0,
         "operating_cash_flow": 671643000.0,
         "capital_expenditure": 211251000.0,
@@ -155,12 +151,10 @@
         "operating_margin": 0.220382
       },
       "completeness": {
-        "present_field_count": 7,
-        "missing_field_count": 1,
-        "missing_field_names": [
-          "eps_diluted"
-        ],
-        "completeness_ratio": 0.875
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
       }
     },
     {
@@ -170,7 +164,7 @@
         "net_income": -175656000.0,
         "shareholders_equity": -1706144000.0,
         "total_debt": 8542305000.0,
-        "eps_diluted": 0.24,
+        "eps_diluted": -1.37,
         "dividends_paid": 0.0,
         "operating_cash_flow": 737173000.0,
         "capital_expenditure": 208707000.0,
@@ -304,7 +298,7 @@
         "eps_growth": 2.097743,
         "free_cash_flow": 815809000.0,
         "payout_ratio": 0.567293,
-        "operating_margin": 3.794131
+        "operating_margin": null
       },
       "completeness": {
         "present_field_count": 8,
@@ -364,7 +358,7 @@
         "eps_growth": 8.858281,
         "free_cash_flow": 1056202000.0,
         "payout_ratio": 1.067148,
-        "operating_margin": 3.821765
+        "operating_margin": null
       },
       "completeness": {
         "present_field_count": 8,
@@ -394,7 +388,7 @@
         "eps_growth": 0.941845,
         "free_cash_flow": 1071257000.0,
         "payout_ratio": 0.664817,
-        "operating_margin": 3.117122
+        "operating_margin": null
       },
       "completeness": {
         "present_field_count": 8,
@@ -424,7 +418,7 @@
         "eps_growth": 0.087517,
         "free_cash_flow": 1307695000.0,
         "payout_ratio": 0.737248,
-        "operating_margin": 4.745254
+        "operating_margin": null
       },
       "completeness": {
         "present_field_count": 8,
@@ -454,7 +448,7 @@
         "eps_growth": 0.493659,
         "free_cash_flow": 1106717000.0,
         "payout_ratio": 0.565938,
-        "operating_margin": 9.392114
+        "operating_margin": null
       },
       "completeness": {
         "present_field_count": 8,
@@ -484,7 +478,7 @@
         "eps_growth": 0.405712,
         "free_cash_flow": 1066509000.0,
         "payout_ratio": 0.454629,
-        "operating_margin": 5.492012
+        "operating_margin": null
       },
       "completeness": {
         "present_field_count": 8,

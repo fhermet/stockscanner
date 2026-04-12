@@ -3,7 +3,7 @@
   "company_name": "Alexandria Real Estate Equities",
   "cik": "0001035443",
   "schema_version": "1.0",
-  "last_updated": "2026-04-11",
+  "last_updated": "2026-04-12",
   "annuals": [
     {
       "fiscal_year": 2010,
@@ -111,7 +111,7 @@
         "net_income": 135317000.0,
         "shareholders_equity": 3916789000.0,
         "total_debt": 3061061000.0,
-        "eps_diluted": null,
+        "eps_diluted": 1.6,
         "dividends_paid": 169076000.0,
         "operating_cash_flow": 312727000.0,
         "capital_expenditure": null,
@@ -128,14 +128,13 @@
         "operating_margin": null
       },
       "completeness": {
-        "present_field_count": 5,
-        "missing_field_count": 3,
+        "present_field_count": 6,
+        "missing_field_count": 2,
         "missing_field_names": [
           "revenue",
-          "eps_diluted",
           "capital_expenditure"
         ],
-        "completeness_ratio": 0.625
+        "completeness_ratio": 0.75
       }
     },
     {
@@ -145,7 +144,7 @@
         "net_income": 106778000.0,
         "shareholders_equity": 3828439000.0,
         "total_debt": 3678579000.0,
-        "eps_diluted": null,
+        "eps_diluted": 1.01,
         "dividends_paid": 202386000.0,
         "operating_cash_flow": 334325000.0,
         "capital_expenditure": null,
@@ -162,14 +161,13 @@
         "operating_margin": null
       },
       "completeness": {
-        "present_field_count": 5,
-        "missing_field_count": 3,
+        "present_field_count": 6,
+        "missing_field_count": 2,
         "missing_field_names": [
           "revenue",
-          "eps_diluted",
           "capital_expenditure"
         ],
-        "completeness_ratio": 0.625
+        "completeness_ratio": 0.75
       }
     },
     {
@@ -212,7 +210,7 @@
         "net_income": -65901000.0,
         "shareholders_equity": 4895796000.0,
         "total_debt": 4164025000.0,
-        "eps_diluted": null,
+        "eps_diluted": -1.99,
         "dividends_paid": 240347000.0,
         "operating_cash_flow": 392501000.0,
         "capital_expenditure": null,
@@ -229,13 +227,12 @@
         "operating_margin": null
       },
       "completeness": {
-        "present_field_count": 6,
-        "missing_field_count": 2,
+        "present_field_count": 7,
+        "missing_field_count": 1,
         "missing_field_names": [
-          "eps_diluted",
           "capital_expenditure"
         ],
-        "completeness_ratio": 0.75
+        "completeness_ratio": 0.875
       }
     },
     {

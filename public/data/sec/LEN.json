@@ -3,7 +3,7 @@
   "company_name": "Lennar",
   "cik": "0000920760",
   "schema_version": "1.0",
-  "last_updated": "2026-04-11",
+  "last_updated": "2026-04-12",
   "annuals": [
     {
       "fiscal_year": 2010,
@@ -470,7 +470,7 @@
         "net_income": 2078179000.0,
         "shareholders_equity": 21959417000.0,
         "total_debt": 5874995000.0,
-        "eps_diluted": null,
+        "eps_diluted": 7.98,
         "dividends_paid": 520959000.0,
         "operating_cash_flow": 216812000.0,
         "capital_expenditure": 188629000.0,
@@ -487,12 +487,10 @@
         "operating_margin": 0.082308
       },
       "completeness": {
-        "present_field_count": 7,
-        "missing_field_count": 1,
-        "missing_field_names": [
-          "eps_diluted"
-        ],
-        "completeness_ratio": 0.875
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
       }
     }
   ]
