@@ -392,7 +392,7 @@ async function fetchAll(tickers: readonly string[]): Promise<Stock[]> {
   const uniqueTickers = [...new Set(tickers)];
 
   const batchSize = 20;
-  const parallelGroups = 3;
+  const parallelGroups = 10;
   const waveSize = batchSize * parallelGroups;
   const allStocks: Stock[] = [];
   const seen = new Set<string>();
