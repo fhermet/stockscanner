@@ -22,6 +22,7 @@ import {
   getAvailableYears,
   resetBacktestCache,
   computeRiskMetrics,
+  computeSplitFactors,
   getCumulativeDps,
   type AnnualSlice,
 } from "../backtest-engine";
@@ -193,70 +194,117 @@ describe("runBacktest", () => {
 // getCumulativeDps
 // ============================================================
 
+// ============================================================
+// computeSplitFactors
+// ============================================================
+
+function makeAnnual(year: number, shares: number, divPaid: number = 0): SecTickerData["annuals"][0] {
+  return {
+    fiscal_year: year,
+    fundamentals: {
+      revenue: 100e9, net_income: 30e9, shareholders_equity: 80e9,
+      total_debt: 20e9, eps_diluted: 10, dividends_paid: divPaid,
+      operating_cash_flow: 40e9, capital_expenditure: 10e9,
+      operating_income: 35e9, interest_expense: 2e9, shares_outstanding: shares,
+    },
+    ratios: { roe: 0.375, debt_to_equity: 0.25, revenue_growth: 0.10, eps_growth: 0.15, free_cash_flow: 30e9, payout_ratio: 0.1, operating_margin: 0.35 },
+    completeness: { present_field_count: 11, missing_field_count: 0, missing_field_names: [], completeness_ratio: 1.0 },
+  };
+}
+
+describe("computeSplitFactors", () => {
+  it("returns factor 1 for all years when no splits", () => {
+    const annuals = [
+      makeAnnual(2020, 1e9),
+      makeAnnual(2021, 1e9),
+      makeAnnual(2022, 1e9),
+    ];
+    const factors = computeSplitFactors(annuals);
+    expect(factors.get(2020)).toBe(1);
+    expect(factors.get(2021)).toBe(1);
+    expect(factors.get(2022)).toBe(1);
+  });
+
+  it("detects a 4:1 split", () => {
+    const annuals = [
+      makeAnnual(2019, 1e9),
+      makeAnnual(2020, 4e9), // 4:1 split
+      makeAnnual(2021, 4e9),
+    ];
+    const factors = computeSplitFactors(annuals);
+    expect(factors.get(2019)).toBe(4); // pre-split: divide by 4
+    expect(factors.get(2020)).toBe(1); // post-split
+    expect(factors.get(2021)).toBe(1);
+  });
+
+  it("detects cumulative splits (7:1 then 4:1)", () => {
+    const annuals = [
+      makeAnnual(2013, 1e9),
+      makeAnnual(2014, 7e9),  // 7:1 split
+      makeAnnual(2019, 7e9),
+      makeAnnual(2020, 28e9), // 4:1 split
+      makeAnnual(2021, 28e9),
+    ];
+    const factors = computeSplitFactors(annuals);
+    expect(factors.get(2013)).toBe(28); // 7 × 4
+    expect(factors.get(2014)).toBe(4);  // only 4:1 pending
+    expect(factors.get(2019)).toBe(4);
+    expect(factors.get(2020)).toBe(1);
+    expect(factors.get(2021)).toBe(1);
+  });
+
+  it("returns empty map for empty annuals", () => {
+    expect(computeSplitFactors([]).size).toBe(0);
+  });
+});
+
+// ============================================================
+// getCumulativeDps
+// ============================================================
+
 describe("getCumulativeDps", () => {
   it("returns 0 when secData is null", () => {
     expect(getCumulativeDps(null, 2020, 2024)).toBe(0);
   });
 
-  it("computes DPS from dividends_paid / shares_outstanding", () => {
+  it("computes split-adjusted DPS (no splits)", () => {
     const secData: SecTickerData = {
-      ticker: "TEST",
-      company_name: "Test Corp",
-      cik: "0000000001",
-      schema_version: "1.0",
-      last_updated: "2026-04-12",
+      ticker: "TEST", company_name: "Test Corp", cik: "1", schema_version: "1.0", last_updated: "2026-01-01",
       annuals: [
-        {
-          fiscal_year: 2020,
-          fundamentals: {
-            revenue: 100e9, net_income: 30e9, shareholders_equity: 80e9,
-            total_debt: 20e9, eps_diluted: 10, dividends_paid: -3e9, // negative = cash outflow
-            operating_cash_flow: 40e9, capital_expenditure: 10e9,
-            operating_income: 35e9, interest_expense: 2e9, shares_outstanding: 1e9,
-          },
-          ratios: { roe: 0.375, debt_to_equity: 0.25, revenue_growth: 0.10, eps_growth: 0.15, free_cash_flow: 30e9, payout_ratio: 0.1, operating_margin: 0.35 },
-          completeness: { present_field_count: 11, missing_field_count: 0, missing_field_names: [], completeness_ratio: 1.0 },
-        },
-        {
-          fiscal_year: 2021,
-          fundamentals: {
-            revenue: 110e9, net_income: 33e9, shareholders_equity: 85e9,
-            total_debt: 18e9, eps_diluted: 11, dividends_paid: -4e9,
-            operating_cash_flow: 45e9, capital_expenditure: 11e9,
-            operating_income: 38e9, interest_expense: 1.8e9, shares_outstanding: 1e9,
-          },
-          ratios: { roe: 0.39, debt_to_equity: 0.21, revenue_growth: 0.10, eps_growth: 0.10, free_cash_flow: 34e9, payout_ratio: 0.12, operating_margin: 0.35 },
-          completeness: { present_field_count: 11, missing_field_count: 0, missing_field_names: [], completeness_ratio: 1.0 },
-        },
+        makeAnnual(2020, 1e9, -3e9), // DPS = 3.0, factor 1
+        makeAnnual(2021, 1e9, -4e9), // DPS = 4.0, factor 1
       ],
     };
-
-    // DPS 2020 = |−3e9| / 1e9 = 3.0
-    // DPS 2021 = |−4e9| / 1e9 = 4.0
-    // Cumulative 2020→2022 (years 2020 and 2021) = 7.0
     expect(getCumulativeDps(secData, 2020, 2022)).toBe(7);
-    // Only 2020
     expect(getCumulativeDps(secData, 2020, 2021)).toBe(3);
-    // Only 2021
     expect(getCumulativeDps(secData, 2021, 2022)).toBe(4);
-    // No years match
     expect(getCumulativeDps(secData, 2025, 2026)).toBe(0);
   });
 
-  it("returns 0 when dividends_paid or shares_outstanding is null", () => {
+  it("adjusts DPS for stock splits", () => {
+    const secData: SecTickerData = {
+      ticker: "SPLIT", company_name: "Split Corp", cik: "1", schema_version: "1.0", last_updated: "2026-01-01",
+      annuals: [
+        makeAnnual(2019, 1e9, -4e9),  // raw DPS = 4.0, factor 4 → adj 1.0
+        makeAnnual(2020, 4e9, -4e9),  // raw DPS = 1.0, factor 1 → adj 1.0 (4:1 split)
+        makeAnnual(2021, 4e9, -4.4e9), // raw DPS = 1.1, factor 1 → adj 1.1
+      ],
+    };
+    // 2019→2020: adj DPS = 4.0/4 = 1.0
+    expect(getCumulativeDps(secData, 2019, 2020)).toBeCloseTo(1.0, 2);
+    // 2020→2021: adj DPS = 1.0/1 = 1.0
+    expect(getCumulativeDps(secData, 2020, 2021)).toBeCloseTo(1.0, 2);
+    // 2019→2022: 1.0 + 1.0 + 1.1 = 3.1
+    expect(getCumulativeDps(secData, 2019, 2022)).toBeCloseTo(3.1, 2);
+  });
+
+  it("returns 0 when dividends_paid is null", () => {
     const secData: SecTickerData = {
       ticker: "TEST", company_name: "Test", cik: "1", schema_version: "1.0", last_updated: "2026-01-01",
-      annuals: [{
-        fiscal_year: 2020,
-        fundamentals: {
-          revenue: 100e9, net_income: 30e9, shareholders_equity: 80e9, total_debt: 20e9,
-          eps_diluted: 10, dividends_paid: null, operating_cash_flow: 40e9,
-          capital_expenditure: 10e9, operating_income: 35e9, interest_expense: 2e9, shares_outstanding: 1e9,
-        },
-        ratios: { roe: 0.375, debt_to_equity: 0.25, revenue_growth: 0.10, eps_growth: 0.15, free_cash_flow: 30e9, payout_ratio: null, operating_margin: 0.35 },
-        completeness: { present_field_count: 10, missing_field_count: 1, missing_field_names: ["dividends_paid"], completeness_ratio: 0.91 },
-      }],
+      annuals: [makeAnnual(2020, 1e9, 0)],
     };
+    // Override dividends_paid to null
+    (secData.annuals[0].fundamentals as any).dividends_paid = null;
     expect(getCumulativeDps(secData, 2020, 2021)).toBe(0);
   });
 });

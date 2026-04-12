@@ -75,33 +75,83 @@ const BENCHMARK_TICKER = "^SP500TR";
 
 // --- Dividend helpers ---
 
+/** Split detection threshold: shares_outstanding jump > 1.3× between consecutive years */
+const SPLIT_THRESHOLD = 1.3;
+
 /**
- * Extract cumulative dividends per share from SEC data for a range of years.
- * Returns the sum of DPS for each fiscal year in [startYear, endYear).
- * DPS = |dividends_paid| / shares_outstanding.
+ * Compute cumulative split factors from SEC shares_outstanding data.
+ * Returns a Map of fiscal_year → factor to divide raw DPS by to get
+ * split-adjusted DPS (compatible with Yahoo's split-adjusted prices).
+ *
+ * The factor for the latest year is always 1.
+ * Earlier years accumulate the detected split ratios.
+ *
+ * Example: AAPL with 7:1 (2014) and 4:1 (2020) splits:
+ *   2013 → factor 28, 2014 → factor 4, 2020+ → factor 1
+ */
+export function computeSplitFactors(
+  annuals: readonly SecAnnual[],
+): ReadonlyMap<number, number> {
+  const sorted = [...annuals].sort((a, b) => a.fiscal_year - b.fiscal_year);
+  const factors = new Map<number, number>();
+
+  if (sorted.length === 0) return factors;
+
+  // Work backward: latest year has factor 1
+  let cumulativeFactor = 1;
+  factors.set(sorted[sorted.length - 1].fiscal_year, 1);
+
+  for (let i = sorted.length - 1; i > 0; i--) {
+    const sharesCurr = sorted[i].fundamentals.shares_outstanding;
+    const sharesPrev = sorted[i - 1].fundamentals.shares_outstanding;
+
+    if (sharesCurr != null && sharesPrev != null && sharesPrev > 0) {
+      const ratio = sharesCurr / sharesPrev;
+      if (ratio > SPLIT_THRESHOLD) {
+        // Detected a split — round to nearest integer
+        cumulativeFactor *= Math.round(ratio);
+      }
+    }
+
+    factors.set(sorted[i - 1].fiscal_year, cumulativeFactor);
+  }
+
+  return factors;
+}
+
+/**
+ * Extract cumulative split-adjusted DPS from SEC data for [startYear, endYear).
+ *
+ * Raw DPS = |dividends_paid| / shares_outstanding (as reported that year).
+ * Adjusted DPS = raw DPS / split_factor (to match Yahoo's split-adjusted prices).
  */
 export function getCumulativeDps(
   secData: SecTickerData | null,
   startYear: number,
   endYear: number,
 ): number {
-  if (!secData) return 0;
+  if (!secData || secData.annuals.length === 0) return 0;
+
+  const splitFactors = computeSplitFactors(secData.annuals);
   let total = 0;
+
   for (const annual of secData.annuals) {
     if (annual.fiscal_year >= startYear && annual.fiscal_year < endYear) {
       const divPaid = annual.fundamentals.dividends_paid;
       const shares = annual.fundamentals.shares_outstanding;
       if (divPaid != null && shares != null && shares > 0) {
-        // dividends_paid is typically negative in SEC filings (cash outflow)
-        total += Math.abs(divPaid) / shares;
+        const rawDps = Math.abs(divPaid) / shares;
+        const factor = splitFactors.get(annual.fiscal_year) ?? 1;
+        total += rawDps / factor;
       }
     }
   }
+
   return total;
 }
 
 /**
- * Get DPS for a single fiscal year from SEC data.
+ * Get split-adjusted DPS for a single fiscal year.
  */
 function getAnnualDps(secData: SecTickerData | null, year: number): number {
   return getCumulativeDps(secData, year, year + 1);
