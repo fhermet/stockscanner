@@ -14,6 +14,14 @@ let cachedIndex: SecIndex | null = null;
 const tickerCache = new Map<string, SecTickerData>();
 let allLoaded = false;
 
+/**
+ * Convert Yahoo-style ticker (BRK-B) to SEC-style (BRK.B) and vice-versa.
+ * SEC EDGAR uses dots, Yahoo Finance uses dashes for multi-class tickers.
+ */
+function yahooToSec(ticker: string): string {
+  return ticker.replace(/-/g, ".");
+}
+
 /** Reset the in-memory index cache (used in tests). */
 export function resetCache(): void {
   cachedIndex = null;
@@ -42,29 +50,30 @@ export async function hasSecData(ticker: string): Promise<boolean> {
   if (index === null) {
     return false;
   }
-  return index.tickers.includes(ticker.toUpperCase());
+  const secTicker = yahooToSec(ticker.toUpperCase());
+  return index.tickers.includes(secTicker);
 }
 
 export async function getSecHistory(
   ticker: string
 ): Promise<SecTickerData | null> {
-  const normalizedTicker = ticker.toUpperCase();
+  const secTicker = yahooToSec(ticker.toUpperCase());
 
   // Serve from memory cache if available
-  const cached = tickerCache.get(normalizedTicker);
+  const cached = tickerCache.get(secTicker);
   if (cached) return cached;
   if (allLoaded) return null; // Already loaded everything, ticker not found
 
-  const hasData = await hasSecData(normalizedTicker);
+  const hasData = await hasSecData(ticker);
   if (!hasData) {
     return null;
   }
 
   try {
-    const filePath = path.join(SEC_DATA_DIR, `${normalizedTicker}.json`);
+    const filePath = path.join(SEC_DATA_DIR, `${secTicker}.json`);
     const raw = await fs.readFile(filePath, "utf-8");
     const data = JSON.parse(raw) as SecTickerData;
-    tickerCache.set(normalizedTicker, data);
+    tickerCache.set(secTicker, data);
     return data;
   } catch {
     return null;

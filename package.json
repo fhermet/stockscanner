@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint . --ext .ts,.tsx",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "generate:indices": "npx tsx scripts/generate-sp500-tickers.ts"
   },
   "dependencies": {
     "next": "^15.1.0",
