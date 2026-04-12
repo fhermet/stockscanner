@@ -1,0 +1,137 @@
+{
+  "ticker": "NE",
+  "company_name": "Noble Corp plc",
+  "cik": "0001895262",
+  "schema_version": "1.0",
+  "last_updated": "2026-04-12",
+  "annuals": [
+    {
+      "fiscal_year": 2022,
+      "fundamentals": {
+        "revenue": 1413847000.0,
+        "net_income": 168948000.0,
+        "shareholders_equity": 3607085000.0,
+        "total_debt": 672770000.0,
+        "eps_diluted": 1.73,
+        "dividends_paid": 0.0,
+        "operating_cash_flow": 280985000.0,
+        "capital_expenditure": null,
+        "operating_income": 228770000.0,
+        "shares_outstanding": 97607000.0
+      },
+      "ratios": {
+        "roe": 0.046838,
+        "debt_to_equity": 0.186513,
+        "revenue_growth": null,
+        "eps_growth": null,
+        "free_cash_flow": null,
+        "payout_ratio": 0.0,
+        "operating_margin": 0.161807
+      },
+      "completeness": {
+        "present_field_count": 7,
+        "missing_field_count": 1,
+        "missing_field_names": [
+          "capital_expenditure"
+        ],
+        "completeness_ratio": 0.875
+      }
+    },
+    {
+      "fiscal_year": 2023,
+      "fundamentals": {
+        "revenue": 2589018000.0,
+        "net_income": 481902000.0,
+        "shareholders_equity": 3921240000.0,
+        "total_debt": 586203000.0,
+        "eps_diluted": 3.32,
+        "dividends_paid": 98804000.0,
+        "operating_cash_flow": 574337000.0,
+        "capital_expenditure": null,
+        "operating_income": 574705000.0,
+        "shares_outstanding": 145197000.0
+      },
+      "ratios": {
+        "roe": 0.128024,
+        "debt_to_equity": 0.149494,
+        "revenue_growth": 0.831187,
+        "eps_growth": 1.852369,
+        "free_cash_flow": null,
+        "payout_ratio": 0.205029,
+        "operating_margin": 0.221978
+      },
+      "completeness": {
+        "present_field_count": 7,
+        "missing_field_count": 1,
+        "missing_field_names": [
+          "capital_expenditure"
+        ],
+        "completeness_ratio": 0.875
+      }
+    },
+    {
+      "fiscal_year": 2024,
+      "fundamentals": {
+        "revenue": 3057818000.0,
+        "net_income": 448353000.0,
+        "shareholders_equity": 4651386000.0,
+        "total_debt": 0.0,
+        "eps_diluted": 2.96,
+        "dividends_paid": 277831000.0,
+        "operating_cash_flow": 655475000.0,
+        "capital_expenditure": null,
+        "operating_income": 603983000.0,
+        "shares_outstanding": 151639000.0
+      },
+      "ratios": {
+        "roe": 0.104601,
+        "debt_to_equity": 0.0,
+        "revenue_growth": 0.181073,
+        "eps_growth": -0.069618,
+        "free_cash_flow": null,
+        "payout_ratio": 0.61967,
+        "operating_margin": 0.197521
+      },
+      "completeness": {
+        "present_field_count": 7,
+        "missing_field_count": 1,
+        "missing_field_names": [
+          "capital_expenditure"
+        ],
+        "completeness_ratio": 0.875
+      }
+    },
+    {
+      "fiscal_year": 2025,
+      "fundamentals": {
+        "revenue": 3285568000.0,
+        "net_income": 216717000.0,
+        "shareholders_equity": 4548850000.0,
+        "total_debt": 0.0,
+        "eps_diluted": 1.35,
+        "dividends_paid": 320368000.0,
+        "operating_cash_flow": 951678000.0,
+        "capital_expenditure": null,
+        "operating_income": 415552000.0,
+        "shares_outstanding": 160202000.0
+      },
+      "ratios": {
+        "roe": 0.047111,
+        "debt_to_equity": 0.0,
+        "revenue_growth": 0.074481,
+        "eps_growth": -0.516638,
+        "free_cash_flow": null,
+        "payout_ratio": 1.478278,
+        "operating_margin": 0.126478
+      },
+      "completeness": {
+        "present_field_count": 7,
+        "missing_field_count": 1,
+        "missing_field_names": [
+          "capital_expenditure"
+        ],
+        "completeness_ratio": 0.875
+      }
+    }
+  ]
+}

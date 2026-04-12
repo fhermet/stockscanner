@@ -1,0 +1,174 @@
+{
+  "ticker": "CRGY",
+  "company_name": "Crescent Energy Co",
+  "cik": "0001866175",
+  "schema_version": "1.0",
+  "last_updated": "2026-04-12",
+  "annuals": [
+    {
+      "fiscal_year": 2021,
+      "fundamentals": {
+        "revenue": 1476977000.0,
+        "net_income": -19376000.0,
+        "shareholders_equity": 694644000.0,
+        "total_debt": 1030406000.0,
+        "eps_diluted": null,
+        "dividends_paid": 0.0,
+        "operating_cash_flow": 233147000.0,
+        "capital_expenditure": null,
+        "operating_income": 483739000.0,
+        "shares_outstanding": null
+      },
+      "ratios": {
+        "roe": -0.027893,
+        "debt_to_equity": 1.483358,
+        "revenue_growth": null,
+        "eps_growth": null,
+        "free_cash_flow": null,
+        "payout_ratio": null,
+        "operating_margin": 0.32752
+      },
+      "completeness": {
+        "present_field_count": 6,
+        "missing_field_count": 2,
+        "missing_field_names": [
+          "eps_diluted",
+          "capital_expenditure"
+        ],
+        "completeness_ratio": 0.75
+      }
+    },
+    {
+      "fiscal_year": 2022,
+      "fundamentals": {
+        "revenue": 3057065000.0,
+        "net_income": 96674000.0,
+        "shareholders_equity": 862291000.0,
+        "total_debt": 1247558000.0,
+        "eps_diluted": null,
+        "dividends_paid": 27509000.0,
+        "operating_cash_flow": 1012372000.0,
+        "capital_expenditure": null,
+        "operating_income": 1284165000.0,
+        "shares_outstanding": null
+      },
+      "ratios": {
+        "roe": 0.124185,
+        "debt_to_equity": 1.446795,
+        "revenue_growth": 1.069812,
+        "eps_growth": null,
+        "free_cash_flow": null,
+        "payout_ratio": 0.284554,
+        "operating_margin": 0.420065
+      },
+      "completeness": {
+        "present_field_count": 6,
+        "missing_field_count": 2,
+        "missing_field_names": [
+          "eps_diluted",
+          "capital_expenditure"
+        ],
+        "completeness_ratio": 0.75
+      }
+    },
+    {
+      "fiscal_year": 2023,
+      "fundamentals": {
+        "revenue": 2382602000.0,
+        "net_income": 67610000.0,
+        "shareholders_equity": 1734510000.0,
+        "total_debt": 1694375000.0,
+        "eps_diluted": null,
+        "dividends_paid": 34120000.0,
+        "operating_cash_flow": 935769000.0,
+        "capital_expenditure": null,
+        "operating_income": 324740000.0,
+        "shares_outstanding": null
+      },
+      "ratios": {
+        "roe": 0.052072,
+        "debt_to_equity": 0.976861,
+        "revenue_growth": -0.220624,
+        "eps_growth": -0.300639,
+        "free_cash_flow": null,
+        "payout_ratio": 0.504659,
+        "operating_margin": 0.136296
+      },
+      "completeness": {
+        "present_field_count": 6,
+        "missing_field_count": 2,
+        "missing_field_names": [
+          "eps_diluted",
+          "capital_expenditure"
+        ],
+        "completeness_ratio": 0.75
+      }
+    },
+    {
+      "fiscal_year": 2024,
+      "fundamentals": {
+        "revenue": 2930919000.0,
+        "net_income": -114605000.0,
+        "shareholders_equity": 3139631000.0,
+        "total_debt": 3049255000.0,
+        "eps_diluted": null,
+        "dividends_paid": 65075000.0,
+        "operating_cash_flow": 1223086000.0,
+        "capital_expenditure": null,
+        "operating_income": 218462000.0,
+        "shares_outstanding": null
+      },
+      "ratios": {
+        "roe": -0.047026,
+        "debt_to_equity": 0.971214,
+        "revenue_growth": 0.230134,
+        "eps_growth": null,
+        "free_cash_flow": null,
+        "payout_ratio": null,
+        "operating_margin": 0.074537
+      },
+      "completeness": {
+        "present_field_count": 6,
+        "missing_field_count": 2,
+        "missing_field_names": [
+          "eps_diluted",
+          "capital_expenditure"
+        ],
+        "completeness_ratio": 0.75
+      }
+    },
+    {
+      "fiscal_year": 2025,
+      "fundamentals": {
+        "revenue": 3579782000.0,
+        "net_income": 132906000.0,
+        "shareholders_equity": 5165435000.0,
+        "total_debt": 5524128000.0,
+        "eps_diluted": null,
+        "dividends_paid": 115121000.0,
+        "operating_cash_flow": 1680156000.0,
+        "capital_expenditure": null,
+        "operating_income": 229279000.0,
+        "shares_outstanding": null
+      },
+      "ratios": {
+        "roe": 0.032006,
+        "debt_to_equity": 1.069441,
+        "revenue_growth": 0.221386,
+        "eps_growth": null,
+        "free_cash_flow": null,
+        "payout_ratio": 0.866184,
+        "operating_margin": 0.064048
+      },
+      "completeness": {
+        "present_field_count": 6,
+        "missing_field_count": 2,
+        "missing_field_names": [
+          "eps_diluted",
+          "capital_expenditure"
+        ],
+        "completeness_ratio": 0.75
+      }
+    }
+  ]
+}

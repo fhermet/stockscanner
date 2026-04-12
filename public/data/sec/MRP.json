@@ -1,0 +1,41 @@
+{
+  "ticker": "MRP",
+  "company_name": "Millrose Properties, Inc.",
+  "cik": "0002017206",
+  "schema_version": "1.0",
+  "last_updated": "2026-04-12",
+  "annuals": [
+    {
+      "fiscal_year": 2025,
+      "fundamentals": {
+        "revenue": 600461000.0,
+        "net_income": 379864000.0,
+        "shareholders_equity": 5856262000.0,
+        "total_debt": 0.0,
+        "eps_diluted": 2.44,
+        "dividends_paid": 298806000.0,
+        "operating_cash_flow": 3672821000.0,
+        "capital_expenditure": null,
+        "operating_income": 486068000.0,
+        "shares_outstanding": 166026608.0
+      },
+      "ratios": {
+        "roe": 0.064865,
+        "debt_to_equity": 0.0,
+        "revenue_growth": null,
+        "eps_growth": null,
+        "free_cash_flow": null,
+        "payout_ratio": 0.786613,
+        "operating_margin": 0.809491
+      },
+      "completeness": {
+        "present_field_count": 7,
+        "missing_field_count": 1,
+        "missing_field_names": [
+          "capital_expenditure"
+        ],
+        "completeness_ratio": 0.875
+      }
+    }
+  ]
+}

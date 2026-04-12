@@ -1,0 +1,69 @@
+{
+  "ticker": "FUN",
+  "company_name": "Six Flags Entertainment Corporation/NEW",
+  "cik": "0001999001",
+  "schema_version": "1.0",
+  "last_updated": "2026-04-12",
+  "annuals": [
+    {
+      "fiscal_year": 2024,
+      "fundamentals": {
+        "revenue": 2708926000.0,
+        "net_income": -231164000.0,
+        "shareholders_equity": 2041863000.0,
+        "total_debt": 4723072000.0,
+        "eps_diluted": -3.22,
+        "dividends_paid": 0.0,
+        "operating_cash_flow": 373412000.0,
+        "capital_expenditure": 320819000.0,
+        "operating_income": 310506000.0,
+        "shares_outstanding": 75256000.0
+      },
+      "ratios": {
+        "roe": -0.113212,
+        "debt_to_equity": 2.313119,
+        "revenue_growth": null,
+        "eps_growth": null,
+        "free_cash_flow": 52593000.0,
+        "payout_ratio": null,
+        "operating_margin": 0.114623
+      },
+      "completeness": {
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
+      }
+    },
+    {
+      "fiscal_year": 2025,
+      "fundamentals": {
+        "revenue": 3100289000.0,
+        "net_income": -1549466000.0,
+        "shareholders_equity": 549757000.0,
+        "total_debt": 5166072000.0,
+        "eps_diluted": -15.89,
+        "dividends_paid": 0.0,
+        "operating_cash_flow": 327469000.0,
+        "capital_expenditure": 479667000.0,
+        "operating_income": -1375007000.0,
+        "shares_outstanding": 100662000.0
+      },
+      "ratios": {
+        "roe": -1.195751,
+        "debt_to_equity": 9.39701,
+        "revenue_growth": 0.144472,
+        "eps_growth": null,
+        "free_cash_flow": -152198000.0,
+        "payout_ratio": null,
+        "operating_margin": -0.443509
+      },
+      "completeness": {
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
+      }
+    }
+  ]
+}

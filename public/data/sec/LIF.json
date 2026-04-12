@@ -1,0 +1,129 @@
+{
+  "ticker": "LIF",
+  "company_name": "Life360, Inc.",
+  "cik": "0001581760",
+  "schema_version": "1.0",
+  "last_updated": "2026-04-12",
+  "annuals": [
+    {
+      "fiscal_year": 2022,
+      "fundamentals": {
+        "revenue": 228305000.0,
+        "net_income": -91629000.0,
+        "shareholders_equity": 244538000.0,
+        "total_debt": 7573000.0,
+        "eps_diluted": -1.5,
+        "dividends_paid": 0.0,
+        "operating_cash_flow": -57055000.0,
+        "capital_expenditure": 0.0,
+        "operating_income": -91800000.0,
+        "shares_outstanding": 62839593.0
+      },
+      "ratios": {
+        "roe": -0.374703,
+        "debt_to_equity": 0.030969,
+        "revenue_growth": null,
+        "eps_growth": null,
+        "free_cash_flow": -57055000.0,
+        "payout_ratio": null,
+        "operating_margin": -0.402094
+      },
+      "completeness": {
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
+      }
+    },
+    {
+      "fiscal_year": 2023,
+      "fundamentals": {
+        "revenue": 304518000.0,
+        "net_income": -28171000.0,
+        "shareholders_equity": 247064000.0,
+        "total_debt": 4505000.0,
+        "eps_diluted": -0.42,
+        "dividends_paid": 0.0,
+        "operating_cash_flow": 7524000.0,
+        "capital_expenditure": 506000.0,
+        "operating_income": -27100000.0,
+        "shares_outstanding": 66748542.0
+      },
+      "ratios": {
+        "roe": -0.114609,
+        "debt_to_equity": 0.018234,
+        "revenue_growth": 0.333821,
+        "eps_growth": null,
+        "free_cash_flow": 7018000.0,
+        "payout_ratio": null,
+        "operating_margin": -0.088993
+      },
+      "completeness": {
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
+      }
+    },
+    {
+      "fiscal_year": 2024,
+      "fundamentals": {
+        "revenue": 371484000.0,
+        "net_income": -4555000.0,
+        "shareholders_equity": 358545000.0,
+        "total_debt": 0.0,
+        "eps_diluted": -0.06,
+        "dividends_paid": 0.0,
+        "operating_cash_flow": 32612000.0,
+        "capital_expenditure": 1187000.0,
+        "operating_income": -5500000.0,
+        "shares_outstanding": 72125571.0
+      },
+      "ratios": {
+        "roe": -0.015043,
+        "debt_to_equity": 0.0,
+        "revenue_growth": 0.219908,
+        "eps_growth": null,
+        "free_cash_flow": 31425000.0,
+        "payout_ratio": null,
+        "operating_margin": -0.014805
+      },
+      "completeness": {
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
+      }
+    },
+    {
+      "fiscal_year": 2025,
+      "fundamentals": {
+        "revenue": 489481000.0,
+        "net_income": 150832000.0,
+        "shareholders_equity": 548182000.0,
+        "total_debt": 0.0,
+        "eps_diluted": 1.77,
+        "dividends_paid": 0.0,
+        "operating_cash_flow": 88630000.0,
+        "capital_expenditure": 1792000.0,
+        "operating_income": 18826000.0,
+        "shares_outstanding": 85172415.0
+      },
+      "ratios": {
+        "roe": 0.332696,
+        "debt_to_equity": 0.0,
+        "revenue_growth": 0.317637,
+        "eps_growth": null,
+        "free_cash_flow": 86838000.0,
+        "payout_ratio": 0.0,
+        "operating_margin": 0.038461
+      },
+      "completeness": {
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
+      }
+    }
+  ]
+}

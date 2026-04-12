@@ -1,0 +1,99 @@
+{
+  "ticker": "CLB",
+  "company_name": "Core Laboratories Inc. /DE/",
+  "cik": "0001958086",
+  "schema_version": "1.0",
+  "last_updated": "2026-04-12",
+  "annuals": [
+    {
+      "fiscal_year": 2023,
+      "fundamentals": {
+        "revenue": 509790000.0,
+        "net_income": 36675000.0,
+        "shareholders_equity": 224815000.0,
+        "total_debt": 163134000.0,
+        "eps_diluted": 0.77,
+        "dividends_paid": 1868000.0,
+        "operating_cash_flow": 24789000.0,
+        "capital_expenditure": 10579000.0,
+        "operating_income": 54640000.0,
+        "shares_outstanding": 47523000.0
+      },
+      "ratios": {
+        "roe": 0.163134,
+        "debt_to_equity": 0.725637,
+        "revenue_growth": null,
+        "eps_growth": null,
+        "free_cash_flow": 14210000.0,
+        "payout_ratio": 0.050934,
+        "operating_margin": 0.107181
+      },
+      "completeness": {
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
+      }
+    },
+    {
+      "fiscal_year": 2024,
+      "fundamentals": {
+        "revenue": 523848000.0,
+        "net_income": 31400000.0,
+        "shareholders_equity": 251991000.0,
+        "total_debt": 126111000.0,
+        "eps_diluted": 0.66,
+        "dividends_paid": 1876000.0,
+        "operating_cash_flow": 56388000.0,
+        "capital_expenditure": 13028000.0,
+        "operating_income": 58556000.0,
+        "shares_outstanding": 47685000.0
+      },
+      "ratios": {
+        "roe": 0.13171,
+        "debt_to_equity": 0.500458,
+        "revenue_growth": 0.027576,
+        "eps_growth": -0.143831,
+        "free_cash_flow": 43360000.0,
+        "payout_ratio": 0.059745,
+        "operating_margin": 0.111781
+      },
+      "completeness": {
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
+      }
+    },
+    {
+      "fiscal_year": 2025,
+      "fundamentals": {
+        "revenue": 526520000.0,
+        "net_income": 29669000.0,
+        "shareholders_equity": 265986000.0,
+        "total_debt": 110255000.0,
+        "eps_diluted": 0.63,
+        "dividends_paid": 1869000.0,
+        "operating_cash_flow": 37031000.0,
+        "capital_expenditure": 11209000.0,
+        "operating_income": 56468000.0,
+        "shares_outstanding": 47028000.0
+      },
+      "ratios": {
+        "roe": 0.114557,
+        "debt_to_equity": 0.414514,
+        "revenue_growth": 0.005101,
+        "eps_growth": -0.055127,
+        "free_cash_flow": 25822000.0,
+        "payout_ratio": 0.062995,
+        "operating_margin": 0.107248
+      },
+      "completeness": {
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
+      }
+    }
+  ]
+}

@@ -1,0 +1,99 @@
+{
+  "ticker": "NATL",
+  "company_name": "NCR Atleos Corp",
+  "cik": "0001974138",
+  "schema_version": "1.0",
+  "last_updated": "2026-04-12",
+  "annuals": [
+    {
+      "fiscal_year": 2023,
+      "fundamentals": {
+        "revenue": 4191000000.0,
+        "net_income": -134000000.0,
+        "shareholders_equity": 284000000.0,
+        "total_debt": 3099000000.0,
+        "eps_diluted": -1.9,
+        "dividends_paid": 0.0,
+        "operating_cash_flow": 355000000.0,
+        "capital_expenditure": 108000000.0,
+        "operating_income": 271000000.0,
+        "shares_outstanding": 70600000.0
+      },
+      "ratios": {
+        "roe": -0.471831,
+        "debt_to_equity": 10.911972,
+        "revenue_growth": null,
+        "eps_growth": null,
+        "free_cash_flow": 247000000.0,
+        "payout_ratio": null,
+        "operating_margin": 0.064662
+      },
+      "completeness": {
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
+      }
+    },
+    {
+      "fiscal_year": 2024,
+      "fundamentals": {
+        "revenue": 4317000000.0,
+        "net_income": 91000000.0,
+        "shareholders_equity": 260000000.0,
+        "total_debt": 2994000000.0,
+        "eps_diluted": 1.23,
+        "dividends_paid": 0.0,
+        "operating_cash_flow": 344000000.0,
+        "capital_expenditure": 87000000.0,
+        "operating_income": 449000000.0,
+        "shares_outstanding": 74200000.0
+      },
+      "ratios": {
+        "roe": 0.334559,
+        "debt_to_equity": 11.515385,
+        "revenue_growth": 0.030064,
+        "eps_growth": null,
+        "free_cash_flow": 257000000.0,
+        "payout_ratio": 0.0,
+        "operating_margin": 0.104007
+      },
+      "completeness": {
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
+      }
+    },
+    {
+      "fiscal_year": 2025,
+      "fundamentals": {
+        "revenue": 4354000000.0,
+        "net_income": 162000000.0,
+        "shareholders_equity": 403000000.0,
+        "total_debt": 2672000000.0,
+        "eps_diluted": 2.14,
+        "dividends_paid": 0.0,
+        "operating_cash_flow": 356000000.0,
+        "capital_expenditure": 117000000.0,
+        "operating_income": 478000000.0,
+        "shares_outstanding": 75600000.0
+      },
+      "ratios": {
+        "roe": 0.488688,
+        "debt_to_equity": 6.630273,
+        "revenue_growth": 0.008571,
+        "eps_growth": 0.78022,
+        "free_cash_flow": 239000000.0,
+        "payout_ratio": 0.0,
+        "operating_margin": 0.109784
+      },
+      "completeness": {
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
+      }
+    }
+  ]
+}

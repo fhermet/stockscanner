@@ -1,0 +1,106 @@
+{
+  "ticker": "INDV",
+  "company_name": "Indivior Pharmaceuticals, Inc.",
+  "cik": "0001625297",
+  "schema_version": "1.0",
+  "last_updated": "2026-04-12",
+  "annuals": [
+    {
+      "fiscal_year": 2023,
+      "fundamentals": {
+        "revenue": null,
+        "net_income": null,
+        "shareholders_equity": null,
+        "total_debt": 0.0,
+        "eps_diluted": null,
+        "dividends_paid": 0.0,
+        "operating_cash_flow": null,
+        "capital_expenditure": null,
+        "operating_income": null,
+        "shares_outstanding": 136526357.0
+      },
+      "ratios": {
+        "roe": null,
+        "debt_to_equity": null,
+        "revenue_growth": null,
+        "eps_growth": null,
+        "free_cash_flow": null,
+        "payout_ratio": null,
+        "operating_margin": null
+      },
+      "completeness": {
+        "present_field_count": 2,
+        "missing_field_count": 6,
+        "missing_field_names": [
+          "revenue",
+          "net_income",
+          "shareholders_equity",
+          "eps_diluted",
+          "operating_cash_flow",
+          "capital_expenditure"
+        ],
+        "completeness_ratio": 0.25
+      }
+    },
+    {
+      "fiscal_year": 2024,
+      "fundamentals": {
+        "revenue": 1188000000.0,
+        "net_income": 2000000.0,
+        "shareholders_equity": -348000000.0,
+        "total_debt": 333000000.0,
+        "eps_diluted": 0.02,
+        "dividends_paid": 0.0,
+        "operating_cash_flow": 36000000.0,
+        "capital_expenditure": 29000000.0,
+        "operating_income": 32000000.0,
+        "shares_outstanding": 133000000.0
+      },
+      "ratios": {
+        "roe": null,
+        "debt_to_equity": null,
+        "revenue_growth": null,
+        "eps_growth": null,
+        "free_cash_flow": 7000000.0,
+        "payout_ratio": 0.0,
+        "operating_margin": 0.026936
+      },
+      "completeness": {
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
+      }
+    },
+    {
+      "fiscal_year": 2025,
+      "fundamentals": {
+        "revenue": 1239000000.0,
+        "net_income": 210000000.0,
+        "shareholders_equity": -98000000.0,
+        "total_debt": 319000000.0,
+        "eps_diluted": 1.64,
+        "dividends_paid": 0.0,
+        "operating_cash_flow": -27000000.0,
+        "capital_expenditure": 66000000.0,
+        "operating_income": 262000000.0,
+        "shares_outstanding": 128000000.0
+      },
+      "ratios": {
+        "roe": null,
+        "debt_to_equity": null,
+        "revenue_growth": 0.042929,
+        "eps_growth": 104.0,
+        "free_cash_flow": -93000000.0,
+        "payout_ratio": 0.0,
+        "operating_margin": 0.211461
+      },
+      "completeness": {
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
+      }
+    }
+  ]
+}

@@ -1,0 +1,69 @@
+{
+  "ticker": "WS",
+  "company_name": "Worthington Steel, Inc.",
+  "cik": "0001968487",
+  "schema_version": "1.0",
+  "last_updated": "2026-04-12",
+  "annuals": [
+    {
+      "fiscal_year": 2024,
+      "fundamentals": {
+        "revenue": 3430600000.0,
+        "net_income": 154700000.0,
+        "shareholders_equity": 985300000.0,
+        "total_debt": 148000000.0,
+        "eps_diluted": 3.11,
+        "dividends_paid": 7900000.0,
+        "operating_cash_flow": 199500000.0,
+        "capital_expenditure": 103400000.0,
+        "operating_income": 194500000.0,
+        "shares_outstanding": 49800000.0
+      },
+      "ratios": {
+        "roe": 0.157008,
+        "debt_to_equity": 0.150208,
+        "revenue_growth": null,
+        "eps_growth": null,
+        "free_cash_flow": 96100000.0,
+        "payout_ratio": 0.051067,
+        "operating_margin": 0.056696
+      },
+      "completeness": {
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
+      }
+    },
+    {
+      "fiscal_year": 2025,
+      "fundamentals": {
+        "revenue": 3093300000.0,
+        "net_income": 110700000.0,
+        "shareholders_equity": 1074100000.0,
+        "total_debt": 151500000.0,
+        "eps_diluted": 2.19,
+        "dividends_paid": 31900000.0,
+        "operating_cash_flow": 230300000.0,
+        "capital_expenditure": 130400000.0,
+        "operating_income": 147000000.0,
+        "shares_outstanding": 50500000.0
+      },
+      "ratios": {
+        "roe": 0.107507,
+        "debt_to_equity": 0.141048,
+        "revenue_growth": -0.098321,
+        "eps_growth": -0.284421,
+        "free_cash_flow": 99900000.0,
+        "payout_ratio": 0.288166,
+        "operating_margin": 0.047522
+      },
+      "completeness": {
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
+      }
+    }
+  ]
+}

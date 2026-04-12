@@ -1,0 +1,463 @@
+{
+  "ticker": "UA",
+  "company_name": "Under Armour, Inc.",
+  "cik": "0001336917",
+  "schema_version": "1.0",
+  "last_updated": "2026-04-12",
+  "annuals": [
+    {
+      "fiscal_year": 2010,
+      "fundamentals": {
+        "revenue": 1063927000.0,
+        "net_income": 68477000.0,
+        "shareholders_equity": 496966000.0,
+        "total_debt": 15942000.0,
+        "eps_diluted": 1.34,
+        "dividends_paid": 0.0,
+        "operating_cash_flow": 50114000.0,
+        "capital_expenditure": 30182000.0,
+        "operating_income": 112355000.0,
+        "shares_outstanding": 51282.0
+      },
+      "ratios": {
+        "roe": 0.13779,
+        "debt_to_equity": 0.032079,
+        "revenue_growth": null,
+        "eps_growth": null,
+        "free_cash_flow": 19932000.0,
+        "payout_ratio": 0.0,
+        "operating_margin": 0.105604
+      },
+      "completeness": {
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
+      }
+    },
+    {
+      "fiscal_year": 2011,
+      "fundamentals": {
+        "revenue": 1436115000.0,
+        "net_income": 96919000.0,
+        "shareholders_equity": 636432000.0,
+        "total_debt": 77724000.0,
+        "eps_diluted": 1.85,
+        "dividends_paid": 0.0,
+        "operating_cash_flow": 15218000.0,
+        "capital_expenditure": 56228000.0,
+        "operating_income": 162767000.0,
+        "shares_outstanding": 52526000.0
+      },
+      "ratios": {
+        "roe": 0.171024,
+        "debt_to_equity": 0.122125,
+        "revenue_growth": 0.349825,
+        "eps_growth": 0.415351,
+        "free_cash_flow": -41010000.0,
+        "payout_ratio": 0.0,
+        "operating_margin": 0.113338
+      },
+      "completeness": {
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
+      }
+    },
+    {
+      "fiscal_year": 2012,
+      "fundamentals": {
+        "revenue": 1790140000.0,
+        "net_income": 128778000.0,
+        "shareholders_equity": 816922000.0,
+        "total_debt": 61889000.0,
+        "eps_diluted": 1.21,
+        "dividends_paid": 0.0,
+        "operating_cash_flow": 199761000.0,
+        "capital_expenditure": 50650000.0,
+        "operating_income": 208695000.0,
+        "shares_outstanding": 106380000.0
+      },
+      "ratios": {
+        "roe": 0.177215,
+        "debt_to_equity": 0.075759,
+        "revenue_growth": 0.246516,
+        "eps_growth": 0.328718,
+        "free_cash_flow": 149111000.0,
+        "payout_ratio": 0.0,
+        "operating_margin": 0.11658
+      },
+      "completeness": {
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
+      }
+    },
+    {
+      "fiscal_year": 2013,
+      "fundamentals": {
+        "revenue": 2082500000.0,
+        "net_income": 162330000.0,
+        "shareholders_equity": 1053354000.0,
+        "total_debt": 52923000.0,
+        "eps_diluted": 1.5,
+        "dividends_paid": 0.0,
+        "operating_cash_flow": 120070000.0,
+        "capital_expenditure": 87830000.0,
+        "operating_income": 265098000.0,
+        "shares_outstanding": 107979000.0
+      },
+      "ratios": {
+        "roe": 0.173589,
+        "debt_to_equity": 0.050242,
+        "revenue_growth": 0.163317,
+        "eps_growth": 0.260541,
+        "free_cash_flow": 32240000.0,
+        "payout_ratio": 0.0,
+        "operating_margin": 0.127298
+      },
+      "completeness": {
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
+      }
+    },
+    {
+      "fiscal_year": 2014,
+      "fundamentals": {
+        "revenue": 2997932000.0,
+        "net_income": 208042000.0,
+        "shareholders_equity": 1350300000.0,
+        "total_debt": 284201000.0,
+        "eps_diluted": 0.95,
+        "dividends_paid": 0.0,
+        "operating_cash_flow": 219033000.0,
+        "capital_expenditure": 140528000.0,
+        "operating_income": 353955000.0,
+        "shares_outstanding": 219380000.0
+      },
+      "ratios": {
+        "roe": 0.173105,
+        "debt_to_equity": 0.210472,
+        "revenue_growth": 0.439583,
+        "eps_growth": 0.281599,
+        "free_cash_flow": 78505000.0,
+        "payout_ratio": 0.0,
+        "operating_margin": 0.118066
+      },
+      "completeness": {
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
+      }
+    },
+    {
+      "fiscal_year": 2015,
+      "fundamentals": {
+        "revenue": 3825691000.0,
+        "net_income": 232573000.0,
+        "shareholders_equity": 1668222000.0,
+        "total_debt": 669000000.0,
+        "eps_diluted": 1.05,
+        "dividends_paid": 0.0,
+        "operating_cash_flow": -44104000.0,
+        "capital_expenditure": 298928000.0,
+        "operating_income": 408547000.0,
+        "shares_outstanding": 220868000.0
+      },
+      "ratios": {
+        "roe": 0.154097,
+        "debt_to_equity": 0.401026,
+        "revenue_growth": 0.27611,
+        "eps_growth": 0.117914,
+        "free_cash_flow": -343032000.0,
+        "payout_ratio": 0.0,
+        "operating_margin": 0.10679
+      },
+      "completeness": {
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
+      }
+    },
+    {
+      "fiscal_year": 2016,
+      "fundamentals": {
+        "revenue": 4646449000.0,
+        "net_income": 256979000.0,
+        "shareholders_equity": 2030900000.0,
+        "total_debt": 828250000.0,
+        "eps_diluted": null,
+        "dividends_paid": 2927000.0,
+        "operating_cash_flow": 304487000.0,
+        "capital_expenditure": 316458000.0,
+        "operating_income": 417471000.0,
+        "shares_outstanding": null
+      },
+      "ratios": {
+        "roe": 0.138941,
+        "debt_to_equity": 0.407824,
+        "revenue_growth": 0.214538,
+        "eps_growth": 0.104939,
+        "free_cash_flow": -11971000.0,
+        "payout_ratio": 0.01139,
+        "operating_margin": 0.089847
+      },
+      "completeness": {
+        "present_field_count": 7,
+        "missing_field_count": 1,
+        "missing_field_names": [
+          "eps_diluted"
+        ],
+        "completeness_ratio": 0.875
+      }
+    },
+    {
+      "fiscal_year": 2017,
+      "fundamentals": {
+        "revenue": 4976553000.0,
+        "net_income": -48260000.0,
+        "shareholders_equity": 2018642000.0,
+        "total_debt": 801250000.0,
+        "eps_diluted": -0.11,
+        "dividends_paid": 0.0,
+        "operating_cash_flow": 234063000.0,
+        "capital_expenditure": 281339000.0,
+        "operating_income": 27843000.0,
+        "shares_outstanding": 440729000.0
+      },
+      "ratios": {
+        "roe": -0.023835,
+        "debt_to_equity": 0.396925,
+        "revenue_growth": 0.071044,
+        "eps_growth": null,
+        "free_cash_flow": -47276000.0,
+        "payout_ratio": null,
+        "operating_margin": 0.005595
+      },
+      "completeness": {
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
+      }
+    },
+    {
+      "fiscal_year": 2018,
+      "fundamentals": {
+        "revenue": 5193185000.0,
+        "net_income": -46302000.0,
+        "shareholders_equity": 2016871000.0,
+        "total_debt": 736250000.0,
+        "eps_diluted": null,
+        "dividends_paid": 0.0,
+        "operating_cash_flow": 628230000.0,
+        "capital_expenditure": 4597000.0,
+        "operating_income": -25017000.0,
+        "shares_outstanding": null
+      },
+      "ratios": {
+        "roe": -0.022947,
+        "debt_to_equity": 0.365046,
+        "revenue_growth": 0.043531,
+        "eps_growth": null,
+        "free_cash_flow": 623633000.0,
+        "payout_ratio": null,
+        "operating_margin": -0.004817
+      },
+      "completeness": {
+        "present_field_count": 7,
+        "missing_field_count": 1,
+        "missing_field_names": [
+          "eps_diluted"
+        ],
+        "completeness_ratio": 0.875
+      }
+    },
+    {
+      "fiscal_year": 2019,
+      "fundamentals": {
+        "revenue": 5267132000.0,
+        "net_income": 92139000.0,
+        "shareholders_equity": 2150087000.0,
+        "total_debt": 600000000.0,
+        "eps_diluted": 0.2,
+        "dividends_paid": 0.0,
+        "operating_cash_flow": 509031000.0,
+        "capital_expenditure": 145802000.0,
+        "operating_income": 236770000.0,
+        "shares_outstanding": 454274000.0
+      },
+      "ratios": {
+        "roe": 0.044224,
+        "debt_to_equity": 0.279058,
+        "revenue_growth": 0.014239,
+        "eps_growth": null,
+        "free_cash_flow": 363229000.0,
+        "payout_ratio": 0.0,
+        "operating_margin": 0.044952
+      },
+      "completeness": {
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
+      }
+    },
+    {
+      "fiscal_year": 2020,
+      "fundamentals": {
+        "revenue": 4474667000.0,
+        "net_income": -549177000.0,
+        "shareholders_equity": 1675993000.0,
+        "total_debt": 1100000000.0,
+        "eps_diluted": -1.21,
+        "dividends_paid": 0.0,
+        "operating_cash_flow": 212864000.0,
+        "capital_expenditure": 92291000.0,
+        "operating_income": -613438000.0,
+        "shares_outstanding": 454089000.0
+      },
+      "ratios": {
+        "roe": -0.28707,
+        "debt_to_equity": 0.656327,
+        "revenue_growth": -0.150455,
+        "eps_growth": null,
+        "free_cash_flow": 120573000.0,
+        "payout_ratio": null,
+        "operating_margin": -0.137091
+      },
+      "completeness": {
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
+      }
+    },
+    {
+      "fiscal_year": 2021,
+      "fundamentals": {
+        "revenue": 5683466000.0,
+        "net_income": 360060000.0,
+        "shareholders_equity": 2088994000.0,
+        "total_debt": 662531000.0,
+        "eps_diluted": 0.77,
+        "dividends_paid": 0.0,
+        "operating_cash_flow": 664829000.0,
+        "capital_expenditure": 69759000.0,
+        "operating_income": 486290000.0,
+        "shares_outstanding": 468644000.0
+      },
+      "ratios": {
+        "roe": 0.191268,
+        "debt_to_equity": 0.317153,
+        "revenue_growth": 0.270143,
+        "eps_growth": null,
+        "free_cash_flow": 595070000.0,
+        "payout_ratio": 0.0,
+        "operating_margin": 0.085562
+      },
+      "completeness": {
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
+      }
+    },
+    {
+      "fiscal_year": 2023,
+      "fundamentals": {
+        "revenue": 5903636000.0,
+        "net_income": 386769000.0,
+        "shareholders_equity": 1998403000.0,
+        "total_debt": 674478000.0,
+        "eps_diluted": 0.84,
+        "dividends_paid": 0.0,
+        "operating_cash_flow": -9914000.0,
+        "capital_expenditure": 187796000.0,
+        "operating_income": 283811000.0,
+        "shares_outstanding": 461509000.0
+      },
+      "ratios": {
+        "roe": 0.193539,
+        "debt_to_equity": 0.337509,
+        "revenue_growth": null,
+        "eps_growth": null,
+        "free_cash_flow": -197710000.0,
+        "payout_ratio": 0.0,
+        "operating_margin": 0.048074
+      },
+      "completeness": {
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
+      }
+    },
+    {
+      "fiscal_year": 2024,
+      "fundamentals": {
+        "revenue": 5701879000.0,
+        "net_income": 232042000.0,
+        "shareholders_equity": 2153286000.0,
+        "total_debt": 675792000.0,
+        "eps_diluted": 0.52,
+        "dividends_paid": 0.0,
+        "operating_cash_flow": 353970000.0,
+        "capital_expenditure": 150333000.0,
+        "operating_income": 229751000.0,
+        "shares_outstanding": 451011000.0
+      },
+      "ratios": {
+        "roe": 0.111782,
+        "debt_to_equity": 0.313842,
+        "revenue_growth": -0.034175,
+        "eps_growth": -0.40005,
+        "free_cash_flow": 203637000.0,
+        "payout_ratio": 0.0,
+        "operating_margin": 0.040294
+      },
+      "completeness": {
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
+      }
+    },
+    {
+      "fiscal_year": 2025,
+      "fundamentals": {
+        "revenue": 5164310000.0,
+        "net_income": -201267000.0,
+        "shareholders_equity": 1890278000.0,
+        "total_debt": 595125000.0,
+        "eps_diluted": -0.47,
+        "dividends_paid": 0.0,
+        "operating_cash_flow": -59319000.0,
+        "capital_expenditure": 168684000.0,
+        "operating_income": -185216000.0,
+        "shares_outstanding": 432245000.0
+      },
+      "ratios": {
+        "roe": -0.099549,
+        "debt_to_equity": 0.314835,
+        "revenue_growth": -0.094279,
+        "eps_growth": null,
+        "free_cash_flow": -228003000.0,
+        "payout_ratio": null,
+        "operating_margin": -0.035865
+      },
+      "completeness": {
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
+      }
+    }
+  ]
+}

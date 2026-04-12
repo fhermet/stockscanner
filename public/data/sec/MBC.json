@@ -1,0 +1,99 @@
+{
+  "ticker": "MBC",
+  "company_name": "MasterBrand, Inc.",
+  "cik": "0001941365",
+  "schema_version": "1.0",
+  "last_updated": "2026-04-12",
+  "annuals": [
+    {
+      "fiscal_year": 2023,
+      "fundamentals": {
+        "revenue": 2726200000.0,
+        "net_income": 182000000.0,
+        "shareholders_equity": 1193800000.0,
+        "total_debt": 707800000.0,
+        "eps_diluted": 1.4,
+        "dividends_paid": 0.0,
+        "operating_cash_flow": 405600000.0,
+        "capital_expenditure": 57300000.0,
+        "operating_income": 306300000.0,
+        "shares_outstanding": 129900000.0
+      },
+      "ratios": {
+        "roe": 0.152454,
+        "debt_to_equity": 0.592897,
+        "revenue_growth": null,
+        "eps_growth": null,
+        "free_cash_flow": 348300000.0,
+        "payout_ratio": 0.0,
+        "operating_margin": 0.112354
+      },
+      "completeness": {
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
+      }
+    },
+    {
+      "fiscal_year": 2024,
+      "fundamentals": {
+        "revenue": 2700400000.0,
+        "net_income": 125900000.0,
+        "shareholders_equity": 1294700000.0,
+        "total_debt": 1020000000.0,
+        "eps_diluted": 0.96,
+        "dividends_paid": 0.0,
+        "operating_cash_flow": 292000000.0,
+        "capital_expenditure": 80900000.0,
+        "operating_income": 235700000.0,
+        "shares_outstanding": 130900000.0
+      },
+      "ratios": {
+        "roe": 0.101185,
+        "debt_to_equity": 0.787827,
+        "revenue_growth": -0.009464,
+        "eps_growth": -0.308242,
+        "free_cash_flow": 211100000.0,
+        "payout_ratio": 0.0,
+        "operating_margin": 0.087283
+      },
+      "completeness": {
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
+      }
+    },
+    {
+      "fiscal_year": 2025,
+      "fundamentals": {
+        "revenue": 2734700000.0,
+        "net_income": 26700000.0,
+        "shareholders_equity": 1344600000.0,
+        "total_debt": 0.0,
+        "eps_diluted": 0.21,
+        "dividends_paid": 0.0,
+        "operating_cash_flow": 195700000.0,
+        "capital_expenditure": 78200000.0,
+        "operating_income": 119000000.0,
+        "shares_outstanding": 129200000.0
+      },
+      "ratios": {
+        "roe": 0.020233,
+        "debt_to_equity": 0.0,
+        "revenue_growth": 0.012702,
+        "eps_growth": -0.787927,
+        "free_cash_flow": 117500000.0,
+        "payout_ratio": 0.0,
+        "operating_margin": 0.043515
+      },
+      "completeness": {
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
+      }
+    }
+  ]
+}

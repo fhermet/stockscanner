@@ -1,0 +1,99 @@
+{
+  "ticker": "KGS",
+  "company_name": "Kodiak Gas Services, Inc.",
+  "cik": "0001767042",
+  "schema_version": "1.0",
+  "last_updated": "2026-04-12",
+  "annuals": [
+    {
+      "fiscal_year": 2023,
+      "fundamentals": {
+        "revenue": 850381000.0,
+        "net_income": 20066000.0,
+        "shareholders_equity": 1142653000.0,
+        "total_debt": 1830346000.0,
+        "eps_diluted": 0.29,
+        "dividends_paid": 29793000.0,
+        "operating_cash_flow": 266326000.0,
+        "capital_expenditure": 219795000.0,
+        "operating_income": 244110000.0,
+        "shares_outstanding": 68327018.0
+      },
+      "ratios": {
+        "roe": 0.017561,
+        "debt_to_equity": 1.601839,
+        "revenue_growth": null,
+        "eps_growth": null,
+        "free_cash_flow": 46531000.0,
+        "payout_ratio": 1.48475,
+        "operating_margin": 0.28706
+      },
+      "completeness": {
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
+      }
+    },
+    {
+      "fiscal_year": 2024,
+      "fundamentals": {
+        "revenue": 1159311000.0,
+        "net_income": 49895000.0,
+        "shareholders_equity": 1373607000.0,
+        "total_debt": 2587648000.0,
+        "eps_diluted": 0.56,
+        "dividends_paid": 133886000.0,
+        "operating_cash_flow": 327987000.0,
+        "capital_expenditure": 336956000.0,
+        "operating_income": 249450000.0,
+        "shares_outstanding": 85170000.0
+      },
+      "ratios": {
+        "roe": 0.039658,
+        "debt_to_equity": 1.883834,
+        "revenue_growth": 0.363284,
+        "eps_growth": 1.486544,
+        "free_cash_flow": -8969000.0,
+        "payout_ratio": 2.683355,
+        "operating_margin": 0.215171
+      },
+      "completeness": {
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
+      }
+    },
+    {
+      "fiscal_year": 2025,
+      "fundamentals": {
+        "revenue": 1308100000.0,
+        "net_income": 80521000.0,
+        "shareholders_equity": 1207396000.0,
+        "total_debt": 2555645000.0,
+        "eps_diluted": 0.89,
+        "dividends_paid": 159557000.0,
+        "operating_cash_flow": 599740000.0,
+        "capital_expenditure": 315472000.0,
+        "operating_income": 340010000.0,
+        "shares_outstanding": 88523000.0
+      },
+      "ratios": {
+        "roe": 0.062395,
+        "debt_to_equity": 2.116658,
+        "revenue_growth": 0.128343,
+        "eps_growth": 0.613809,
+        "free_cash_flow": 284268000.0,
+        "payout_ratio": 1.981558,
+        "operating_margin": 0.259927
+      },
+      "completeness": {
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
+      }
+    }
+  ]
+}

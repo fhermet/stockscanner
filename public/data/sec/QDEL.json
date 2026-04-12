@@ -1,0 +1,129 @@
+{
+  "ticker": "QDEL",
+  "company_name": "QuidelOrtho Corp",
+  "cik": "0001906324",
+  "schema_version": "1.0",
+  "last_updated": "2026-04-12",
+  "annuals": [
+    {
+      "fiscal_year": 2022,
+      "fundamentals": {
+        "revenue": 1698600000.0,
+        "net_income": 704200000.0,
+        "shareholders_equity": 1929400000.0,
+        "total_debt": 400000.0,
+        "eps_diluted": 16.43,
+        "dividends_paid": 0.0,
+        "operating_cash_flow": 805900000.0,
+        "capital_expenditure": 292800000.0,
+        "operating_income": 906000000.0,
+        "shares_outstanding": 42900000.0
+      },
+      "ratios": {
+        "roe": 0.364984,
+        "debt_to_equity": 0.000207,
+        "revenue_growth": null,
+        "eps_growth": null,
+        "free_cash_flow": 513100000.0,
+        "payout_ratio": 0.0,
+        "operating_margin": 0.53338
+      },
+      "completeness": {
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
+      }
+    },
+    {
+      "fiscal_year": 2023,
+      "fundamentals": {
+        "revenue": 2997800000.0,
+        "net_income": -10100000.0,
+        "shareholders_equity": 5005900000.0,
+        "total_debt": 2414600000.0,
+        "eps_diluted": -0.15,
+        "dividends_paid": 0.0,
+        "operating_cash_flow": 280200000.0,
+        "capital_expenditure": 209300000.0,
+        "operating_income": 139100000.0,
+        "shares_outstanding": 66800000.0
+      },
+      "ratios": {
+        "roe": -0.002913,
+        "debt_to_equity": 0.482351,
+        "revenue_growth": 0.764865,
+        "eps_growth": null,
+        "free_cash_flow": 70900000.0,
+        "payout_ratio": null,
+        "operating_margin": 0.046401
+      },
+      "completeness": {
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
+      }
+    },
+    {
+      "fiscal_year": 2024,
+      "fundamentals": {
+        "revenue": 2782900000.0,
+        "net_income": -2052000000.0,
+        "shareholders_equity": 2984500000.0,
+        "total_debt": 2483100000.0,
+        "eps_diluted": -30.54,
+        "dividends_paid": 0.0,
+        "operating_cash_flow": 83000000.0,
+        "capital_expenditure": 195100000.0,
+        "operating_income": -1960900000.0,
+        "shares_outstanding": 67200000.0
+      },
+      "ratios": {
+        "roe": -0.513616,
+        "debt_to_equity": 0.831999,
+        "revenue_growth": -0.071686,
+        "eps_growth": null,
+        "free_cash_flow": -112100000.0,
+        "payout_ratio": null,
+        "operating_margin": -0.704625
+      },
+      "completeness": {
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
+      }
+    },
+    {
+      "fiscal_year": 2025,
+      "fundamentals": {
+        "revenue": 2730200000.0,
+        "net_income": -1131800000.0,
+        "shareholders_equity": 1920500000.0,
+        "total_debt": 2650200000.0,
+        "eps_diluted": -16.69,
+        "dividends_paid": 0.0,
+        "operating_cash_flow": 105200000.0,
+        "capital_expenditure": 188200000.0,
+        "operating_income": -919200000.0,
+        "shares_outstanding": 67800000.0
+      },
+      "ratios": {
+        "roe": -0.461488,
+        "debt_to_equity": 1.379953,
+        "revenue_growth": -0.018937,
+        "eps_growth": null,
+        "free_cash_flow": -83000000.0,
+        "payout_ratio": null,
+        "operating_margin": -0.336679
+      },
+      "completeness": {
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
+      }
+    }
+  ]
+}

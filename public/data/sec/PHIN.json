@@ -1,0 +1,99 @@
+{
+  "ticker": "PHIN",
+  "company_name": "PHINIA INC.",
+  "cik": "0001968915",
+  "schema_version": "1.0",
+  "last_updated": "2026-04-12",
+  "annuals": [
+    {
+      "fiscal_year": 2023,
+      "fundamentals": {
+        "revenue": 3500000000.0,
+        "net_income": 102000000.0,
+        "shareholders_equity": 1887000000.0,
+        "total_debt": 709000000.0,
+        "eps_diluted": 2.17,
+        "dividends_paid": 23000000.0,
+        "operating_cash_flow": 250000000.0,
+        "capital_expenditure": 150000000.0,
+        "operating_income": 241000000.0,
+        "shares_outstanding": 47000000.0
+      },
+      "ratios": {
+        "roe": 0.054054,
+        "debt_to_equity": 0.375729,
+        "revenue_growth": null,
+        "eps_growth": null,
+        "free_cash_flow": 100000000.0,
+        "payout_ratio": 0.22549,
+        "operating_margin": 0.068857
+      },
+      "completeness": {
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
+      }
+    },
+    {
+      "fiscal_year": 2024,
+      "fundamentals": {
+        "revenue": 3403000000.0,
+        "net_income": 79000000.0,
+        "shareholders_equity": 1574000000.0,
+        "total_debt": 988000000.0,
+        "eps_diluted": 1.76,
+        "dividends_paid": 44000000.0,
+        "operating_cash_flow": 308000000.0,
+        "capital_expenditure": 105000000.0,
+        "operating_income": 259000000.0,
+        "shares_outstanding": 44800000.0
+      },
+      "ratios": {
+        "roe": 0.045652,
+        "debt_to_equity": 0.6277,
+        "revenue_growth": -0.027714,
+        "eps_growth": -0.22549,
+        "free_cash_flow": 203000000.0,
+        "payout_ratio": 0.556962,
+        "operating_margin": 0.076109
+      },
+      "completeness": {
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
+      }
+    },
+    {
+      "fiscal_year": 2025,
+      "fundamentals": {
+        "revenue": 3483000000.0,
+        "net_income": 130000000.0,
+        "shareholders_equity": 1587000000.0,
+        "total_debt": 970000000.0,
+        "eps_diluted": 3.24,
+        "dividends_paid": 42000000.0,
+        "operating_cash_flow": 312000000.0,
+        "capital_expenditure": 124000000.0,
+        "operating_income": 254000000.0,
+        "shares_outstanding": 40100000.0
+      },
+      "ratios": {
+        "roe": 0.082252,
+        "debt_to_equity": 0.611216,
+        "revenue_growth": 0.023509,
+        "eps_growth": 0.64557,
+        "free_cash_flow": 188000000.0,
+        "payout_ratio": 0.323077,
+        "operating_margin": 0.072926
+      },
+      "completeness": {
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
+      }
+    }
+  ]
+}

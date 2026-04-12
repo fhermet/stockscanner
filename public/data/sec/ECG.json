@@ -1,0 +1,69 @@
+{
+  "ticker": "ECG",
+  "company_name": "Everus Construction Group, Inc.",
+  "cik": "0002015845",
+  "schema_version": "1.0",
+  "last_updated": "2026-04-12",
+  "annuals": [
+    {
+      "fiscal_year": 2024,
+      "fundamentals": {
+        "revenue": 2849685000.0,
+        "net_income": 143421000.0,
+        "shareholders_equity": 422612000.0,
+        "total_debt": 295648000.0,
+        "eps_diluted": 2.81,
+        "dividends_paid": 0.0,
+        "operating_cash_flow": 163377000.0,
+        "capital_expenditure": 48278000.0,
+        "operating_income": 189907000.0,
+        "shares_outstanding": 51072000.0
+      },
+      "ratios": {
+        "roe": 0.339368,
+        "debt_to_equity": 0.699573,
+        "revenue_growth": null,
+        "eps_growth": null,
+        "free_cash_flow": 115099000.0,
+        "payout_ratio": 0.0,
+        "operating_margin": 0.066641
+      },
+      "completeness": {
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
+      }
+    },
+    {
+      "fiscal_year": 2025,
+      "fundamentals": {
+        "revenue": 3746387000.0,
+        "net_income": 201770000.0,
+        "shareholders_equity": 629818000.0,
+        "total_debt": 281549000.0,
+        "eps_diluted": 3.95,
+        "dividends_paid": 0.0,
+        "operating_cash_flow": 156845000.0,
+        "capital_expenditure": 66836000.0,
+        "operating_income": 264750000.0,
+        "shares_outstanding": 51123000.0
+      },
+      "ratios": {
+        "roe": 0.383436,
+        "debt_to_equity": 0.447032,
+        "revenue_growth": 0.314667,
+        "eps_growth": 0.406837,
+        "free_cash_flow": 90009000.0,
+        "payout_ratio": 0.0,
+        "operating_margin": 0.070668
+      },
+      "completeness": {
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
+      }
+    }
+  ]
+}

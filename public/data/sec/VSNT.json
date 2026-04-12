@@ -1,0 +1,41 @@
+{
+  "ticker": "VSNT",
+  "company_name": "Versant Media Group, Inc.",
+  "cik": "0002067876",
+  "schema_version": "1.0",
+  "last_updated": "2026-04-12",
+  "annuals": [
+    {
+      "fiscal_year": 2025,
+      "fundamentals": {
+        "revenue": 6688000000.0,
+        "net_income": 930000000.0,
+        "shareholders_equity": 10292000000.0,
+        "total_debt": 0.0,
+        "eps_diluted": null,
+        "dividends_paid": 0.0,
+        "operating_cash_flow": 2022000000.0,
+        "capital_expenditure": 167000000.0,
+        "operating_income": 1272000000.0,
+        "shares_outstanding": null
+      },
+      "ratios": {
+        "roe": 0.090361,
+        "debt_to_equity": 0.0,
+        "revenue_growth": null,
+        "eps_growth": null,
+        "free_cash_flow": 1855000000.0,
+        "payout_ratio": 0.0,
+        "operating_margin": 0.190191
+      },
+      "completeness": {
+        "present_field_count": 7,
+        "missing_field_count": 1,
+        "missing_field_names": [
+          "eps_diluted"
+        ],
+        "completeness_ratio": 0.875
+      }
+    }
+  ]
+}

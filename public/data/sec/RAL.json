@@ -1,0 +1,39 @@
+{
+  "ticker": "RAL",
+  "company_name": "Ralliant Corp",
+  "cik": "0002041385",
+  "schema_version": "1.0",
+  "last_updated": "2026-04-12",
+  "annuals": [
+    {
+      "fiscal_year": 2025,
+      "fundamentals": {
+        "revenue": 2068800000.0,
+        "net_income": -1222500000.0,
+        "shareholders_equity": 1634300000.0,
+        "total_debt": 1148800000.0,
+        "eps_diluted": -10.84,
+        "dividends_paid": 11300000.0,
+        "operating_cash_flow": 397600000.0,
+        "capital_expenditure": 39200000.0,
+        "operating_income": -1183000000.0,
+        "shares_outstanding": 112800000.0
+      },
+      "ratios": {
+        "roe": -0.748027,
+        "debt_to_equity": 0.702931,
+        "revenue_growth": null,
+        "eps_growth": null,
+        "free_cash_flow": 358400000.0,
+        "payout_ratio": null,
+        "operating_margin": -0.571829
+      },
+      "completeness": {
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
+      }
+    }
+  ]
+}

@@ -1,0 +1,161 @@
+{
+  "ticker": "DFH",
+  "company_name": "Dream Finders Homes, Inc.",
+  "cik": "0001825088",
+  "schema_version": "1.0",
+  "last_updated": "2026-04-12",
+  "annuals": [
+    {
+      "fiscal_year": 2021,
+      "fundamentals": {
+        "revenue": 1923909806.0,
+        "net_income": 121132501.0,
+        "shareholders_equity": 401163000.0,
+        "total_debt": 3291389.0,
+        "eps_diluted": 1.27,
+        "dividends_paid": 0.0,
+        "operating_cash_flow": 65108989.0,
+        "capital_expenditure": 2774372.0,
+        "operating_income": 162048460.0,
+        "shares_outstanding": 95313593.0
+      },
+      "ratios": {
+        "roe": 0.301953,
+        "debt_to_equity": 0.008205,
+        "revenue_growth": null,
+        "eps_growth": null,
+        "free_cash_flow": 62334617.0,
+        "payout_ratio": 0.0,
+        "operating_margin": 0.084229
+      },
+      "completeness": {
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
+      }
+    },
+    {
+      "fiscal_year": 2022,
+      "fundamentals": {
+        "revenue": 3342335000.0,
+        "net_income": 262313000.0,
+        "shareholders_equity": null,
+        "total_debt": 0.0,
+        "eps_diluted": 2.45,
+        "dividends_paid": 0.0,
+        "operating_cash_flow": -27623000.0,
+        "capital_expenditure": 5545000.0,
+        "operating_income": 356156000.0,
+        "shares_outstanding": 106691248.0
+      },
+      "ratios": {
+        "roe": null,
+        "debt_to_equity": null,
+        "revenue_growth": 0.737262,
+        "eps_growth": 1.165505,
+        "free_cash_flow": -33168000.0,
+        "payout_ratio": 0.0,
+        "operating_margin": 0.106559
+      },
+      "completeness": {
+        "present_field_count": 7,
+        "missing_field_count": 1,
+        "missing_field_names": [
+          "shareholders_equity"
+        ],
+        "completeness_ratio": 0.875
+      }
+    },
+    {
+      "fiscal_year": 2023,
+      "fundamentals": {
+        "revenue": 3748586000.0,
+        "net_income": 295900000.0,
+        "shareholders_equity": 924584000.0,
+        "total_debt": 0.0,
+        "eps_diluted": 2.79,
+        "dividends_paid": 0.0,
+        "operating_cash_flow": 374234000.0,
+        "capital_expenditure": 4781000.0,
+        "operating_income": 404425000.0,
+        "shares_outstanding": 106027548.0
+      },
+      "ratios": {
+        "roe": 0.320036,
+        "debt_to_equity": 0.0,
+        "revenue_growth": 0.121547,
+        "eps_growth": 0.128042,
+        "free_cash_flow": 369453000.0,
+        "payout_ratio": 0.0,
+        "operating_margin": 0.107887
+      },
+      "completeness": {
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
+      }
+    },
+    {
+      "fiscal_year": 2024,
+      "fundamentals": {
+        "revenue": 4451606000.0,
+        "net_income": 335341000.0,
+        "shareholders_equity": 1244922000.0,
+        "total_debt": 1286052000.0,
+        "eps_diluted": 3.34,
+        "dividends_paid": 0.0,
+        "operating_cash_flow": -256648000.0,
+        "capital_expenditure": 25345000.0,
+        "operating_income": 437854000.0,
+        "shares_outstanding": 100297139.0
+      },
+      "ratios": {
+        "roe": 0.30914,
+        "debt_to_equity": 1.033038,
+        "revenue_growth": 0.187543,
+        "eps_growth": 0.133292,
+        "free_cash_flow": -281993000.0,
+        "payout_ratio": 0.0,
+        "operating_margin": 0.098359
+      },
+      "completeness": {
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
+      }
+    },
+    {
+      "fiscal_year": 2025,
+      "fundamentals": {
+        "revenue": 4322848000.0,
+        "net_income": 217197000.0,
+        "shareholders_equity": 1424575000.0,
+        "total_debt": 1606193000.0,
+        "eps_diluted": 2.14,
+        "dividends_paid": 0.0,
+        "operating_cash_flow": -100574000.0,
+        "capital_expenditure": 25792000.0,
+        "operating_income": 284102000.0,
+        "shares_outstanding": 101296630.0
+      },
+      "ratios": {
+        "roe": 0.162725,
+        "debt_to_equity": 1.127489,
+        "revenue_growth": -0.028924,
+        "eps_growth": -0.35231,
+        "free_cash_flow": -126366000.0,
+        "payout_ratio": 0.0,
+        "operating_margin": 0.065721
+      },
+      "completeness": {
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
+      }
+    }
+  ]
+}

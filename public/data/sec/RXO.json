@@ -1,0 +1,129 @@
+{
+  "ticker": "RXO",
+  "company_name": "RXO, Inc.",
+  "cik": "0001929561",
+  "schema_version": "1.0",
+  "last_updated": "2026-04-12",
+  "annuals": [
+    {
+      "fiscal_year": 2022,
+      "fundamentals": {
+        "revenue": 4796000000.0,
+        "net_income": 92000000.0,
+        "shareholders_equity": 587000000.0,
+        "total_debt": 455000000.0,
+        "eps_diluted": 0.79,
+        "dividends_paid": 0.0,
+        "operating_cash_flow": 310000000.0,
+        "capital_expenditure": 57000000.0,
+        "operating_income": 123000000.0,
+        "shares_outstanding": 115791000.0
+      },
+      "ratios": {
+        "roe": 0.156729,
+        "debt_to_equity": 0.775128,
+        "revenue_growth": null,
+        "eps_growth": null,
+        "free_cash_flow": 253000000.0,
+        "payout_ratio": 0.0,
+        "operating_margin": 0.025646
+      },
+      "completeness": {
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
+      }
+    },
+    {
+      "fiscal_year": 2023,
+      "fundamentals": {
+        "revenue": 3927000000.0,
+        "net_income": 4000000.0,
+        "shareholders_equity": 594000000.0,
+        "total_debt": 359000000.0,
+        "eps_diluted": 0.03,
+        "dividends_paid": 0.0,
+        "operating_cash_flow": 89000000.0,
+        "capital_expenditure": 64000000.0,
+        "operating_income": 39000000.0,
+        "shares_outstanding": 119456000.0
+      },
+      "ratios": {
+        "roe": 0.006774,
+        "debt_to_equity": 0.604377,
+        "revenue_growth": -0.181193,
+        "eps_growth": -0.956522,
+        "free_cash_flow": 25000000.0,
+        "payout_ratio": 0.0,
+        "operating_margin": 0.009931
+      },
+      "completeness": {
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
+      }
+    },
+    {
+      "fiscal_year": 2024,
+      "fundamentals": {
+        "revenue": 4550000000.0,
+        "net_income": -290000000.0,
+        "shareholders_equity": 1612000000.0,
+        "total_debt": 368000000.0,
+        "eps_diluted": -2.17,
+        "dividends_paid": 0.0,
+        "operating_cash_flow": -12000000.0,
+        "capital_expenditure": 45000000.0,
+        "operating_income": -56000000.0,
+        "shares_outstanding": 133412000.0
+      },
+      "ratios": {
+        "roe": -0.262919,
+        "debt_to_equity": 0.228288,
+        "revenue_growth": 0.158645,
+        "eps_growth": null,
+        "free_cash_flow": -57000000.0,
+        "payout_ratio": null,
+        "operating_margin": -0.012308
+      },
+      "completeness": {
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
+      }
+    },
+    {
+      "fiscal_year": 2025,
+      "fundamentals": {
+        "revenue": 5742000000.0,
+        "net_income": -100000000.0,
+        "shareholders_equity": 1541000000.0,
+        "total_debt": 404000000.0,
+        "eps_diluted": -0.59,
+        "dividends_paid": 0.0,
+        "operating_cash_flow": 51000000.0,
+        "capital_expenditure": 59000000.0,
+        "operating_income": -79000000.0,
+        "shares_outstanding": 168462000.0
+      },
+      "ratios": {
+        "roe": -0.063432,
+        "debt_to_equity": 0.262167,
+        "revenue_growth": 0.261978,
+        "eps_growth": null,
+        "free_cash_flow": -8000000.0,
+        "payout_ratio": null,
+        "operating_margin": -0.013758
+      },
+      "completeness": {
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
+      }
+    }
+  ]
+}

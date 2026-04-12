@@ -1,0 +1,77 @@
+{
+  "ticker": "UNIT",
+  "company_name": "Uniti Group Inc.",
+  "cik": "0002020795",
+  "schema_version": "1.0",
+  "last_updated": "2026-04-12",
+  "annuals": [
+    {
+      "fiscal_year": 2024,
+      "fundamentals": {
+        "revenue": null,
+        "net_income": null,
+        "shareholders_equity": -2452400000.0,
+        "total_debt": 5783600000.0,
+        "eps_diluted": null,
+        "dividends_paid": 0.0,
+        "operating_cash_flow": null,
+        "capital_expenditure": null,
+        "operating_income": null,
+        "shares_outstanding": 100.0
+      },
+      "ratios": {
+        "roe": null,
+        "debt_to_equity": null,
+        "revenue_growth": null,
+        "eps_growth": null,
+        "free_cash_flow": null,
+        "payout_ratio": null,
+        "operating_margin": null
+      },
+      "completeness": {
+        "present_field_count": 3,
+        "missing_field_count": 5,
+        "missing_field_names": [
+          "revenue",
+          "net_income",
+          "eps_diluted",
+          "operating_cash_flow",
+          "capital_expenditure"
+        ],
+        "completeness_ratio": 0.375
+      }
+    },
+    {
+      "fiscal_year": 2025,
+      "fundamentals": {
+        "revenue": 2234500000.0,
+        "net_income": 1304700000.0,
+        "shareholders_equity": 380300000.0,
+        "total_debt": 9529400000.0,
+        "eps_diluted": 4.87,
+        "dividends_paid": 0.0,
+        "operating_cash_flow": 350200000.0,
+        "capital_expenditure": null,
+        "operating_income": 262000000.0,
+        "shares_outstanding": 266500000.0
+      },
+      "ratios": {
+        "roe": 3.430713,
+        "debt_to_equity": 25.057586,
+        "revenue_growth": null,
+        "eps_growth": null,
+        "free_cash_flow": null,
+        "payout_ratio": 0.0,
+        "operating_margin": 0.117252
+      },
+      "completeness": {
+        "present_field_count": 7,
+        "missing_field_count": 1,
+        "missing_field_names": [
+          "capital_expenditure"
+        ],
+        "completeness_ratio": 0.875
+      }
+    }
+  ]
+}

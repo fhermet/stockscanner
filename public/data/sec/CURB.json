@@ -1,0 +1,73 @@
+{
+  "ticker": "CURB",
+  "company_name": "Curbline Properties Corp.",
+  "cik": "0002027317",
+  "schema_version": "1.0",
+  "last_updated": "2026-04-12",
+  "annuals": [
+    {
+      "fiscal_year": 2024,
+      "fundamentals": {
+        "revenue": 120881000.0,
+        "net_income": 10273000.0,
+        "shareholders_equity": 1941784000.0,
+        "total_debt": 0.0,
+        "eps_diluted": 0.09,
+        "dividends_paid": 0.0,
+        "operating_cash_flow": 54260000.0,
+        "capital_expenditure": null,
+        "operating_income": 10277000.0,
+        "shares_outstanding": 105215000.0
+      },
+      "ratios": {
+        "roe": 0.00529,
+        "debt_to_equity": 0.0,
+        "revenue_growth": null,
+        "eps_growth": null,
+        "free_cash_flow": null,
+        "payout_ratio": 0.0,
+        "operating_margin": 0.085017
+      },
+      "completeness": {
+        "present_field_count": 7,
+        "missing_field_count": 1,
+        "missing_field_names": [
+          "capital_expenditure"
+        ],
+        "completeness_ratio": 0.875
+      }
+    },
+    {
+      "fiscal_year": 2025,
+      "fundamentals": {
+        "revenue": 182893000.0,
+        "net_income": 39881000.0,
+        "shareholders_equity": 1909193000.0,
+        "total_debt": 423239000.0,
+        "eps_diluted": 0.37,
+        "dividends_paid": 77384000.0,
+        "operating_cash_flow": 124601000.0,
+        "capital_expenditure": null,
+        "operating_income": 40188000.0,
+        "shares_outstanding": 105300000.0
+      },
+      "ratios": {
+        "roe": 0.020712,
+        "debt_to_equity": 0.221685,
+        "revenue_growth": 0.513,
+        "eps_growth": 2.882118,
+        "free_cash_flow": null,
+        "payout_ratio": 1.940373,
+        "operating_margin": 0.219735
+      },
+      "completeness": {
+        "present_field_count": 7,
+        "missing_field_count": 1,
+        "missing_field_names": [
+          "capital_expenditure"
+        ],
+        "completeness_ratio": 0.875
+      }
+    }
+  ]
+}

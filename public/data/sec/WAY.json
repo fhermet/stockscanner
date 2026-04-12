@@ -1,0 +1,69 @@
+{
+  "ticker": "WAY",
+  "company_name": "Waystar Holding Corp.",
+  "cik": "0001990354",
+  "schema_version": "1.0",
+  "last_updated": "2026-04-12",
+  "annuals": [
+    {
+      "fiscal_year": 2024,
+      "fundamentals": {
+        "revenue": 943549000.0,
+        "net_income": -19125000.0,
+        "shareholders_equity": 3079786000.0,
+        "total_debt": 1243545000.0,
+        "eps_diluted": -0.13,
+        "dividends_paid": 0.0,
+        "operating_cash_flow": 169768000.0,
+        "capital_expenditure": 27268000.0,
+        "operating_income": 123725000.0,
+        "shares_outstanding": 149915839.0
+      },
+      "ratios": {
+        "roe": -0.00621,
+        "debt_to_equity": 0.403776,
+        "revenue_growth": null,
+        "eps_growth": null,
+        "free_cash_flow": 142500000.0,
+        "payout_ratio": null,
+        "operating_margin": 0.131127
+      },
+      "completeness": {
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
+      }
+    },
+    {
+      "fiscal_year": 2025,
+      "fundamentals": {
+        "revenue": 1099278000.0,
+        "net_income": 112089000.0,
+        "shareholders_equity": 3878826000.0,
+        "total_debt": 1481246000.0,
+        "eps_diluted": 0.61,
+        "dividends_paid": 0.0,
+        "operating_cash_flow": 309673000.0,
+        "capital_expenditure": 26481000.0,
+        "operating_income": 249305000.0,
+        "shares_outstanding": 184783285.0
+      },
+      "ratios": {
+        "roe": 0.032216,
+        "debt_to_equity": 0.38188,
+        "revenue_growth": 0.165046,
+        "eps_growth": null,
+        "free_cash_flow": 283192000.0,
+        "payout_ratio": 0.0,
+        "operating_margin": 0.22679
+      },
+      "completeness": {
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
+      }
+    }
+  ]
+}

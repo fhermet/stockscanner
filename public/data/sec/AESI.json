@@ -1,0 +1,99 @@
+{
+  "ticker": "AESI",
+  "company_name": "Atlas Energy Solutions Inc.",
+  "cik": "0001984060",
+  "schema_version": "1.0",
+  "last_updated": "2026-04-12",
+  "annuals": [
+    {
+      "fiscal_year": 2023,
+      "fundamentals": {
+        "revenue": 613960000.0,
+        "net_income": 105429000.0,
+        "shareholders_equity": 867824000.0,
+        "total_debt": 180000000.0,
+        "eps_diluted": 1.48,
+        "dividends_paid": 0.0,
+        "operating_cash_flow": 299027000.0,
+        "capital_expenditure": 365486000.0,
+        "operating_income": 265130000.0,
+        "shares_outstanding": 71035000.0
+      },
+      "ratios": {
+        "roe": 0.121487,
+        "debt_to_equity": 0.207415,
+        "revenue_growth": null,
+        "eps_growth": null,
+        "free_cash_flow": -66459000.0,
+        "payout_ratio": 0.0,
+        "operating_margin": 0.431836
+      },
+      "completeness": {
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
+      }
+    },
+    {
+      "fiscal_year": 2024,
+      "fundamentals": {
+        "revenue": 1055957000.0,
+        "net_income": 59944000.0,
+        "shareholders_equity": 1036556000.0,
+        "total_debt": 520927000.0,
+        "eps_diluted": 0.55,
+        "dividends_paid": 0.0,
+        "operating_cash_flow": 256460000.0,
+        "capital_expenditure": 373983000.0,
+        "operating_income": 113876000.0,
+        "shares_outstanding": 109176000.0
+      },
+      "ratios": {
+        "roe": 0.062954,
+        "debt_to_equity": 0.502556,
+        "revenue_growth": 0.719912,
+        "eps_growth": -0.431428,
+        "free_cash_flow": -117523000.0,
+        "payout_ratio": 0.0,
+        "operating_margin": 0.107842
+      },
+      "completeness": {
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
+      }
+    },
+    {
+      "fiscal_year": 2025,
+      "fundamentals": {
+        "revenue": 1095310000.0,
+        "net_income": -50304000.0,
+        "shareholders_equity": 1208924000.0,
+        "total_debt": 604181000.0,
+        "eps_diluted": -0.41,
+        "dividends_paid": 0.0,
+        "operating_cash_flow": 117346000.0,
+        "capital_expenditure": 148271000.0,
+        "operating_income": -10910000.0,
+        "shares_outstanding": 122435000.0
+      },
+      "ratios": {
+        "roe": -0.044805,
+        "debt_to_equity": 0.499768,
+        "revenue_growth": 0.037268,
+        "eps_growth": null,
+        "free_cash_flow": -30925000.0,
+        "payout_ratio": null,
+        "operating_margin": -0.009961
+      },
+      "completeness": {
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
+      }
+    }
+  ]
+}
