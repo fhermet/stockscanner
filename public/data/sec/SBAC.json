@@ -12,7 +12,7 @@
         "net_income": -194674000.0,
         "shareholders_equity": 317110000.0,
         "total_debt": 0.0,
-        "eps_diluted": null,
+        "eps_diluted": -1.7,
         "dividends_paid": 0.0,
         "operating_cash_flow": 201155000.0,
         "capital_expenditure": 66618000.0,
@@ -29,12 +29,10 @@
         "operating_margin": 0.11853
       },
       "completeness": {
-        "present_field_count": 7,
-        "missing_field_count": 1,
-        "missing_field_names": [
-          "eps_diluted"
-        ],
-        "completeness_ratio": 0.875
+        "present_field_count": 8,
+        "missing_field_count": 0,
+        "missing_field_names": [],
+        "completeness_ratio": 1.0
       }
     },
     {
@@ -340,7 +338,7 @@
     {
       "fiscal_year": 2021,
       "fundamentals": {
-        "revenue": 204747000.0,
+        "revenue": 2308834000.0,
         "net_income": 237624000.0,
         "shareholders_equity": -5283404000.0,
         "total_debt": 12302694000.0,
@@ -354,11 +352,11 @@
       "ratios": {
         "roe": null,
         "debt_to_equity": null,
-        "revenue_growth": 0.591306,
+        "revenue_growth": 16.944399,
         "eps_growth": 8.858281,
         "free_cash_flow": 1056202000.0,
         "payout_ratio": 1.067148,
-        "operating_margin": null
+        "operating_margin": 0.338913
       },
       "completeness": {
         "present_field_count": 8,
@@ -370,7 +368,7 @@
     {
       "fiscal_year": 2022,
       "fundamentals": {
-        "revenue": 296879000.0,
+        "revenue": 2633454000.0,
         "net_income": 461429000.0,
         "shareholders_equity": -5276315000.0,
         "total_debt": 12868162000.0,
@@ -384,11 +382,11 @@
       "ratios": {
         "roe": null,
         "debt_to_equity": null,
-        "revenue_growth": 0.44998,
+        "revenue_growth": 0.140599,
         "eps_growth": 0.941845,
         "free_cash_flow": 1071257000.0,
         "payout_ratio": 0.664817,
-        "operating_margin": null
+        "operating_margin": 0.351405
       },
       "completeness": {
         "present_field_count": 8,
@@ -400,7 +398,7 @@
     {
       "fiscal_year": 2023,
       "fundamentals": {
-        "revenue": 194649000.0,
+        "revenue": 2711584000.0,
         "net_income": 501812000.0,
         "shareholders_equity": -5170882000.0,
         "total_debt": 12324315000.0,
@@ -414,11 +412,11 @@
       "ratios": {
         "roe": null,
         "debt_to_equity": null,
-        "revenue_growth": -0.344349,
+        "revenue_growth": 0.029668,
         "eps_growth": 0.087517,
         "free_cash_flow": 1307695000.0,
         "payout_ratio": 0.737248,
-        "operating_margin": null
+        "operating_margin": 0.340634
       },
       "completeness": {
         "present_field_count": 8,
@@ -430,7 +428,7 @@
     {
       "fiscal_year": 2024,
       "fundamentals": {
-        "revenue": 152869000.0,
+        "revenue": 2679634000.0,
         "net_income": 749536000.0,
         "shareholders_equity": -5109938000.0,
         "total_debt": 13591738000.0,
@@ -444,11 +442,11 @@
       "ratios": {
         "roe": null,
         "debt_to_equity": null,
-        "revenue_growth": -0.214643,
+        "revenue_growth": -0.011783,
         "eps_growth": 0.493659,
         "free_cash_flow": 1106717000.0,
         "payout_ratio": 0.565938,
-        "operating_margin": null
+        "operating_margin": 0.535806
       },
       "completeness": {
         "present_field_count": 8,
@@ -460,7 +458,7 @@
     {
       "fiscal_year": 2025,
       "fundamentals": {
-        "revenue": 244498000.0,
+        "revenue": 2815139000.0,
         "net_income": 1053632000.0,
         "shareholders_equity": -4853519000.0,
         "total_debt": 12900268000.0,
@@ -474,11 +472,11 @@
       "ratios": {
         "roe": null,
         "debt_to_equity": null,
-        "revenue_growth": 0.599396,
+        "revenue_growth": 0.050568,
         "eps_growth": 0.405712,
         "free_cash_flow": 1066509000.0,
         "payout_ratio": 0.454629,
-        "operating_margin": null
+        "operating_margin": 0.476987
       },
       "completeness": {
         "present_field_count": 8,
