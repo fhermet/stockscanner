@@ -57,6 +57,7 @@ if [ "$SKIP_SCRAPE" = false ]; then
   step "1/5 Scraping index lists from Wikipedia"
   run_cli update-sp500
   run_cli update-sp400
+  run_cli update-sp600
   run_cli update-nasdaq100
   run_cli update-dowjones
 else
@@ -66,8 +67,8 @@ fi
 # --- 2. Ingest SEC data ---
 
 if [ "$SKIP_INGEST" = false ]; then
-  step "2/5 Ingesting SEC data (pipeline SP500 SP400 NASDAQ100 DOWJONES)"
-  run_cli pipeline SP500 SP400 NASDAQ100 DOWJONES
+  step "2/5 Ingesting SEC data (pipeline SP500 SP400 SP600 NASDAQ100 DOWJONES)"
+  run_cli pipeline SP500 SP400 SP600 NASDAQ100 DOWJONES
 else
   step "2/5 Skipping SEC ingestion (--skip-ingest)"
 fi
@@ -75,7 +76,7 @@ fi
 # --- 3. Export to web app ---
 
 step "3/5 Exporting SEC data to $SEC_OUTPUT"
-run_cli export-for-web SP500 SP400 NASDAQ100 DOWJONES --output-dir "$SEC_OUTPUT"
+run_cli export-for-web SP500 SP400 SP600 NASDAQ100 DOWJONES --output-dir "$SEC_OUTPUT"
 
 # --- 4. Generate TypeScript index ticker lists ---
 

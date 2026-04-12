@@ -10,8 +10,8 @@ import {
 } from "../index";
 
 describe("indices registry", () => {
-  it("has 9 indices", () => {
-    expect(ALL_INDICES.length).toBe(9);
+  it("has 10 indices", () => {
+    expect(ALL_INDICES.length).toBe(10);
   });
 
   it("all indices have required fields", () => {
@@ -44,11 +44,12 @@ describe("getCountries", () => {
 });
 
 describe("getIndicesForCountry", () => {
-  it("returns 4 indices for US", () => {
+  it("returns 5 indices for US", () => {
     const us = getIndicesForCountry("us");
-    expect(us.length).toBe(4);
+    expect(us.length).toBe(5);
     expect(us.map((i) => i.id)).toContain("sp500");
     expect(us.map((i) => i.id)).toContain("sp400");
+    expect(us.map((i) => i.id)).toContain("sp600");
     expect(us.map((i) => i.id)).toContain("nasdaq100");
     expect(us.map((i) => i.id)).toContain("dowjones");
   });

@@ -96,6 +96,7 @@ mkdirSync(OUTPUT_DIR, { recursive: true });
 console.log("Generating index ticker lists...");
 generateIndex("sp500", "SP500_TICKERS", "_sp500.json");
 generateIndex("sp400", "SP400_TICKERS", "_sp400.json");
+generateIndex("sp600", "SP600_TICKERS", "_sp600.json");
 generateIndex("nasdaq100", "NASDAQ100_TICKERS", "_nasdaq100.json");
 generateIndex("dowjones", "DOWJONES_TICKERS", "_dowjones.json");
 console.log("Done.");
